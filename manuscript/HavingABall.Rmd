@@ -1,0 +1,62 @@
+---
+title: "Having a Ball: evaluating game excitement and scoring streaks using in-match trend estimation"
+author: | 
+  | Claus Thorn Ekstrøm and Andreas Kryger Jensen
+  | Biostatistics, Institute of Public Health, University of Copenhagen
+  | ekstrom@sund.ku.dk, aeje@sund.ku.dk
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+fontsize: 11pt  
+header-includes:
+  - \usepackage{bm}
+  - \usepackage{amssymb}
+  - \usepackage[labelfont=bf]{caption}
+  - \DeclareMathOperator*{\argsup}{arg\,sup}  
+  - \DeclareMathOperator*{\argmin}{arg\,min}  
+  - \DeclareMathOperator*{\E}{E}
+  - \DeclareMathOperator*{\Cov}{Cov}
+  - \DeclareMathOperator*{\Cor}{Cor}
+  - \DeclareMathOperator*{\Var}{Var}
+  - \DeclareMathOperator*{\Erf}{Erf}
+  - \DeclareMathOperator*{\Erfc}{Erfc}
+  - \usepackage{multirow}
+  - \usepackage{float}
+  - \floatstyle{plaintop}
+  - \restylefloat{table}
+  - \usepackage[amsthm,thmmarks]{ntheorem}
+  - \newtheorem{definition}{Definition}
+  - \newtheorem{assumption}{Assumption}
+  - \newtheorem{proposition}{Proposition}
+  - \theoremstyle{nonumberplain}
+  - \newtheorem{Proof}{Proof}
+  - \usepackage{xcolor}
+  - \newcommand{\revision}[1]{\textcolor{red}{#1}}
+output:
+  pdf_document: 
+    keep_tex: yes
+    number_sections: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+\begin{abstract}
+Nu ved jeg godt nok intet om sport, men...
+\end{abstract}
+
+\begin{center}
+\textbf{Keywords:} Sports statistics, Gaussian Processes, Trends, Bayesian Statistics
+\end{center}
+
+# Introduction
+
+# Methods {#sec:method}
+
+# Results {#sec:application}
+
+# Discussion {#sec:discussion}
+
+# Acknowledgements {-}
+
+# Bibliography {-}
+
+<div id="refs"></div>
+
