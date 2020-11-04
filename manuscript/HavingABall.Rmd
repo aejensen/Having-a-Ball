@@ -58,21 +58,29 @@ We introduce the Execitement Trend Index (ETI) as an objective measure of specta
 
 Ref til trends
 
-# Methods {#sec:method}
-Let $m$ index a given match between teams $i$ and $j$ and let $D_m(t_{m}) = S_i(t_{m}) - S_{j}(t_{m})$ be the difference in scores where $t_m$ are the ordered event times for a score by either team $i$ and $j$.
+Needs a reference and some kind of comparison to "Rank dynamics for functional data" by Chen, Dawson and Müller, Computational Statistics and Data Analysis, 149, 2020.
 
-We then impose the model
+Vi kan overveje, om vi ikke udelukkende burde fokusere på Eddy i dette manus og foreslå dette som et objektivt excitement index i stedet for at gå ind i en diskussion om TDI også.
+
+# Methods {#sec:method}
+Let $m$ index a given match between teams $a$ and $b$ and let $D_m(t_{m_i}) = S_a(t_{m_i}) - S_{b}(t_{m_i})$ be the difference in scores at times $t_{m_1} < t_{m_2} < t_{m_i} < \ldots$ being the ordered event times when a score by either team $a$ or $b$ occurs  during match $m$.
+
+We then look at the model
 \begin{align*}
-  f_m(t) &\sim \mathcal{GP}(\mu, C_\theta)\\
-  D_m(t_{m}) \mid f_m(t_m), t_m &\overset{iid}{\sim} N(f_m(t_{m}), \sigma_{m}^2)
+  \Theta_m &\sim F_m\\
+  f_m(t) \mid \Theta_m &\sim \mathcal{GP}(\mu_{\beta_m}, C_{\theta_m})\\
+  D_m(t_{m_i}) \mid f_m(t_{m_i}), t_{m_i}, \Theta_m &\overset{iid}{\sim} N(f_m(t_{m_i}), \sigma_{m}^2)
 \end{align*}
+where $\Theta_m = (\beta_m, \theta_m, \sigma_{m}^2)$ and $f_m$ is a latent (?, proper name) trajectory of score differences.
+
 
 \begin{itemize}
 \item Trenderen
 \item TDI
-\item ETI
+\item Excitement Trend Index
 \end{itemize}
 
+We need to argue that $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" is arbitrary/not important.
 
 # Results {#sec:application}
 
@@ -83,9 +91,11 @@ We then impose the model
 
 # Discussion {#sec:discussion}
 
-\begin{itemize}
-\item 
-\end{itemize}
+We could define a weighted Excitement Trend Index wETI, so that zero crossings of the derivative of score differences are weighted higher towards the end of the game as in 
+\begin{align*}
+  \mathrm{wETI} = \int_{0}^{48} w(t)d \mathrm{ETI}(t)
+\end{align*}
+where $w(t)$ is then an increasing weight function.
 
 
 # Acknowledgements {-}
