@@ -59,6 +59,12 @@ Ref til trends
 
 # Methods {#sec:method}
 
+Define $D_m(t_{m}) = S_i(t_{m}) - S_{j}(t_{m})$ for two teams $i$ and $j$ in some match $m$. Then
+\begin{align*}
+  f_m(t) &\sim \mathcal{GP}(\mu, C_\theta)\\
+  D_m(t_{m}) \mid f_m(t_m), t_m &\overset{iid}{\sim} N(f_m(t_{m}), \sigma_{m}^2)
+\end{align*}
+
 \begin{itemize}
 \item Trenderen
 \item TDI
