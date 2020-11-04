@@ -48,6 +48,7 @@ Nu ved jeg godt nok intet om sport, men...
 
 # Introduction
 
+We introduce the Execitement Trend Index (ETI) as an objective measure of spectator exicitement in a given match.
 
 \begin{itemize}
 \item Excitement defineret som skift af hvem, der er i føring
@@ -58,8 +59,9 @@ Nu ved jeg godt nok intet om sport, men...
 Ref til trends
 
 # Methods {#sec:method}
+Let $m$ index a given match between teams $i$ and $j$ and let $D_m(t_{m}) = S_i(t_{m}) - S_{j}(t_{m})$ be the difference in scores where $t_m$ are the ordered event times for a score by either team $i$ and $j$.
 
-Define $D_m(t_{m}) = S_i(t_{m}) - S_{j}(t_{m})$ for two teams $i$ and $j$ in some match $m$. Then
+We then impose the model
 \begin{align*}
   f_m(t) &\sim \mathcal{GP}(\mu, C_\theta)\\
   D_m(t_{m}) \mid f_m(t_m), t_m &\overset{iid}{\sim} N(f_m(t_{m}), \sigma_{m}^2)

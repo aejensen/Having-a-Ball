@@ -40,7 +40,7 @@ fitTrendR <- function(d) {
   sDat$nu <- 10000
   sDat$sigma <- par.rq[4]
 
-  iter <- 1000
+  iter <- 10000
   seed <- 12345
   fit <- sampling(m, data = sDat, iter = iter, seed = seed, algorithm = "Fixed_param")
   pred <- extract(fit, "pred")$pred
@@ -51,8 +51,18 @@ fitTrendR <- function(d) {
 fits <- mclapply(list(d1, d2, d3, d4, d5), function(d) {
 	fitTrendR(d)
 }, mc.cores=5)
+save(fits, file="post.RData")
 
-fit <- fitTrendR(d5)
+########################################################
+# Test
+########################################################
+fit <- fits[[1]]
+
+integrate(splinefun(fits[[1]]$data$tPred, fits[[1]]$posterior[1,,6]), min(fits[[1]]$data$tPred), max(fits[[1]]$data$tPred))
+
+sapply(1:5, function(m) {
+  integrate(splinefun(fits[[m]]$data$tPred, fits[[m]]$posterior[1,,6]), min(fits[[m]]$data$tPred), max(fits[[m]]$data$tPred))$value
+})
 
 ########################################################
 # Plot results
@@ -116,4 +126,4 @@ dev.off()
 # Excitement Trend Index
 ########################################################
 integrate(splinefun(fit$data$tPred, fit$posterior[1,,6]), min(fit$data$tPred), max(fit$data$tPred))
-AIC
+
