@@ -60,10 +60,14 @@ d4 <- mineData("https://www.basketball-reference.com/boxscores/pbp/202010090LAL.
 d5 <- mineData("https://www.basketball-reference.com/boxscores/pbp/202010110MIA.html")
 
 
-plot(d1$time, d1$scorediff)
-plot(d2$time, d2$scorediff)
-plot(d3$time, d3$scorediff)
-plot(d4$time, d4$scorediff)
-plot(d5$time, d5$scorediff)
+par(mfrow=c(3,2))
+plot(d1$time, d1$scorediff, type="s")
+plot(d2$time, d2$scorediff, type="s")
+plot(d3$time, d3$scorediff, type="s")
+plot(d4$time, d4$scorediff, type="s")
+plot(d5$time, d5$scorediff, type="s")
+
+range(d5$time)
+d5
 
 save(d1, d2, d3, d4, d5, file="test.RData")
