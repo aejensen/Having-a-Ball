@@ -3,16 +3,19 @@ rm(list=ls())
 library(DEoptim)
 library(mvtnorm)
 library(rstan)
+library(parallel)
+
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
+
+load("test.RData")
 
 ########################################################
 # Fit models
 ########################################################
 m <- stan_model("gptrendFixed.stan")
 
-fitTrendR <- function() {
-	load("../data/data.RData")	
+fitTrendR <- function(d) {
 	tPred <- seq(min(d$time), max(d$time), length.out = 300)
 	
 	#Estimate Empirical Bayes parameters
@@ -20,13 +23,13 @@ fitTrendR <- function() {
     alpha^2 * (1 + (s-t)^2 / (2 * nu * rho^2))^(-nu)
   }
 
-  ctl <- DEoptim.control(itermax = 1000, trace = 100)
+  ctl <- DEoptim.control(itermax = 2000, trace = 100)
   set.seed(1234)
   opt.rq <- DEoptim(function(par) {
     mu <- rep(par[1], nrow(d))
     cMat <- outer(d$time, d$time, rqCov, par[2], par[3], 10000) + diag(par[4]^2 , nrow(d))
     -mvtnorm::dmvnorm(d$scorediff, mu, cMat, log=TRUE)
-  }, lower = c(0,0,0,0), upper = c(20,20,20,20), control = ctl)
+  }, lower = c(-50,0,0,0), upper = c(50,20,20,20), control = ctl)
   par.rq <- opt.rq$optim$bestmem
 	
   #Fit model
@@ -37,7 +40,7 @@ fitTrendR <- function() {
   sDat$nu <- 10000
   sDat$sigma <- par.rq[4]
 
-  iter <- 10000
+  iter <- 1000
   seed <- 12345
   fit <- sampling(m, data = sDat, iter = iter, seed = seed, algorithm = "Fixed_param")
   pred <- extract(fit, "pred")$pred
@@ -45,7 +48,11 @@ fitTrendR <- function() {
   list(data = sDat, posterior = pred)
 }
 
-fit <- fitTrendR()
+fits <- mclapply(list(d1, d2, d3, d4, d5), function(d) {
+	fitTrendR(d)
+}, mc.cores=5)
+
+fit <- fitTrendR(d5)
 
 ########################################################
 # Plot results
@@ -109,4 +116,4 @@ dev.off()
 # Excitement Trend Index
 ########################################################
 integrate(splinefun(fit$data$tPred, fit$posterior[1,,6]), min(fit$data$tPred), max(fit$data$tPred))
-
+AIC

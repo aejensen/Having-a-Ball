@@ -46,3 +46,24 @@ d <- mineData(url)
 #plot(d$time, d$scorediff)
 
 save(d, file = "data.RData")
+
+
+#Miami Heat at Los Angeles Lakers Play-By-Play, October 2, 2020
+d1 <- mineData("https://www.basketball-reference.com/boxscores/pbp/202010020LAL.html")
+#Los Angeles Lakers at Miami Heat Play-By-Play, October 4, 2020
+d2 <- mineData("https://www.basketball-reference.com/boxscores/pbp/202010040MIA.html")
+#Los Angeles Lakers at Miami Heat Play-By-Play, October 6, 2020
+d3 <- mineData("https://www.basketball-reference.com/boxscores/pbp/202010060MIA.html")
+#Miami Heat at Los Angeles Lakers Play-By-Play, October 9, 2020
+d4 <- mineData("https://www.basketball-reference.com/boxscores/pbp/202010090LAL.html")
+#Los Angeles Lakers at Miami Heat Play-By-Play, October 11, 2020
+d5 <- mineData("https://www.basketball-reference.com/boxscores/pbp/202010110MIA.html")
+
+
+plot(d1$time, d1$scorediff)
+plot(d2$time, d2$scorediff)
+plot(d3$time, d3$scorediff)
+plot(d4$time, d4$scorediff)
+plot(d5$time, d5$scorediff)
+
+save(d1, d2, d3, d4, d5, file="test.RData")
