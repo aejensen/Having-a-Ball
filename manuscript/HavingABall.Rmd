@@ -30,20 +30,22 @@ header-includes:
   - \newtheorem{Proof}{Proof}
   - \usepackage{xcolor}
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
+  - \usepackage{fontawesome5}
 output:
   pdf_document: 
-    keep_tex: yes
+    keep_tex: no
     number_sections: yes
+bibliography: bibliography.bib    
 editor_options: 
   chunk_output_type: console
 ---
 
 \begin{abstract}
-Nu ved jeg godt nok intet om sport, men...
+Nu ved jeg godt nok intet om sport, men... \faBasketballBall!
 \end{abstract}
 
 \begin{center}
-\textbf{Keywords:} Sports statistics, Gaussian Processes, Trends, Bayesian Statistics
+\textbf{Keywords:} APBRmetrics, Bayesian Statistics, Gaussian Processes, Sports Statistics, Trends
 \end{center}
 
 # Introduction
@@ -56,46 +58,106 @@ We introduce the Execitement Trend Index (ETI) as an objective measure of specta
 \item Identificere hvilket ``hot periods'' et hold har i løbet af en kamp til efterfølgende evaluering
 \end{itemize}
 
-Ref til trends
+Reference to Quantifying the Trendiness of Trends @ToT.
 
-Needs a reference and some kind of comparison to "Rank dynamics for functional data" by Chen, Dawson and Müller, Computational Statistics and Data Analysis, 149, 2020.
+Needs a reference and some kind of comparison to @chen2020rank. 
 
-Vi kan overveje, om vi ikke udelukkende burde fokusere på Eddy i dette manus og foreslå dette som et objektivt excitement index i stedet for at gå ind i en diskussion om TDI også.
+Vi kan overveje, om vi ikke udelukkende burde fokusere på Eddy i dette manus og foreslå dette som et objektivt excitement index i stedet for at gå ind i en diskussion om TDI også. Jeg tænker også i forhold til at dette værk måske ikke behøver være så voluminøst.
+
+Materials to reproduce this manuscript can be found at @ToTgithub.
+
+Philosophical question: What exactly is the sampling model for a single match?
 
 # Methods {#sec:method}
-Let $m$ index a given match between teams $a$ and $b$ and let $D_m(t_{m_i}) = S_a(t_{m_i}) - S_{b}(t_{m_i})$ be the difference in scores at times $t_{m_1} < t_{m_2} < t_{m_i} < \ldots$ being the ordered event times when a score by either team $a$ or $b$ occurs  during match $m$.
+Let $m$ index a given match between teams $a$ and $b$ and let $D_m(t_{mi}) = S_a(t_{mi}) - S_{b}(t_{mi})$ be the difference in scores at times $t_{m1} < t_{m2} < t_{mi} < \ldots < t_{m J_m}$ being the ordered event times when a score by either team $a$ or $b$ occurs  during match $m$.
 
-We then look at the model
+We use the model
+\begin{align}
+\begin{split}
+  (\bm{\beta}_m, \bm{\theta}_m, \sigma_{m}^2) \mid \bm{\Psi}_m, \mathbf{t}_m &\sim G(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m)\\
+  f_m(t) \mid \bm{\Theta}_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(t, t^\prime))\\
+   D_m(t_{mi}) \mid f_m(t_{mi}), t_{mi}, \bm{\Theta}_m &\overset{iid}{\sim} N\left(f_m(t_{mi}), \sigma_{m}^2\right)
+\end{split}
+\end{align}
+where $f_m$ models a latent trajectory of score differences. We also have that
+\begin{align}
+  \begin{bmatrix}f_m(s)\\ df_m(t)\\ d^2\!f_m(u)\end{bmatrix} \mid \bm{\Theta}_m &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_{\bm{\beta}_m}(s)\\ d\mu_{\bm{\beta}_m}(t)\\ d^2\!\mu_{\bm{\beta}_m}(u)\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}_m}(s, s^\prime) & \partial_2 C_{\bm{\theta}_m}(s, t) & \partial_2^2 C_{\bm{\theta}_m}(s, u)\\ \partial_1 C_{\bm{\theta}_m}(t, s) & \partial_1 \partial_2 C_{\bm{\theta}_m}(t, t^\prime) & \partial_1 \partial_2^2 C_{\bm{\theta}_m}(t, u)\\ \partial_1^2 C_{\bm{\theta}_m}(u, s) & \partial_1^2\partial_2 C_{\bm{\theta}_m}(u, t) & \partial_1^2 \partial_2^2 C_{\bm{\theta}_m}(u, u^\prime)\end{bmatrix}\right)
+\end{align}
+where $d^k\!\mu_{\bm{\beta}}$ is the $k$'th derivative of $\mu_{\bm{\beta}}$ and $\partial_j^k$ denotes the $k$'th order partial derivative with respect to the $j$'th variable
+
+We then define the Excitement Trend Index (ETI) as the number of zero-crossings of $df_m$ conditional on the observed score differences. Formally,
 \begin{align*}
-  \Theta_m &\sim F_m\\
-  f_m(t) \mid \Theta_m &\sim \mathcal{GP}(\mu_{\beta_m}, C_{\theta_m})\\
-  D_m(t_{m_i}) \mid f_m(t_{m_i}), t_{m_i}, \Theta_m &\overset{iid}{\sim} N(f_m(t_{m_i}), \sigma_{m}^2)
+  \text{ETI}_m(\bm{\Theta}_m) = \E\left[\#\left\{t \in \mathcal{I}_m : df_m(t) = 0\right\} \mid \mathbf{D}_m, \mathbf{t}_m, \bm{\Theta}_m\right]\label{eq:ETIdef}
 \end{align*}
-where $\Theta_m = (\beta_m, \theta_m, \sigma_{m}^2)$ and $f_m$ is a latent (?, proper name) trajectory of score differences.
+where $\mathcal{I}_m$ is the interval of the time duration of a match i.e., $\mathcal{I}_m = [0; 48]$ minutes without overtime. The ETI is given by the intergal of the local Excitement Trend Index
+\begin{align*}
+  \mathrm{ETI}_m(\bm{\Theta}_m) = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \bm{\Theta}_m)\mathrm{d}t
+\end{align*}
+where $d\mathrm{ETI}$ is the local Excitement Trend Index given by
+\begin{align*}
+d\mathrm{ETI}_m(t \mid \bm{\Theta}_m) = \lambda(t \mid \Theta)\phi\left(\frac{\mu_{df}(t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\right)\left(2\phi(\zeta(t\mid \bm{\Theta})) + \zeta(t\mid \bm{\Theta})\Erf\left(\frac{\zeta(t\mid \bm{\Theta}		)}{2^{1/2}}\right)\right)
+\end{align*}
+and $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function, and $\lambda$, $\omega$ and $\zeta$ are functions defined as
+\begin{align*}
+  \lambda(t \mid \Theta) &= \frac{\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\left(1-\omega(t \mid \bm{\Theta})^2\right)^{1/2}\\
+  \omega(t \mid \bm{\Theta}) &= \frac{\Sigma_{df,d^2\!f}(t,t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}}\\
+  \zeta(t\mid \bm{\Theta}) &= \frac{\mu_{df}(t\mid \bm{\Theta})\Sigma_{d^2\!f}(t,t\mid \bm{\Theta})^{1/2}\omega(t)\Sigma_{df}(t,t\mid \bm{\Theta})^{-1/2} - \mu_{d^2\!f}(t\mid \bm{\Theta})}{\Sigma_{d^2\!f}(t,t\mid \bm{\Theta})^{1/2}\left(1 - \omega(t\mid \bm{\Theta})^2\right)^{1/2}}
+\end{align*}
+A derivation of this expression can be found in the supplementary material to @ToT.
+
+The posterior distribution of the hyper-parameters given the observed data is then. We define $\widetilde{\bm{\Theta}}_m \sim P(\bm{\Theta}_m \mid \mathbf{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ hence
+\begin{align*}
+  \widetilde{\bm{\Theta}}_m &\sim \frac{G(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m) \int P(\mathbf{D}_m \mid f(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)}{\iint P(\mathbf{D}_m \mid f_m(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dG(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m)}
+\end{align*}
+
+What we estimate is then the random variable $\widehat{\mathrm{ETI}}_m = \mathrm{ETI}_m(\widetilde{\bm{\Theta}}_m)$ which can be summarized by its moments or quantiles.
+
+We need to argue that ETI for $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" in $D_m$ is not important. The reason is that we look at both up- and down-crossings at $0$ of $df_m$ so the choice of sign in $D_m$ is not relevant.
+
+## Estimation
+
+We have implemented the model described in the previous section in Stan [@carpenter2017stan]. 
+
+Prior mean and covariance:
+\begin{align*}
+  \mu_{\bm{\beta}_m}(t) = \beta_{m}, \quad C_{\bm{\theta}_m}(t, t^\prime) = \alpha^2_m\exp\left(-\frac{(t-t^\prime)^2}{2\rho^2_m}\right)
+\end{align*}
+with $\alpha_m, \rho_m > 0$. 
+
+Hyper-parameters:
+We used independent priors on $\bm{\Theta}_m = (\beta_m, \alpha_m, \rho_m, \sigma_m)$ of the form
+\begin{align*}
+G(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m) = G(\beta_m \mid \Psi_{\beta_m})G(\alpha_m \mid \Psi_{\alpha_m})G(\rho_m \mid \Psi_{\rho_m})G(\sigma_m \mid \Psi_{\sigma_m})
+\end{align*}
+where each prior is a heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates. We used the following distributions
+\begin{align*}
+\beta_{m} \sim T\left(\widehat{\beta_m^\text{ML}}, 3, 3\right), \quad \alpha_m \sim T^+\left(\widehat{\alpha_m^\text{ML}}, 3, 3\right), \quad \rho_m \sim N^+\left(\widehat{\rho_m^\text{ML}}, 1\right), \quad \sigma_m \sim T^+\left(\widehat{\sigma_m^\text{ML}}, 3, 3\right)
+\end{align*}
+where $T^+(\cdot, \cdot, \mathrm{df})$ and $N^+(\cdot, \cdot)$ denotes the location-scale half T- and normal distribution functions with $\mathrm{df}$ degrees of freedom.  For each match we ran four independent Markov chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by trace plots of the MCMC draws and the potential scale reduction factor, $\widehat{R}$, of @gelman1992inference.
 
 
-\begin{itemize}
-\item Trenderen
-\item TDI
-\item Excitement Trend Index
-\end{itemize}
-
-We need to argue that $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" is arbitrary/not important.
 
 # Results {#sec:application}
 
-\begin{itemize}
-\item 
-\end{itemize}
+We use data from @BBreference.
+
+General idea: We estimate ETI for all matches in a given season and make a nice plot of the distribution of $\mathrm{ETI}_m$. Then we can rank the matches according to increasing ETI and show the running score difference for e.g., the lowest, median and highest ranked matches. Maybe a large forest plot of $\mathrm{ETI}_m$ would look impressive.
+
+Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean and variance and then do a **meta analysis** where we adjust for game-specific fixed effects such as number of spectators, location, stratify by season and so on.
+
+
+
 
 
 # Discussion {#sec:discussion}
 
-We could define a weighted Excitement Trend Index wETI, so that zero crossings of the derivative of score differences are weighted higher towards the end of the game as in 
+We could define a weighted Excitement Trend Index, $\mathrm{ETI}^W_m$, so that zero crossings of the derivative of score differences are weighted higher towards the end of the game as in 
 \begin{align*}
-  \mathrm{wETI} = \int_{0}^{48} w(t)d \mathrm{ETI}(t)
+  \mathrm{ETI}_m^W = \int_{\mathcal{I}_m} \mathrm{ETI}_m(t)w_m(t)\mathrm{d}t
 \end{align*}
-where $w(t)$ is then an increasing weight function.
+where $w_m$ is an increasing weight function.
+
+Another approach would be to define team-specific excitement index nested with a match. Here we would only look at the **up**-crossings at zero of $df_m$ and we would get two excitement indices for each match $(\mathrm{ETI}_{am}, \mathrm{ETI}_{bm})$. for teams $a$ and $b$. This would somehow reflect how exciting each team were in match $m$ with respect to chancing the sign of the score differences in their favor.
 
 
 # Acknowledgements {-}
@@ -104,3 +166,25 @@ where $w(t)$ is then an increasing weight function.
 
 <div id="refs"></div>
 
+# Appendix (say what?) {-}
+
+the joint distribution of $(f, df, d^2\!f)$ conditional on $\mathbf{Y}$, $\mathbf{t}$ and the hyper-parameters $\bm{\Theta}$ evaluated at any finite vector $\mathbf{t}^\ast$ of $p$ time points is
+\begin{align*}
+\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \bm{\Theta} \sim N\left(\bm{\mu},  \bm{\Sigma}\right)
+\end{align*}
+where $\bm{\mu} \in \mathbb{R}^{3p}$ is the column vector of posterior expectations and $\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}$ is the joint posterior covariance matrix. Partitioning these as
+\begin{align*}
+  \bm{\mu} = \begin{bmatrix}\mu_{f}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{df}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{d^2\!f}(\mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) &  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{f,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{df,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\ \Sigma_{f,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix} 
+\end{align*}
+the individual components are given by
+\begin{align*}
+  \mu_{f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= \mu_{\bm{\beta}}(\mathbf{t}^\ast) + C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
+  \mu_{df}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right) \\
+  \mu_{d^2\!f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d^2\!\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
+  \Sigma_{f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1\partial_2C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1^2\partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{f, df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{f, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1 \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)
+\end{align*}
