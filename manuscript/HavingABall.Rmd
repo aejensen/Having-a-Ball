@@ -155,9 +155,15 @@ Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean 
 
 We could define a weighted Excitement Trend Index, $\mathrm{ETI}^W_m$, so that zero crossings of the derivative of score differences are weighted higher towards the end of the game as in 
 \begin{align*}
-  \mathrm{ETI}_m^W = \int_{\mathcal{I}_m} \mathrm{ETI}_m(t)w_m(t)\mathrm{d}t
+  \mathrm{ETI}_m^W = \int_{\mathcal{I}_m} \mathrm{ETI}_m(t)w(t)\mathrm{d}t
 \end{align*}
-where $w_m$ is an increasing weight function.
+where $w$ is an increasing weight function.
+
+Maybe changes in monotonicity of the score differences are not so important if one team is already far ahead of the other team. This would motivate a weighted ETI of the form
+\begin{align*}
+  \mathrm{ETI}_m^W = \int_{\mathcal{I}_m} \mathrm{ETI}_m(t)w(t, |f_m(t)|)\mathrm{d}t
+\end{align*}
+where $w(\cdot, \cdot)$ is a decreasing function in its second variable.
 
 Another approach would be to define team-specific excitement index nested with a match. Here we would only look at the **up**-crossings at zero of $df_m$ and we would get two excitement indices for each match $(\mathrm{ETI}_{am}, \mathrm{ETI}_{bm})$. for teams $a$ and $b$. This would somehow reflect how exciting each team were in match $m$ with respect to chancing the sign of the score differences in their favor.
 
