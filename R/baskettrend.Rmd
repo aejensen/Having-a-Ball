@@ -15,7 +15,7 @@ library("tidyverse")
 
 
 harvest_data <- function(url) {
-    
+
   raw_data <-
     url %>% 
     read_html() %>% 
@@ -77,6 +77,64 @@ Need to fix times and scores
 
 First we try to fix time
 ```{r}
+url2 <- "https://www.basketball-reference.com/leagues/NBA_2020_games-october.html"
+
+    url2 %>% 
+    read_html() %>% 
+    html_table() %>% 
+    as.data.frame()
+
+    
+    
+    url2 %>% 
+    read_html() %>% 
+        html_nodes("#div_schedule.overthrow") %>% 
+        as.data.frame()
+    
+```
+
+# Grab all pages
+
+(Don't run unless you need a bit bowl of coffee)
+
+```{r eval=FALSE}
+pages2019 <- expand.grid(2019, # Year
+                     c(10, 11, 12), # Month 
+                     1:31, # Day 
+                     c("LAC", "TOR", "NYK", "BRK", "MIN", "CHO", "DEN", "UTA", "LAL", "DAL", "NOP", "WAS", "OKC", "POR", "SAC", "ORL", "ATL", "IND", "CLE", "PHI", "DET", "HOU", "MIA", "MIL", "PHO", "SAS", "GSW", "MEM", "BOS", "CHI")) # Home turf team
+
+pages2020 <- expand.grid(2020, # Year
+                     c(10, 1, 2, 3, 7, 8, 9), # Month 
+                     1:31, # Day 
+                     c("LAC", "TOR", "NYK", "BRK", "MIN", "CHO", "DEN", "UTA", "LAL", "DAL", "NOP", "WAS", "OKC", "POR", "SAC", "ORL", "ATL", "IND", "CLE", "PHI", "DET", "HOU", "MIA", "MIL", "PHO", "SAS", "GSW", "MEM", "BOS", "CHI")) # Home turf team
+
+pages <- rbind(pages2019, pages2020)
+
+
+urls <- sprintf('%s%02d%02d0%s.html', pages[,1], pages[,2], pages[,3], pages[,4])
+
+# Start grabbing the info
+
+results <- lapply(urls, function(i) {
+    cat(".")
+    # Maybe insert a sleep or risk getting blacklisted?
+    tryCatch(
+        harvest_data(paste0("https://www.basketball-reference.com/boxscores/pbp/", i)),
+  error=function(e){NA})
+})
+
+
+
+```
+
+# Use the saved data
+
+```{r}
+
+load("../data/nba20192020.rda")
+match_results <- sapply(results, function(i) !any(is.na(i)))
+sum(match_results)
+
 ```
 
 
