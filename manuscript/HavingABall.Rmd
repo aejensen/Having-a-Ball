@@ -60,9 +60,11 @@ We introduce the Execitement Trend Index (ETI) as an objective measure of specta
 
 Reference to Quantifying the Trendiness of Trends @ToT.
 
-Needs a reference and some kind of comparison to @chen2020rank. 
+We need to reference and discuss the following papers
 
-We also need to talk about this one: @chen2018functional
+* @chen2020rank
+* @chen2018functional
+* @gabel2012random
 
 Vi kan overveje, om vi ikke udelukkende burde fokusere på Eddy i dette manus og foreslå dette som et objektivt excitement index i stedet for at gå ind i en diskussion om TDI også. Jeg tænker også i forhold til at dette værk måske ikke behøver være så voluminøst.
 
