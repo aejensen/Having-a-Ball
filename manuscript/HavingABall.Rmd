@@ -163,9 +163,9 @@ Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean 
 
 
 \begin{figure}[htbp]
-\missingfigure[figwidth=\textwidth]{1x3 plot of the last play-off. Observed scores with f, df and Teddy.}
+\includegraphics{../figures/fig1.pdf}
 \label{fig1}
-\caption{Caption}
+\caption{Los Angeles Lakers at Miami Heat. October 11, 2020}
 \end{figure}
 
 \begin{figure}[htbp]
