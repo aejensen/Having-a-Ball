@@ -1,5 +1,5 @@
 ---
-title: "Having a Ball: evaluating game excitement and scoring streaks using in-match trend estimation"
+title: "Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation"
 author: | 
   | Claus Thorn Ekstrøm and Andreas Kryger Jensen
   | Biostatistics, Institute of Public Health, University of Copenhagen
@@ -50,7 +50,14 @@ Nu ved jeg godt nok intet om sport, men... \faBasketballBall!
 
 # Introduction
 
-We introduce the Execitement Trend Index (ETI) as an objective measure of spectator exicitement in a given match.
+Sports analytics receive increased attention within statistics and not just for match prediction or betting but also for game evaluation, coaching purposes, and for setting strategies and tactics in future matches. 
+
+
+
+Overall result of individual matches
+
+
+We introduce the Excitement Trend Index (ETI) as an objective measure of spectator excitement in a given match.
 
 \begin{itemize}
 \item Excitement defineret som skift af hvem, der er i føring
@@ -71,6 +78,10 @@ Vi kan overveje, om vi ikke udelukkende burde fokusere på Eddy i dette manus og
 Materials to reproduce this manuscript can be found at @HavingABall.
 
 Philosophical question: What exactly is the sampling model for a single match?
+
+The paper is structured as follows. In the next we introduce the Gaussian process that can be .. and derive the TDI and ETI.
+
+In Section XX we apply the ... of every match from the 2019-2020 NBA basketball season
 
 # Methods {#sec:method}
 Let $m$ index a given match between teams $a$ and $b$ and let $D_m(t_{mi}) = S_a(t_{mi}) - S_{b}(t_{mi})$ be the difference in scores at times $t_{m1} < t_{m2} < t_{mi} < \ldots < t_{m J_m}$ being the ordered event times when a score by either team $a$ or $b$ occurs  during match $m$.

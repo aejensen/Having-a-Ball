@@ -8,35 +8,56 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r cars}
-url <- "https://www.basketball-reference.com/boxscores/pbp/202010090LAL.html"
+```{r setup}
+# Packages
 library("rvest")
 library("tidyverse")
+library("parallel")
+
+# Silly URLs to try out
+url <- "https://www.basketball-reference.com/boxscores/pbp/202010090LAL.html"
+url <- "https://www.basketball-reference.com/boxscores/pbp/201910220TOR.html"
+url <- "https://www.basketball-reference.com/boxscores/pbp/2asdasd01910220TOR.html"
 
 
+# Give URL as input - harvest play-by-play data
+# Return data frame with two columns - time and score difference
+# And som attributes with extra information
 harvest_data <- function(url) {
 
+  # Get the table with the match play-by-play results
+  valid_page <- tryCatch(
+    url_html <- url %>% url() %>% read_html(),
+    error=function(e){NA}
+  )
+
+  if (is.na(valid_page)) {
+    return(NA)
+  }
+
   raw_data <-
-    url %>% 
-    read_html() %>% 
+    url_html %>% 
     html_table() %>% 
     as.data.frame()
-
+  
+  # Now do a bit of data wrangling
   names(raw_data) <- c("time", "text", "change", "score", "change2", "text2")
 
   val1 <- as.numeric(raw_data$change) 
   val2 <- as.numeric(raw_data$change2)
-   
+  
+  # Only keep the time points where a scoring happens 
+  # Find the relevant indices
   keeptimes <- ((!is.na(val1)) | (!is.na(val2)))
    
   scorediff <- cumsum(ifelse(is.na(val1), 0, val1)) - cumsum(ifelse(is.na(val2), 0, val2))
    
   scorediff <- scorediff[keeptimes]
 
-  splitl <- stringr::str_split(raw_data$time, ":")
-   for (i in 1:length(splitl)) {
-       splitl[[i]]
-   }
+#  splitl <- stringr::str_split(raw_data$time, ":")
+#   for (i in 1:length(splitl)) {
+#       splitl[[i]]
+#   }
 
 
    part1 <- sapply(stringr::str_split(raw_data$time, ":"), function(i) {
@@ -53,15 +74,34 @@ harvest_data <- function(url) {
        if (!is.na(part2[i]) & part2[i]==0) {
            quarter <- quarter +1
        }
-       part2[i] <- part1[i]+12*(quarter-1)
+       # Fix the problem with over time
+       if (!is.na(part2[i]) & part2[i]==7 & i>1) {
+            if (is.na(part2[i-1])) {
+             quarter <- quarter +1
+            }
+       }
+       part2[i] <- part1[i]+12*(quarter-1) - 7*(quarter>4) # Overtime is only 5 minutes. Subtract that
    }
-
-  # part1 <- part1[keeptimes]
    
+   # Get additional information that might be of interest
+   pattern <- "(.+?) at (.+?) Play-By-Play, (.+)"
+
+   meta_info <- url_html %>% 
+       html_nodes("h1") %>% 
+       html_text() %>% 
+       stringr::str_match(pattern)
+
 
   DF <- data.frame(time=c(0, part2[keeptimes]), 
-                   scorediff=c(0, scorediff))
-  
+                   scorediff=c(0, scorediff)) %>%
+      dplyr::group_by(time) %>% # Kollaps tider fra straffekast
+      dplyr::filter(row_number() == n()) %>% 
+      ungroup()
+
+  attr(DF, "home") <- meta_info[1,3]
+  attr(DF, "away") <- meta_info[1,2]
+  attr(DF, "date") <- meta_info[1,4]
+      
   DF
   
 }
@@ -69,6 +109,14 @@ harvest_data <- function(url) {
 harvest_data(url)
 
 ```
+
+
+```{r}
+get_attendence_data <- function() {
+    
+}
+```
+
 
 
 ## Heavy wrangling
@@ -97,7 +145,7 @@ url2 <- "https://www.basketball-reference.com/leagues/NBA_2020_games-october.htm
 
 (Don't run unless you need a bit bowl of coffee)
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 pages2019 <- expand.grid(2019, # Year
                      c(10, 11, 12), # Month 
                      1:31, # Day 
@@ -115,13 +163,10 @@ urls <- sprintf('%s%02d%02d0%s.html', pages[,1], pages[,2], pages[,3], pages[,4]
 
 # Start grabbing the info
 
-results <- lapply(urls, function(i) {
+results <- mclapply(urls, function(i) {
     cat(".")
-    # Maybe insert a sleep or risk getting blacklisted?
-    tryCatch(
-        harvest_data(paste0("https://www.basketball-reference.com/boxscores/pbp/", i)),
-  error=function(e){NA})
-})
+    harvest_data(paste0("https://www.basketball-reference.com/boxscores/pbp/", i))
+}, mc.cores=3L)
 
 
 
@@ -135,6 +180,15 @@ load("../data/nba20192020.rda")
 match_results <- sapply(results, function(i) !any(is.na(i)))
 sum(match_results)
 
+
+lapply(results, function(i) { ifelse(is.na(i), NA,  any(diff(i$time)<0))})
+
+time_problems <- sapply(results, function(i) { ifelse(length(i)==1, NA, any(diff(i[1])<0)) } )
+
+time_problems == TRUE
+
+keepsie <- sapply(time_problems, function(i) {!is.na(i)})
+any(time_problems[keepsie])
 ```
 
 
