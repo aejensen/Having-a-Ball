@@ -31,6 +31,7 @@ header-includes:
   - \usepackage{xcolor}
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
   - \usepackage{fontawesome5}
+  - \usepackage{todonotes}
 output:
   pdf_document: 
     keep_tex: no
@@ -161,7 +162,23 @@ General idea: We estimate ETI for all matches in a given season and make a nice 
 Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean and variance and then do a **meta analysis** where we adjust for game-specific fixed effects such as number of spectators, location, stratify by season and so on.
 
 
+\begin{figure}[htbp]
+\missingfigure[figwidth=\textwidth]{1x3 plot of the last play-off. Observed scores with f, df and Teddy.}
+\label{fig1}
+\caption{Caption}
+\end{figure}
 
+\begin{figure}[htbp]
+\missingfigure[figwidth=\textwidth]{1x2 plot of the distribution of mean posterior ETI (hist + density estimate) and mean posterior ETI as a function of calendar time.}
+\label{fig2}
+\caption{Caption}
+\end{figure}
+
+\begin{figure}[htbp]
+\missingfigure[figwidth=\textwidth]{2x3 plot of game with minimum/median/maximum ETI where rows are observed scores + f and df}
+\label{fig3}
+\caption{Caption}
+\end{figure}
 
 
 # Discussion {#sec:discussion}
