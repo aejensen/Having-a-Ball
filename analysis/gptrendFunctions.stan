@@ -130,7 +130,7 @@ functions{
 
   matrix calcPostMoments(real[] tPred, real[] t, vector y, 
                          vector mY, vector m, vector dm, vector ddm,
-                         real alpha, real rho, real nu, real sigma) {
+                         real alpha, real rho, real sigma) {
     /*
     Returns a (3*p) x (3*p + 1) matrix of posterior moments of
     (f, df, ddf). The first column is the 3*p vector of posterior means
@@ -152,7 +152,7 @@ functions{
       matrix[n, n] K; //C(t, t) + sigma^2 * I
       for(i in 1:n) {
         for(j in 1:n) {
-          K[i, j] = cov_rq(t[i], t[j], alpha, rho, nu);
+          K[i, j] = cov_se(t[i], t[j], alpha, rho);
         }
       }
       for (i in 1:n) {
@@ -170,9 +170,9 @@ functions{
       vector[3*p] m_vec;      
       for(i in 1:n) {
         for(j in 1:p) {
-          K1_f[i, j] = cov_rq(t[i], tPred[j], alpha, rho, nu);
-          K1_df[i, j] = cov_rq_D2(t[i], tPred[j], alpha, rho, nu);
-          K1_ddf[i, j] = cov_rq_D2_D2(t[i], tPred[j], alpha, rho, nu);
+          K1_f[i, j] = cov_se(t[i], tPred[j], alpha, rho);
+          K1_df[i, j] = cov_se_D2(t[i], tPred[j], alpha, rho);
+          K1_ddf[i, j] = cov_se_D2_D2(t[i], tPred[j], alpha, rho);
         }
       }
       K1 = append_col(append_col(K1_f, K1_df), K1_ddf);
@@ -192,12 +192,12 @@ functions{
       matrix[p, p] K2_33; //d_1^2 d_2^2 C(tPred, tPred)
       for(i in 1:p) {
         for(j in 1:p) {
-          K2_11[i, j] = cov_rq(tPred[i], tPred[j], alpha, rho, nu);
-          K2_12[i, j] = cov_rq_D2(tPred[i], tPred[j], alpha, rho, nu);
-          K2_13[i, j] = cov_rq_D2_D2(tPred[i], tPred[j], alpha, rho, nu);
-          K2_22[i, j] = cov_rq_D1_D2(tPred[i], tPred[j], alpha, rho, nu);
-          K2_23[i, j] = cov_rq_D1_D2_D2(tPred[i], tPred[j], alpha, rho, nu);
-          K2_33[i, j] = cov_rq_D1_D1_D2_D2(tPred[i], tPred[j], alpha, rho, nu);
+          K2_11[i, j] = cov_se(tPred[i], tPred[j], alpha, rho);
+          K2_12[i, j] = cov_se_D2(tPred[i], tPred[j], alpha, rho);
+          K2_13[i, j] = cov_se_D2_D2(tPred[i], tPred[j], alpha, rho);
+          K2_22[i, j] = cov_se_D1_D2(tPred[i], tPred[j], alpha, rho);
+          K2_23[i, j] = cov_se_D1_D2_D2(tPred[i], tPred[j], alpha, rho);
+          K2_33[i, j] = cov_se_D1_D1_D2_D2(tPred[i], tPred[j], alpha, rho);
         }
       }
       K2 = append_row(append_row(append_col(append_col(K2_11,  K2_12),  K2_13),
@@ -211,8 +211,7 @@ functions{
   
   matrix gpFit_rng(real[] tPred, real[] t, vector y, 
                    vector mY, vector m, vector dm, vector ddm,
-                   real alpha, real rho, real nu, 
-                   real sigma) {
+                   real alpha, real rho, real sigma) {
                      
     int n = rows(y);     //Number of observations
     int p = size(tPred); //Number of prediction points
@@ -226,7 +225,7 @@ functions{
     Get the posterior moments
     */
     {
-      matrix[3*p, 3*p + 1] pm = calcPostMoments(tPred, t, y, mY, m, dm, ddm, alpha, rho, nu, sigma);
+      matrix[3*p, 3*p + 1] pm = calcPostMoments(tPred, t, y, mY, m, dm, ddm, alpha, rho, sigma);
       mu_joint = pm[, 1];
       cov_joint = pm[, 2:(3*p + 1)];
     }
