@@ -39,7 +39,7 @@ fitTrendR <- function(d) {
 }
 
 fit <- fitTrendR(d)
-save.image(file = "../data/res_finalPlayoff.RData")
+save.image(file = "../data/res_finalPlayoff.RData") #too big for github
 
 # Summarize
 posterior <- extract(fit$posterior, "pred")$pred
@@ -60,7 +60,7 @@ post_summary <- data.frame(tPred = fit$data$tPred,
                            df_99_L = apply(posterior[,,3], 2, quantile, prob=0.005),
                            df_99_U = apply(posterior[,,3], 2, quantile, prob=0.995),
                            TDI_mean = apply(posterior[,,5], 2, mean),
-													 TDI_median = apply(posterior[,,5], 2, median),
+                           TDI_median = apply(posterior[,,5], 2, median),
                            TDI_50_L = apply(posterior[,,5], 2, quantile, prob=0.25),
                            TDI_50_U = apply(posterior[,,5], 2, quantile, prob=0.75),
                            TDI_95_L = apply(posterior[,,5], 2, quantile, prob=0.025),
