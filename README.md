@@ -1,2 +1,1 @@
-# Having a Ball: evaluating game excitement and scoring streaks using in-match trend estimation
- 
+# Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation
