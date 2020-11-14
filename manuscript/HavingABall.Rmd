@@ -91,12 +91,12 @@ Our model is based on the observed score differences $D_m$ in a given match inde
 We assume that the observed match data are a noisy realization of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. We then propose the following hierarchical model where $d_m$ is a Gaussian process, and the observed data conditional on the scoring times and the values of the latent process at those times are independently normally distributed random variables with a match specific variance:
 \begin{align}
 \begin{split}
-  \bm{\Theta}_m \mid \bm{\Psi}, \mathbf{t}_m &\sim H(\bm{\Psi})\\
-  d_m(t) \mid \bm{\Theta}_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(s, t))\\
-  D_m(t_{m_i}) \mid d_m(t_{m_i}), t_{m_i}, \bm{\Theta}_m &\overset{iid}{\sim} N\left(d_m(t_{m_i}), \sigma_{m}^2\right)
+  \text{\faBasketballBall}_m \mid \bm{\Psi}, \mathbf{t}_m &\sim H(\bm{\Psi})\\
+  d_m(t) \mid \text{\faBasketballBall}_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(s, t))\\
+  D_m(t_{m_i}) \mid d_m(t_{m_i}), t_{m_i}, \text{\faBasketballBall}_m &\overset{iid}{\sim} N\left(d_m(t_{m_i}), \sigma_{m}^2\right)
 \end{split}
 \end{align}
-where $\bm{\Theta}_m = (\bm{\beta}_m, \bm{\theta}_m, \sigma_{m}^2)$ is a vector of hyper-parameters governing the dynamics of the latent Gaussian process with a prior distribution $H$ indexed by parameters $\bm{\Psi}$, and $\mathbf{t}_m = (t_{m_1}, \ldots, t_{m_{J_m}})$ is the vector of time points where goals occurs in the match.
+where $\text{\faBasketballBall}_m = (\bm{\beta}_m, \bm{\theta}_m, \sigma_{m}^2)$ is a vector of hyper-parameters governing the dynamics of the latent Gaussian process with a prior distribution $H$ indexed by parameters $\bm{\Psi}$, and $\mathbf{t}_m = (t_{m_1}, \ldots, t_{m_{J_m}})$ is the vector of time points where goals occurs in the match.
 
 By properties of Gaussian processes (see e.g., @cramer1967stationary) the latent process $d_m$ and its time derivatives (assuming they exist) are distributed as a multivariate Gaussian process. We hence have that
 \begin{align}
