@@ -21,7 +21,7 @@ ETIs$home <- as.factor(sapply(results, function(q) attributes(q)$home))
 ETIs$away <- as.factor(sapply(results, function(q) attributes(q)$away))
 ```
 
-# NBA season 2019/2020 ordered by decreasing mean ETI
+# NBA season 2019--2020 ordered by decreasing average excitement
 ```{r, echo=FALSE}
 library(kableExtra)
 dat <- ETIs[order(ETIs$mean, decreasing=TRUE),]
