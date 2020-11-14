@@ -172,7 +172,7 @@ Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig1.pdf}
 \label{fig1}
-\caption{Los Angeles Lakers at Miami Heat. October 11, 2020. \textbf{??? Maybe this figure is superfluous in the results sections. We could instead use the first two panels as motivation in the intruction ???}}
+\caption{Los Angeles Lakers at Miami Heat. October 11, 2020. \textbf{??? Maybe this figure is superfluous in the results sections. We could instead use the first two panels as motivation in the introduction ???}}
 \end{figure}
 
 \begin{figure}[htbp]
