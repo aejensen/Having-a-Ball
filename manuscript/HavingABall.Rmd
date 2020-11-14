@@ -169,7 +169,7 @@ Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean 
 \end{figure}
 
 \begin{figure}[htbp]
-\missingfigure[figwidth=\textwidth]{1x2 plot of the distribution of mean posterior ETI (hist + density estimate) and mean posterior ETI as a function of calendar time.}
+\includegraphics{../figures/fig2.pdf}
 \label{fig2}
 \caption{Caption}
 \end{figure}
