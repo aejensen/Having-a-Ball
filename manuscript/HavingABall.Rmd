@@ -91,7 +91,7 @@ Our model is based on the observed score differences $D_m$ in a given match inde
 We assume that the observed match data are a noisy realization of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. We then propose the following hierarchical model where $d_m$ is a Gaussian process, and the observed data conditional on the scoring times and the values of the latent process at those times are independently normally distributed random variables with a match specific variance:
 \begin{align}
 \begin{split}
-  \text{\faBasketballBall}_m \mid \bm{\Psi}, \mathbf{t}_m &\sim H(\bm{\Psi})\\
+  \text{\faBasketballBall}_m \mid \bm{\Psi_m}, \mathbf{t}_m &\sim H(\bm{\Psi}_m)\\
   d_m(t) \mid \text{\faBasketballBall}_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(s, t))\\
   D_m(t_{m_i}) \mid d_m(t_{m_i}), t_{m_i}, \text{\faBasketballBall}_m &\overset{iid}{\sim} N\left(d_m(t_{m_i}), \sigma_{m}^2\right)
 \end{split}
