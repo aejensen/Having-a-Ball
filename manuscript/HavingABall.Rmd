@@ -192,7 +192,7 @@ Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean 
 
 Some summarization goes on here. We have introduces etc...
 
-We could define a weighted Excitement Trend Index, $\mathrm{ETI}^W_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team. This motivates a weighted ETI of the form
+We could define a weighted Excitement Trend Index, $\mathrm{ETI}^\mathrm{W}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team. This motivates a weighted ETI of the form
 \begin{align*}
   \mathrm{ETI}_m^\mathrm{W} = \int_{\mathcal{I}_m} w(t, |f_m(t)|)d\mathrm{ETI}_m(t)
 \end{align*}
