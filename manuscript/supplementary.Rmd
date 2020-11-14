@@ -28,7 +28,8 @@ dat <- ETIs[order(ETIs$mean, decreasing=TRUE),]
 res1 <- dat[, c("date", "home", "away", "mean", "lower", "median", "upper")]
 colnames(res1) <- c("Date", "Home team", "Away team", "Mean ETI", "2.5% ETI", "50% ETI", "97.5% ETI")
 rownames(res1) <- NULL
-#knitr::kable(res1, digits=2) %>%  kable_styling(latex_options = "striped")  %>%  kable_styling(font_size = 8)
-knitr::kable(res1, digits=2, booktabs = TRUE, format="latex", longtable=TRUE, linesep = c("", "", "", "")) %>% kable_styling(latex_options = c("hold_position", "repeat_header")) %>%  kable_styling(font_size = 8)
+knitr::kable(res1, digits=2, booktabs = TRUE, format="latex", longtable=TRUE, linesep = c("", "", "", ""),  align =c("l|", "l", "l|", "r", "r", "r", "r")) %>%
+  kable_styling(latex_options = c("hold_position", "repeat_header")) %>% 
+  kable_styling(font_size = 8)
 ```
 
