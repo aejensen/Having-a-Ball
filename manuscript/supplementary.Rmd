@@ -1,0 +1,32 @@
+---
+title: "Supplementary Material for Having a Ball"
+author: | 
+  | Claus Thorn Ekstrøm and Andreas Kryger Jensen
+  | Biostatistics, Institute of Public Health, University of Copenhagen
+  | ekstrom@sund.ku.dk, aeje@sund.ku.dk
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+fontsize: 11pt  
+output: pdf_document
+---
+
+```{r, echo=FALSE}
+rm(list=ls())
+load("../analysis/est_ETIs.RData")
+load("../data/nba20192020.rda")
+
+ETIs$date <- as.Date(sapply(results, function(q) attributes(q)$date), format="%B %e, %Y")
+ETIs$home <- as.factor(sapply(results, function(q) attributes(q)$home))
+ETIs$away <- as.factor(sapply(results, function(q) attributes(q)$away))
+```
+
+# Season 2019/2020 ordered by decreasing mean ETI
+```{r, echo=FALSE}
+library(kableExtra)
+dat <- ETIs[order(ETIs$mean, decreasing=TRUE),]
+res1 <- dat[, c("date", "home", "away", "mean", "lower", "median", "upper")]
+colnames(res1) <- c("Date", "Home team", "Away team", "Mean ETI", "2.5% ETI", "50% ETI", "9.75 ETI")
+rownames(res1) <- NULL
+#knitr::kable(res1, digits=2) %>%  kable_styling(latex_options = "striped")  %>%  kable_styling(font_size = 8)
+knitr::kable(res1, digits=2, booktabs = TRUE, format="latex", longtable=TRUE, linesep = c("", "", "", "")) %>% kable_styling(latex_options = c("hold_position", "repeat_header")) %>%  kable_styling(font_size = 8)
+```
+
