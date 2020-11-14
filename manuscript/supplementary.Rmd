@@ -1,5 +1,7 @@
 ---
-title: "Supplementary Material for Having a Ball"
+title: |
+  | Supplementary Material
+  | Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation
 author: | 
   | Claus Thorn Ekstrøm and Andreas Kryger Jensen
   | Biostatistics, Institute of Public Health, University of Copenhagen
