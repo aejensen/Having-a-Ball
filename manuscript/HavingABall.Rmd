@@ -51,38 +51,34 @@ Nu ved jeg godt nok intet om sport, men... \faBasketballBall!
 
 # Introduction
 
-Sports analytics receive increased attention within statistics and not just for match prediction or betting but also for game evaluation, coaching purposes, and for setting strategies and tactics in future matches. 
+Sports analytics receive increasing attention within statistics and not just for match prediction or betting but also for game evaluation, in-game and post-game coaching purposes, and for setting strategies and tactics in future matches. 
+
+Many popular sports such as football (soccer), basketball, boxing, table tennis, volleyball, American football, and handball involves matches between two teams or players where each team have the possibility of scoring throughout the match. Several research papers seek to predict match results (e.g., @skellam2;@groll2019;@Gu2019) or match winners for single matches (@cattelan2013bradley) in order to infer the match winner and potentially the winner of a tournament (@ekstrom2020trps; @baboota).  While the overall result is highly interesting it conveys very little information about the individual development and trends throughout the match and modeling approaches that allow a finer granularity of the score difference throughout the match is needed.
+
+The trend in score difference between the two teams is a proxy for their underlying strengths. In particular, sustained periods of time where the score difference increases suggests that one team outperforms the other whereas periods where the teams are constantly catching up to each other suggest that the team's strengths in those periods are similar. Modeling the local trend of the score difference will therefore reflect several aspects of the game in particular the team strengths and game dynamics and momentum as they develop through the match.
+
+Figure XX shows the development of the score difference for the final match of the playoffs in the 2020 National Basketball Association (NBA) series between Los Angeles Lakers and Miami Heat. Positive numbers indicate that LA Lakers are leading and the running score difference shows that the Lakers pulled ahead until the third quarter where Miami Heat started to keep up the scoring pace before overtaking the Lakers and reducing the lead.
+
+In this paper we will consider the score difference between two teams as a latent Gaussian process and use the Trend Direction Index (TDI) from @ToT as a convenient measure to evaluate the local probability of the *monotonicity* of the latent process. The Trend Direction Index uses a Bayesian framework to provide a direct answer to questions such as "What is the probability that the latent process (i.e., that one team is doing better than another) is increasing at a given time-point?". This will allow real-time evaluation of the score difference trend at the current time-point in the game and will provide post-game inference about the "hot" periods of a match where one team out-performed the other. Furthermore we will present the Excitement Trend Index (ETI) as an objective measure of spectator excitement in a given match. The ETI is defined as the expected number of times that the score difference changes monotonicity during a match. If the score difference changes monotonicity othen then that echos a game where both teams frequently score that the whereas a game with a low ETI will represent a one-sided match where one team is doing consistently better than the other over sustained periods of time.
 
 
-
-Overall result of individual matches
-
-
-We introduce the Excitement Trend Index (ETI) as an objective measure of spectator excitement in a given match. The ETI is defined as the expected number of times that the score difference changes monotonicity during a match. 
-
-\begin{itemize}
-\item Excitement defineret som skift af hvem, der er i føring
-\item Vurdering af om et hold trender lige pt.
-\item Identificere hvilket ``hot periods'' et hold har i løbet af en kamp til efterfølgende evaluering
-\end{itemize}
-
-Reference to Quantifying the Trendiness of Trends @ToT.
-
-We need to reference and discuss the following papers
+Other authors have considered using continuous processes to model the score difference of matches. @gabel2012random shows that NBA basketball score difference is well described by a continuous-time anti-persistent random walk which suggests that a latent Gaussian process might be viable.
 
 * @chen2020rank
 * @chen2018functional
-* @gabel2012random
 
-Philosophical question: What exactly is the sampling model for a single match?
 
-We could have a motivating figure here -- e.g. a variation of Figure 1 (see its caption).
 
-The paper is structured as follows. In the next we introduce the Gaussian process that can be .. and derive the TDI and ETI.
 
-In Section \ref{sec:application} we apply the our proposed methodology to analyse all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We conclude with a discussion in Section \ref{sec:discussion}. 
 
-Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
+The paper is structured as follows. In the next we introduce trend modeling through latent a Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply the our proposed methodology to analyse both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We show how this distribution can be used to assess relative match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
+
+
+
+Unused stuff for now: 
+*Philosophical question: What exactly is the sampling model for a single match?
+We could have a motivating figure here -- e.g. a variation of Figure 1 (see its caption).*
+
 
 # Methods {#sec:method}
 

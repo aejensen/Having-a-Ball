@@ -119,33 +119,46 @@ get_attendence_data <- function() {
 
 
 
-## Heavy wrangling
+## Attendance scores
 
-Need to fix times and scores
+Get attendance scores
 
-First we try to fix time
 ```{r}
 url2 <- "https://www.basketball-reference.com/leagues/NBA_2020_games-october.html"
 
+replaceCommas<-function(x){
+  x<-as.numeric(gsub("\\,", "", x))
+}
+
+attdata <- 
     url2 %>% 
     read_html() %>% 
     html_table() %>% 
-    as.data.frame()
+    as.data.frame() %>% 
+    dplyr::select(Date, Attend., Home.Neutral) %>% 
+    dplyr::mutate(attend=replaceCommas(Attend.),
+                  date=stringr::str_sub(Date, 6)) %>% 
+    dplyr::mutate(ddd = lubridate::mdy(date)) %>% 
+    dplyr::filter(!is.na(ddd)) %>% 
+    dplyr::select(-Date, -Attend.) 
 
+    part1 <- 
+    lapply(results, function(i) { 
+        data.frame(ddd=lubridate::mdy(attr(i, "date")),
+                   home=attr(i, "home"))
+                   }) %>% 
+    do.call("rbind", args=.) %>% 
+    mutate(index = row_number())
     
-    
-    url2 %>% 
-    read_html() %>% 
-        html_nodes("#div_schedule.overthrow") %>% 
-        as.data.frame()
-    
+
+
 ```
 
 # Grab all pages
 
 (Don't run unless you need a bit bowl of coffee)
 
-```{r eval=TRUE}
+```{r eval=FALSE}
 pages2019 <- expand.grid(2019, # Year
                      c(10, 11, 12), # Month 
                      1:31, # Day 
