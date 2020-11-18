@@ -82,7 +82,7 @@ We could have a motivating figure here -- e.g. a variation of Figure 1 (see its 
 
 # Methods {#sec:method}
 
-Our model is based on the observed score differences $D_m$ in a given match indexed by $m$. For each match we observe the random variables $\mathcal{D}_m = \left(t_{m_i}, D_{m_i}\right)_{0 < i \leq J_m}$ where $t_{m_1} < t_{m_2} < t_{m_i} < \ldots < t_{m_{J_m}}$ is the ordered time points at which any teams scores, $D_{m_i} = D_m(t_{m_i})$ is the associated difference in scores at time $t_{m_i}$, and $J_m$ is the total number of goals during the match. We use the convention that $D_m$ is the difference in scores of the home team with respect to the the away team, so that $D_m > 0$ means that the home team is leading. [\textbf{??? check that this is correct in the grønthøster}]
+Our model is based on the observed score differences $D_m$ in a given match indexed by $m$. For each match we observe the random variables $\mathcal{D}_m = \left(t_{m_i}, D_{m_i}\right)_{0 < i \leq J_m}$ where $t_{m_1} < t_{m_2} < t_{m_i} < \ldots < t_{m_{J_m}}$ is the ordered time points at which any teams scores, $D_{m_i} = D_m(t_{m_i})$ is the associated difference in scores at time $t_{m_i}$, and $J_m$ is the total number of scorings during the match. We use the convention that $D_m$ is the difference in scores of the away team with respect to the home team, so that $D_m > 0$ means that the away team is leading. [\textbf{??? check that this is correct in the grønthøster. Nope .. it is omvendt. I've modified the text}]
 
 We assume that the observed match data are a noisy realization of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. We then propose the following hierarchical model where $d_m$ is a Gaussian process, and the observed data conditional on the scoring times and the values of the latent process at those times are independently normally distributed random variables with a match specific variance:
 \begin{align}
@@ -94,21 +94,25 @@ We assume that the observed match data are a noisy realization of a latent smoot
 \end{align}
 where $\text{\faBasketballBall}_m = (\bm{\beta}_m, \bm{\theta}_m, \sigma_{m}^2)$ is a vector of hyper-parameters governing the dynamics of the latent Gaussian process with a prior distribution $H$ indexed by parameters $\bm{\Psi}$, and $\mathbf{t}_m = (t_{m_1}, \ldots, t_{m_{J_m}})$ is the vector of time points where goals occurs in the match.
 
+[\textbf{Beautiful!}]
+
+
 By properties of Gaussian processes (see e.g., @cramer1967stationary) the latent process $d_m$ and its time derivatives (assuming they exist) are distributed as a multivariate Gaussian process. We hence have that
 \begin{align}
   \begin{bmatrix}d_m(s)\\ d^{\prime}_m(t)\\ d^{\prime\prime}_m(u)\end{bmatrix} \mid \text{\faBasketballBall}_m &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_{\bm{\beta}_m}(s)\\ \mu^{\prime}_{\bm{\beta}_m}(t)\\ \mu^{\prime\prime}_{\bm{\beta}_m}(u)\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}_m}(s, s^\prime) & \partial_2 C_{\bm{\theta}_m}(s, t) & \partial_2^2 C_{\bm{\theta}_m}(s, u)\\ \partial_1 C_{\bm{\theta}_m}(t, s) & \partial_1 \partial_2 C_{\bm{\theta}_m}(t, t^\prime) & \partial_1 \partial_2^2 C_{\bm{\theta}_m}(t, u)\\ \partial_1^2 C_{\bm{\theta}_m}(u, s) & \partial_1^2\partial_2 C_{\bm{\theta}_m}(u, t) & \partial_1^2 \partial_2^2 C_{\bm{\theta}_m}(u, u^\prime)\end{bmatrix}\right)
 \end{align}
-where $^\prime$ and $^{\prime\prime}$ denotes the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable
+where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable
 
-[\textbf{??? TALK ABOUR POSTERIOR HERE ???}]
+[\textbf{??? TALK ABOUR POSTERIOR HERE ??? ... Maybe move it up and discuss it right after the bayesian definition. That hsoul make it clearer early on what we can use it for.}]
 
-The Excitement Trend Index (ETI) of a particular match, denoted $\text{ETI}_m$, is defined as the expected number of changes in monotonicity of the score differences $d_m$ conditional on the observed data from that match $\mathcal{D}_m$. This is equivalent to value of the expected number of zero-crossings of the posterior distribution of $d^\prime_m$.
+The Excitement Trend Index (ETI) of a particular match, denoted $\text{ETI}_m$, is defined as the expected number of changes in monotonicity of the score differences $d_m$ conditional on the observed data from match $\mathcal{D}_m$. This is equivalent to the expected number of zero-crossings of the posterior distribution of $d^\prime_m$.
 
 Formally,
 \begin{align*}
   \text{ETI}_m(\bm{\Theta}_m) = \E\left[\#\left\{t \in \mathcal{I}_m : df_m(t) = 0\right\} \mid \mathbf{D}_m, \mathbf{t}_m, \bm{\Theta}_m\right]\label{eq:ETIdef}
 \end{align*}
-where $\mathcal{I}_m$ is the interval of the time duration of a match i.e., $\mathcal{I}_m = [0; 48]$ minutes without overtime. The ETI is given by the intergal of the local Excitement Trend Index
+where $\mathcal{I}_m$ is the interval of the time duration of a match. [\textbf{Vi har ikke nævnt basketball endnu, så lader det stadig være generelt og flytter tidsrammen til results}]
+The ETI is given by the integral of the local Excitement Trend Index
 \begin{align*}
   \mathrm{ETI}_m(\bm{\Theta}_m) = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \bm{\Theta}_m)\mathrm{d}t
 \end{align*}
@@ -156,13 +160,17 @@ where $T^+(\cdot, \cdot, \mathrm{df})$ and $N^+(\cdot, \cdot)$ denotes the locat
 
 
 
-# Results {#sec:application}
+# Application: The 2019--2020 NBA basketball season {#sec:application}
 
-We use data from @BBreference.
+To show the usefulness of the proposed model we will apply it to data from all regular games from the 2019--2020 NBA basketball season (obtained from @BBreference and provided in @HavingABall). A lot of points are scored during a basketball match so it is easy to see the development of the score difference. 
 
-General idea: We estimate ETI for all matches in a given season and make a nice plot of the distribution of $\mathrm{ETI}_m$. Then we can rank the matches according to increasing ETI and show the running score difference for e.g., the lowest, median and highest ranked matches. Maybe a large forest plot of $\mathrm{ETI}_m$ would look impressive.
+The 2019-2020 NBA season was suspended mid-March because of Covid-19 but it was resumed again in July 2020. There were a total of 1059 regular season matches. The subsequent playoffs comprised 84 matches including thee final for a grand total of 1143 matches.
 
-Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean and variance and then do a **meta analysis** where we adjust for game-specific fixed effects such as number of spectators, location, stratify by season and so on.
+For ease of comparison we are only considering the first 48 regular minutes of each match --- any part of a match that goes into overtime will be disregarded. Thus, $\mathcal{I}_m = [0; 48]$ minutes without overtime.
+
+
+XXX
+
 
 
 \begin{figure}[htbp]
@@ -182,6 +190,13 @@ Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean 
 \label{fig3}
 \caption{Caption \textbf{??? should we make this a nice full page figure and include 25\% and 75\% ETI games as well ???}}
 \end{figure}
+
+
+General idea: We estimate ETI for all matches in a given season and make a nice plot of the distribution of $\mathrm{ETI}_m$. Then we can rank the matches according to increasing ETI and show the running score difference for e.g., the lowest, median and highest ranked matches. Maybe a large forest plot of $\mathrm{ETI}_m$ would look impressive.
+
+Given the posteriors $\mathrm{ETI}_m$ we can summarize them by a posterior mean and variance and then do a **meta analysis** where we adjust for game-specific fixed effects such as number of spectators, location, stratify by season and so on.
+
+
 
 
 # Discussion {#sec:discussion}
