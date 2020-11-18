@@ -1,0 +1,1 @@
+This folder contains samples from the posterior distributions for all the matches, but the files are too large to be available on GitHub.
