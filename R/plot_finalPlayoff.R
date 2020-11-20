@@ -1,13 +1,13 @@
 rm(list=ls())
 library(rstan)
 
-load("../data/summary_finalPlayoff.RData")
+load("results/summary_finalPlayoff.RData")
 
 band <- function(t, l, u, col) {
   polygon(c(t, rev(t)), c(l, rev(u)), col=col, border = NA)
 }
 
-pdf("../figures/fig1.pdf", width = 8, height = 3)
+pdf("figures/fig1.pdf", width = 8, height = 2.5)
 
 par(mfrow=c(1,3), bty="n", mar = c(2.7, 2.7, 1, 0), mgp=c(1.6,0.4,0), 
     bty="n", cex.axis=1.1, cex.lab=1.4, cex.main=1.3)

@@ -32,6 +32,7 @@ header-includes:
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
   - \usepackage{fontawesome5}
   - \usepackage{todonotes}
+  - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=1}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
 output:
   pdf_document: 
     keep_tex: no
@@ -40,6 +41,9 @@ bibliography: bibliography.bib
 editor_options: 
   chunk_output_type: console
 ---
+
+\newcounter{bbsym4theta}
+\setcounter{bbsym4theta}{1}
 
 \begin{abstract}
 Nu ved jeg godt nok intet om sport, men... \faBasketballBall!
@@ -73,10 +77,7 @@ Other authors have considered using continuous processes to model the score diff
 * @chen2020rank
 * @chen2018functional
 
-
 The paper is structured as follows. In the next section we introduce trend modeling through latent a Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply the our proposed methodology to analyse both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We show how this distribution can be used to assess relative match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
-
-
 
 Unused stuff for now: 
 *Philosophical question: What exactly is the sampling model for a single match?
@@ -87,56 +88,55 @@ We could have a motivating figure here -- e.g. a variation of Figure 1 (see its 
 
 Our model is based on the observed score differences $D_m$ in a given match indexed by $m$. For each match we observe the random variables $\mathcal{D}_m = \left(t_{mi}, D_{mi}\right)_{0 < i \leq J_m}$ where $t_{m1} < t_{m2} < t_{mi} < \ldots < t_{m J_m}$ are the ordered time points at which any teams scores, $D_{mi} = D_m(t_{mi})$ is the associated difference in scores at time $t_{mi}$, and $J_m$ is the total number of scorings during the match. We use the convention that $D_m$ is the difference in scores of the away team with respect to the home team, so that $D_m(t) > 0$ means that the away team is leading at time $t$.
 
-We assume that the observed match data are a noisy realization of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. We then propose the following hierarchical model where $d_m$ is a Gaussian process, and the observed data conditional on the scoring times and the values of the latent process at those times are independently normally distributed random variables with a match specific variance:
+We assume that the observed match data from a given match are noisy realizations of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. Our objective is to infer $d_m$ and its time dynamics from $\mathcal{D}_m$. In pursuance of this intention we propose the following hierarchical model where $d_m$ is a Gaussian process defined on a compact subset of the real line $\mathcal{I}_m$ corresponding to the duration of the $m$'th game, and the observed data conditional on the scoring times and the values of the latent process at these times are independently normally distributed random variables with a match specific variance. This model for a given match can be written as
 \begin{align}
 \begin{split}
-  \text{\faBasketballBall}_m \mid \bm{\Psi_m}, \mathbf{t}_m &\sim H(\bm{\Psi}_m)\\
-  d_m(t) \mid \text{\faBasketballBall}_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(s, t))\\
-  D_m(t_{mi}) \mid d_m(t_{mi}), t_{mi}, \text{\faBasketballBall}_m &\overset{iid}{\sim} N\left(d_m(t_{mi}), \sigma_{m}^2\right)
+  \BTheta_m \mid \bm{\Psi_m}, \mathbf{t}_m &\sim H(\BTheta_m \mid \bm{\Psi}_m)\\
+  d_m(t) \mid \BTheta_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(s, t))\\
+  D_m(t_{mi}) \mid d_m(t_{mi}), t_{mi}, \BTheta_m &\overset{iid}{\sim} N\left(d_m(t_{mi}), \sigma_{m}^2\right)
+\end{split}
+\label{eq:hierarchicalmodel}
+\end{align}
+where $\BTheta_m = (\bm{\beta}_m, \bm{\theta}_m, \sigma_{m}^2)$ is a vector of hyper-parameters governing the dynamics of the latent Gaussian process with a prior distribution $H$ indexed by parameters $\bm{\Psi}_m$, and $\mathbf{t}_m = (t_{m1}, \ldots, t_{m J_m})$ is the vector of time points where goals occurs in the match. The functions $\mu_{\bm{\beta}_m}$ on $\mathcal{I}_m$ and $C_{\bm{\theta}_m}$ on $\mathcal{I}_m \times \mathcal{I}_m$ are the prior mean and covariance functions of the latent Gaussian process, and $\sigma_m^2$ is the variance characterizing the magnitudes deviations between for the observed score differences and the values of the latent process.
+
+A Gaussian process is characterized by the multivariate joint normality of all of the joint distributions resulting from evaluating the process at any finite set of time points (@rasmussen2003gaussian). Specifically, for any finite set $\mathbf{t}^\ast \subset \mathcal{I}_m$ it follows that that the vector $d(\mathbf{t}^\ast) \mid \BTheta_m$ is distributed as $N(\mu_{\bm{\beta}_m}(\mathbf{t}^\ast), C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast))$ where $\mu_{\bm{\beta}_m}(\mathbf{t}^\ast)$ is the vector generated by evaluating the prior mean function $\mu_{\bm{\beta}_m}(t)$ at $\mathbf{t}^\ast$ and $C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast))$ is the covariance matrix generated by evaluating the prior covariance function $C_{\bm{\theta}_m}(s,t)$ at $\mathbf{t}^\ast \times \mathbf{t}^\ast$. Using the properties of multivariate normal distributions the posterior distribution of $d_m(\mathbf{t}^\ast) \mid \mathcal{D}_m, \BTheta_m$ is also a multivariate normal distribution. This facilitates Bayesian estimation of the distribution of the latent process governing the score difference given the observed data from each match. 
+
+In addition to obtaining inference for the latent process we may also estimate its time dynamics. This follows since a Gaussian process along with its time derivatives (provided they exist) are distributed as a multivariate Gaussian process (@cramer1967stationary). We can therefore augment the model in Equation (\ref{eq:hierarchicalmodel}) with an additional latent structure of the first and second derivatives of $d_m$ with respect to time as
+\begin{align}
+  \begin{bmatrix}d_m(s)\\ d^{\prime}_m(t)\\ d^{\prime\prime}_m(u)\end{bmatrix} \mid \BTheta_m &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_{\bm{\beta}_m}(s)\\ \mu^{\prime}_{\bm{\beta}_m}(t)\\ \mu^{\prime\prime}_{\bm{\beta}_m}(u)\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}_m}(s, s^\prime) & \partial_2 C_{\bm{\theta}_m}(s, t) & \partial_2^2 C_{\bm{\theta}_m}(s, u)\\ \partial_1 C_{\bm{\theta}_m}(t, s) & \partial_1 \partial_2 C_{\bm{\theta}_m}(t, t^\prime) & \partial_1 \partial_2^2 C_{\bm{\theta}_m}(t, u)\\ \partial_1^2 C_{\bm{\theta}_m}(u, s) & \partial_1^2\partial_2 C_{\bm{\theta}_m}(u, t) & \partial_1^2 \partial_2^2 C_{\bm{\theta}_m}(u, u^\prime)\end{bmatrix}\right)
+\label{eq:dynamics}
+\end{align}
+where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable. Combining the models in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) we therefore also have explicit expressions for the posterior distributions $d^\prime_m \mid \mathcal{D}_m, \BTheta_m$ and $d^{\prime \prime}_m \mid \mathcal{D}_m, \BTheta_m$. We use the posteriors of the first and second time derivatives of the latent process to characterize the dynamical properties of each match through the Trend Direction Index (TDI) and the Excitement Trend Index (ETI).
+
+[\textbf{??? Introduce and fix notation for the posteriors and refer to supplementary for explicit expressions ???}]
+
+We define the Trend Direction Index (TDI) of a particular match $m$ as the local posterior probability that $d_m$ is an increasing function at any time in $\mathcal{I}_m$. Under our model this is equal to
+\begin{align}
+\begin{split}
+  \textrm{TDI}_m(t) \mid \BTheta_m &= P\left(d_m^\prime(t) > 0 \mid \mathcal{D}_m, \BTheta_m\right)\\
+     &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{f^\prime}(t \mid \BTheta_m)}{2^{1/2}\Sigma_{f^\prime f^\prime}(t, t \mid \BTheta_m)^{1/2}}\right)
 \end{split}
 \end{align}
-where $\text{\faBasketballBall}_m = (\bm{\beta}_m, \bm{\theta}_m, \sigma_{m}^2)$ is a vector of hyper-parameters governing the dynamics of the latent Gaussian process with a prior distribution $H$ indexed by parameters $\bm{\Psi}$, and $\mathbf{t}_m = (t_{m1}, \ldots, t_{m J_m})$ is the vector of time points where goals occurs in the match.
+where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function and $\mu_{df}$ and $\Sigma_{df}$ are the posterior mean and covariance of the trend. \textbf{[??? Write out interpretation ???]}
 
-[\textbf{Beautiful!}]
+[\textbf{Note that if we change the reference team then TDI is just 1 - TDI so it's symmetric}]
 
-
-By properties of Gaussian processes (see e.g., @cramer1967stationary) the latent process $d_m$ and its time derivatives (assuming they exist) are distributed as a multivariate Gaussian process. We hence have that
-\begin{align}
-  \begin{bmatrix}d_m(s)\\ d^{\prime}_m(t)\\ d^{\prime\prime}_m(u)\end{bmatrix} \mid \text{\faBasketballBall}_m &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_{\bm{\beta}_m}(s)\\ \mu^{\prime}_{\bm{\beta}_m}(t)\\ \mu^{\prime\prime}_{\bm{\beta}_m}(u)\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}_m}(s, s^\prime) & \partial_2 C_{\bm{\theta}_m}(s, t) & \partial_2^2 C_{\bm{\theta}_m}(s, u)\\ \partial_1 C_{\bm{\theta}_m}(t, s) & \partial_1 \partial_2 C_{\bm{\theta}_m}(t, t^\prime) & \partial_1 \partial_2^2 C_{\bm{\theta}_m}(t, u)\\ \partial_1^2 C_{\bm{\theta}_m}(u, s) & \partial_1^2\partial_2 C_{\bm{\theta}_m}(u, t) & \partial_1^2 \partial_2^2 C_{\bm{\theta}_m}(u, u^\prime)\end{bmatrix}\right)
-\end{align}
-where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable
-
-[\textbf{??? TALK ABOUR POSTERIOR HERE ??? ... Maybe move it up and discuss it right after the bayesian definition. That hsoul make it clearer early on what we can use it for.}]
-
-The Excitement Trend Index (ETI) of a particular match, denoted $\text{ETI}_m$, is defined as the expected number of changes in monotonicity of the score differences $d_m$ conditional on the observed data from match $\mathcal{D}_m$. This is equivalent to the expected number of zero-crossings of the posterior distribution of $d^\prime_m$.
-
-Formally,
+To each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, as a global index of excitement. The index is defined as the expected number of changes in monotonicity of the posterior distribution of $d_m$ which is equivalent to the expected number of zero-crossings of the posterior distribution of $d^\prime_m$. We hence define
 \begin{align*}
-  \text{ETI}_m(\bm{\Theta}_m) = \E\left[\#\left\{t \in \mathcal{I}_m : df_m(t) = 0\right\} \mid \mathbf{D}_m, \mathbf{t}_m, \bm{\Theta}_m\right]\label{eq:ETIdef}
+  \text{ETI}_m \mid \BTheta_m &= \E\left[\#\left\{t \in \mathcal{I}_m : d^\prime_m(t) = 0\right\} \mid \mathcal{D}_m, \BTheta_m\right]\\
+  &= \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
 \end{align*}
-where $\mathcal{I}_m$ is the interval of the time duration of a match. [\textbf{Vi har ikke nævnt basketball endnu, så lader det stadig være generelt og flytter tidsrammen til results}]
-The ETI is given by the integral of the local Excitement Trend Index
+where $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that $d\mathrm{ETI}$ is equal to
 \begin{align*}
-  \mathrm{ETI}_m(\bm{\Theta}_m) = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \bm{\Theta}_m)\mathrm{d}t
+d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda(t \mid \BTheta_m)\phi\left(\frac{\mu_{df}(t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\right)\left(2\phi(\zeta(t\mid \BTheta_m)) + \zeta(t\mid \BTheta_m)\Erf\left(\frac{\zeta(t\mid \BTheta_m		)}{2^{1/2}}\right)\right)
 \end{align*}
-where $d\mathrm{ETI}$ is the local Excitement Trend Index given by
+where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, and $\lambda$, $\omega$ and $\zeta$ are functions defined by
 \begin{align*}
-d\mathrm{ETI}_m(t \mid \bm{\Theta}_m) = \lambda(t \mid \Theta)\phi\left(\frac{\mu_{df}(t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\right)\left(2\phi(\zeta(t\mid \bm{\Theta})) + \zeta(t\mid \bm{\Theta})\Erf\left(\frac{\zeta(t\mid \bm{\Theta}		)}{2^{1/2}}\right)\right)
-\end{align*}
-and $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function, and $\lambda$, $\omega$ and $\zeta$ are functions defined as
-\begin{align*}
-  \lambda(t \mid \Theta) &= \frac{\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}}\left(1-\omega(t \mid \bm{\Theta})^2\right)^{1/2}\\
-  \omega(t \mid \bm{\Theta}) &= \frac{\Sigma_{df,d^2\!f}(t,t \mid \bm{\Theta})}{\Sigma_{df}(t,t \mid \bm{\Theta})^{1/2}\Sigma_{d^2\!f}(t,t \mid \bm{\Theta})^{1/2}}\\
-  \zeta(t\mid \bm{\Theta}) &= \frac{\mu_{df}(t\mid \bm{\Theta})\Sigma_{d^2\!f}(t,t\mid \bm{\Theta})^{1/2}\omega(t)\Sigma_{df}(t,t\mid \bm{\Theta})^{-1/2} - \mu_{d^2\!f}(t\mid \bm{\Theta})}{\Sigma_{d^2\!f}(t,t\mid \bm{\Theta})^{1/2}\left(1 - \omega(t\mid \bm{\Theta})^2\right)^{1/2}}
+  \lambda(t \mid \BTheta_m) &= \frac{\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\left(1-\omega(t \mid \BTheta_m)^2\right)^{1/2}\\
+  \omega(t \mid \BTheta_m) &= \frac{\Sigma_{df,d^2\!f}(t,t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}\\
+  \zeta(t\mid \BTheta_m) &= \frac{\mu_{df}(t\mid \BTheta_m)\Sigma_{d^2\!f}(t,t\mid \BTheta_m)^{1/2}\omega(t)\Sigma_{df}(t,t\mid \BTheta_m)^{-1/2} - \mu_{d^2\!f}(t\mid \BTheta_m)}{\Sigma_{d^2\!f}(t,t\mid \BTheta_m)^{1/2}\left(1 - \omega(t\mid \BTheta_m)^2\right)^{1/2}}
 \end{align*}
 A derivation of this expression can be found in the supplementary material to @ToT.
-
-The posterior distribution of the hyper-parameters given the observed data is then. We define $\widetilde{\bm{\Theta}}_m \sim P(\bm{\Theta}_m \mid \mathbf{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ hence
-\begin{align*}
-  \widetilde{\bm{\Theta}}_m &\sim \frac{G(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m) \int P(\mathbf{D}_m \mid f(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)}{\iint P(\mathbf{D}_m \mid f_m(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dG(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m)}
-\end{align*}
-
-What we estimate is then the random variable $\widehat{\mathrm{ETI}}_m = \mathrm{ETI}_m(\widetilde{\bm{\Theta}}_m)$ which can be summarized by its moments or quantiles.
 
 We need to argue that ETI for $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" in $D_m$ is not important. The reason is that we look at both up- and down-crossings at $0$ of $df_m$ so the choice of sign in $D_m$ is not relevant.
 
@@ -148,19 +148,27 @@ Prior mean and covariance:
 \begin{align*}
   \mu_{\bm{\beta}_m}(t) = \beta_{m}, \quad C_{\bm{\theta}_m}(s, t) = \alpha^2_m\exp\left(-\frac{(s-t)^2}{2\rho^2_m}\right)
 \end{align*}
-with $\alpha_m, \rho_m > 0$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]}
+with $\bm{\theta}_m = (\alpha_m, \rho_m) > 0$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]}
 
 Hyper-parameters:
-We used independent priors on $\bm{\Theta}_m = (\beta_m, \alpha_m, \rho_m, \sigma_m)$ of the form
+We used independent priors on $\BTheta_m = (\beta_m, \alpha_m, \rho_m, \sigma_m)$ of the form
 \begin{align*}
-G(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m) = G(\beta_m \mid \Psi_{\beta_m})G(\alpha_m \mid \Psi_{\alpha_m})G(\rho_m \mid \Psi_{\rho_m})G(\sigma_m \mid \Psi_{\sigma_m})
+H(\BTheta_m \mid \bm{\Psi}_m) = H(\beta_m \mid \Psi_{\beta_m})H(\alpha_m \mid \Psi_{\alpha_m})H(\rho_m \mid \Psi_{\rho_m})H(\sigma_m \mid \Psi_{\sigma_m})
 \end{align*}
 where each prior is a heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates. We used the following distributions
 \begin{align*}
 \beta_{m} \sim T\left(\widehat{\beta_m^\text{ML}}, 3, 3\right), \quad \alpha_m \sim T^+\left(\widehat{\alpha_m^\text{ML}}, 3, 3\right), \quad \rho_m \sim N^+\left(\widehat{\rho_m^\text{ML}}, 1\right), \quad \sigma_m \sim T^+\left(\widehat{\sigma_m^\text{ML}}, 3, 3\right)
 \end{align*}
-where $T^+(\cdot, \cdot, \mathrm{df})$ and $N^+(\cdot, \cdot)$ denotes the location-scale half T- and normal distribution functions with $\mathrm{df}$ degrees of freedom.  For each match we ran four independent Markov chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by trace plots of the MCMC draws and the potential scale reduction factor, $\widehat{R}$, of @gelman1992inference.
+where $T^+(\cdot, \cdot, \mathrm{df})$ and $N^+(\cdot, \cdot)$ denotes the location-scale half T- and normal distribution functions with $\mathrm{df}$ degrees of freedom.  
 
+The posterior distribution of the hyper-parameters given the observed data is then. We define $\widetilde{\bm{\Theta}}_m \sim P(\bm{\Theta}_m \mid \mathbf{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ hence
+\begin{align*}
+  \widetilde{\bm{\Theta}}_m &\sim \frac{G(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m) \int P(\mathbf{D}_m \mid f(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)}{\iint P(\mathbf{D}_m \mid f_m(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dG(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m)}
+\end{align*}
+
+What we estimate is then the random variable $\widehat{\mathrm{ETI}}_m = \mathrm{ETI}_m(\widetilde{\bm{\Theta}}_m)$ which can be summarized by its moments or quantiles.
+
+For each match we ran four independent Markov chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by trace plots of the MCMC draws and the potential scale reduction factor, $\widehat{R}$, of @gelman1992inference.
 
 
 # Application: The 2019--2020 NBA basketball season {#sec:application}
@@ -203,12 +211,6 @@ Figure \ref{fig2-5} shows the estimated Gaussian mixture model along with the hi
 
 Figure \ref{fig3} shows ...
 
-\begin{figure}[htbp]
-\includegraphics{../figures/fig3.pdf}
-\caption{Observed score differences with posteriors of the latent processes (left panels), posterior trends (middle panels) and posterior Trend Direction Indices (right panels) for five games from the NBA season 2019--2020 with median posterior Excitement Trend Indices corresponding to the 0\%, 25\%, 50\%, 75\%, and 100\% percentiles of the distribution of all games in the season. Gray regions depict 50\%, 95\%, and 99\% point-wise credible intervals.}
-\label{fig3}
-\end{figure}
-
 
 # Discussion {#sec:discussion}
 
@@ -216,7 +218,7 @@ Some summarization goes on here. We have introduced etc...
 
 We could define a weighted Excitement Trend Index, $\mathrm{ETI}^\mathrm{W}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team. This motivates a weighted ETI of the form
 \begin{align*}
-  \mathrm{ETI}_m^\mathrm{W} = \int_{\mathcal{I}_m} w(t, |f_m(t)|)d\mathrm{ETI}_m(t)
+  \mathrm{ETI}_m^\mathrm{W} \mid \BTheta_m = \int_{\mathcal{I}_m} w(t, |d_m(t)|)d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
 \end{align*}
 where $w$ is a bivariate weight function being increasing in its first variable and decreasing in its second variable. Such weight function could be constructed as a product of two kernel functions on $[0;48] \times \mathbb{R}_{\geq 0}$ with bandwidths based on studies of psychological perception.
 
@@ -229,25 +231,11 @@ A different approach would be to define team-specific excitement index nested wi
 
 <div id="refs"></div>
 
-# Appendix (move to supplementary) {-}
 
-the joint distribution of $(f, df, d^2\!f)$ conditional on $\mathbf{Y}$, $\mathbf{t}$ and the hyper-parameters $\bm{\Theta}$ evaluated at any finite vector $\mathbf{t}^\ast$ of $p$ time points is
-\begin{align*}
-\begin{bmatrix}f(\mathbf{t}^\ast)\\ df(\mathbf{t}^\ast)\\ d^2\!f(\mathbf{t}^\ast)\end{bmatrix} \mid \mathbf{Y}, \mathbf{t}, \bm{\Theta} \sim N\left(\bm{\mu},  \bm{\Sigma}\right)
-\end{align*}
-where $\bm{\mu} \in \mathbb{R}^{3p}$ is the column vector of posterior expectations and $\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}$ is the joint posterior covariance matrix. Partitioning these as
-\begin{align*}
-  \bm{\mu} = \begin{bmatrix}\mu_{f}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{df}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{d^2\!f}(\mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) &  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{f,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{df,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\ \Sigma_{f,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix} 
-\end{align*}
-the individual components are given by
-\begin{align*}
-  \mu_{f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= \mu_{\bm{\beta}}(\mathbf{t}^\ast) + C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
-  \mu_{df}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right) \\
-  \mu_{d^2\!f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d^2\!\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
-  \Sigma_{f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1\partial_2C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1^2\partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{f, df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{f, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1 \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)
-\end{align*}
+\newpage
+
+\begin{figure}[htbp]
+\includegraphics{../figures/fig3.pdf}
+\caption{Observed score differences with posteriors of the latent processes (left panels), posterior trends (middle panels) and posterior Trend Direction Indices (right panels) for five games from the NBA season 2019--2020 with median posterior Excitement Trend Indices corresponding to the 0\%, 25\%, 50\%, 75\%, and 100\% percentiles of the distribution of all games in the season. Gray regions depict 50\%, 95\%, and 99\% point-wise credible intervals.}
+\label{fig3}
+\end{figure}

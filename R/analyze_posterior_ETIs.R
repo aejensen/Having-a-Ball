@@ -75,6 +75,39 @@ barplot(table(posterior) / nrow(ETIs) * 100, ylim=c(0,35),
 dev.off()
 
 ETIs$class <- as.numeric(posterior) - 1
-ETIs$classBin <- ifelse(ETIs$class >= 2, 1, 0)
+ETIs$classBin <- ifelse(ETIs$class >= 3, 1, 0)
 table(ETIs$classBin)
-summary(glm(classBin ~ home, data = ETIs, family=binomial))
+
+new <- rbind(data.frame(y = ETIs$classBin, team = ETIs$home),
+						 data.frame(y = ETIs$classBin, team = ETIs$away))
+
+m <- glm(y ~ -1 + team, data = new, family=binomial)
+plot(new$team, predict(m, type="response"))
+plot(exp(coef(m)))
+summary(m)
+
+library(glmnet)
+x <- model.matrix(~ home - 1, data = ETIs)
+test <- cv.glmnet(x, ETIs$classBin, family="binomial", type.measure="auc")
+plot(test)
+coef(test)
+
+
+x <- model.matrix(~ home - 1, data = ETIs)
+hello <- data.frame(y = ETIs$classBin, x = x)
+library(MuMIn)
+m <- glm(y ~ ., data = hello, family=binomial, na.action="na.fail")
+m
+d <- dredge(m)
+d
+hello$x
+head(ETIs)
+
+contrasts(ETIs$home) <- contr.sum
+contrasts(ETIs$away) <- contr.sum
+m <- lm(median ~ home, data = ETIs, family=binomial())
+summary(m)
+stepAIC(m)
+
+
+ETIs

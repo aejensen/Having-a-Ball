@@ -1,6 +1,6 @@
 ---
 title: |
-  | Supplementary Material
+  | Supplementary Material for
   | Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation
 author: | 
   | Claus Thorn Ekstrøm and Andreas Kryger Jensen
@@ -8,8 +8,68 @@ author: |
   | ekstrom@sund.ku.dk, aeje@sund.ku.dk
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 fontsize: 11pt  
-output: pdf_document
+header-includes:
+  - \usepackage{bm}
+  - \usepackage{amssymb}
+  - \usepackage[labelfont=bf]{caption}
+  - \DeclareMathOperator*{\argsup}{arg\,sup}  
+  - \DeclareMathOperator*{\argmin}{arg\,min}  
+  - \DeclareMathOperator*{\E}{E}
+  - \DeclareMathOperator*{\Cov}{Cov}
+  - \DeclareMathOperator*{\Cor}{Cor}
+  - \DeclareMathOperator*{\Var}{Var}
+  - \DeclareMathOperator*{\Erf}{Erf}
+  - \DeclareMathOperator*{\Erfc}{Erfc}
+  - \usepackage{multirow}
+  - \usepackage{float}
+  - \floatstyle{plaintop}
+  - \restylefloat{table}
+  - \usepackage[amsthm,thmmarks]{ntheorem}
+  - \newtheorem{definition}{Definition}
+  - \newtheorem{assumption}{Assumption}
+  - \newtheorem{proposition}{Proposition}
+  - \theoremstyle{nonumberplain}
+  - \newtheorem{Proof}{Proof}
+  - \usepackage{xcolor}
+  - \newcommand{\revision}[1]{\textcolor{red}{#1}}
+  - \usepackage{fontawesome5}
+  - \usepackage{todonotes}
+  - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=1}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
+output:
+  pdf_document: 
+    keep_tex: no
+    number_sections: yes
+bibliography: bibliography.bib    
+editor_options: 
+  chunk_output_type: console
 ---
+
+\newcounter{bbsym4theta}
+\setcounter{bbsym4theta}{1}
+
+# Expressions for the posterior distributions of $(d_m, d^\prime_m, d^{\prime \prime}_m)$
+
+The joint distribution of $(d, d^\prime, d_m^{\prime \prime})$ conditional on the observed score differences $\mathcal{D}_m$ and the hyper-parameters $\BTheta_m$ evaluated at any finite vector $\mathbf{t}^\ast$ of $p$ time points is
+\begin{align*}
+\begin{bmatrix}d_m(\mathbf{t}^\ast)\\ d_m^{\prime}(\mathbf{t}^\ast)\\ d_m^{\prime \prime}(\mathbf{t}^\ast)\end{bmatrix} \mid \mathcal{D}_m, \BTheta_m \sim N\left(\bm{\mu},  \bm{\Sigma}\right)
+\end{align*}
+where $\bm{\mu} \in \mathbb{R}^{3p}$ is the column vector of posterior expectations and $\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}$ is the joint posterior covariance matrix. Partitioning these as
+\begin{align*}
+  \bm{\mu} = \begin{bmatrix}\mu_{f}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{df}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{d^2\!f}(\mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) &  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{f,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{df,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\ \Sigma_{f,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix} 
+\end{align*}
+the individual components are given by
+\begin{align*}
+  \mu_{f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= \mu_{\bm{\beta}}(\mathbf{t}^\ast) + C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
+  \mu_{df}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right) \\
+  \mu_{d^2\!f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d^2\!\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
+  \Sigma_{f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1\partial_2C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1^2\partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{f, df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{f, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
+  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1 \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)
+\end{align*}
+
 
 ```{r, echo=FALSE}
 rm(list=ls())
@@ -33,7 +93,7 @@ team_summary <- round(as.data.frame(team_summary), 2)
 team_summary$Team <- rownames(team_summary)
 
 tab <- team_summary[order(team_summary[,"Average"], decreasing=TRUE),]
-knitr::kable(tab[,c("Team", "Average", "SD", "2.5%", "50%", "97.5%")], row.names=FALSE)
+knitr::kable(tab[,c("Team", "Average", "SD", "2.5%", "50%", "97.5%")], row.names=FALSE, digits=2, booktabs = TRUE, format="latex", longtable=TRUE, linesep = c("", "", "", ""), align=c("l", "r", "r|", "r", "r", "r"))
 ```
 
 # Games ordered by decreasing average excitement
