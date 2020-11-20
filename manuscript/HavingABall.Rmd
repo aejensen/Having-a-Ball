@@ -130,7 +130,7 @@ where $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-cro
 \begin{align*}
 d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda(t \mid \BTheta_m)\phi\left(\frac{\mu_{df}(t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\right)\left(2\phi(\zeta(t\mid \BTheta_m)) + \zeta(t\mid \BTheta_m)\Erf\left(\frac{\zeta(t\mid \BTheta_m		)}{2^{1/2}}\right)\right)
 \end{align*}
-where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, and $\lambda$, $\omega$ and $\zeta$ are functions defined by
+where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, and $\lambda$, $\omega$ and $\zeta$ are functions defined by		
 \begin{align*}
   \lambda(t \mid \BTheta_m) &= \frac{\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\left(1-\omega(t \mid \BTheta_m)^2\right)^{1/2}\\
   \omega(t \mid \BTheta_m) &= \frac{\Sigma_{df,d^2\!f}(t,t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}\\
