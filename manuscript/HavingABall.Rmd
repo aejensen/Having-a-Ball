@@ -113,19 +113,23 @@ where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivativ
 We define the Trend Direction Index (TDI) of a particular match $m$ as the local posterior probability that $d_m$ is an increasing function at any time in $\mathcal{I}_m$. Under our model this is equal to
 \begin{align}
 \begin{split}
-  \textrm{TDI}_m(t) \mid \BTheta_m &= P\left(d_m^\prime(t) > 0 \mid \mathcal{D}_m, \BTheta_m\right)\\
+  \textrm{TDI}_m(t \mid \BTheta_m) &= P\left(d_m^\prime(t) > 0 \mid \mathcal{D}_m, \BTheta_m\right)\\
      &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{f^\prime}(t \mid \BTheta_m)}{2^{1/2}\Sigma_{f^\prime f^\prime}(t, t \mid \BTheta_m)^{1/2}}\right)
 \end{split}
+\label{eq:TDIdef}
 \end{align}
 where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function and $\mu_{df}$ and $\Sigma_{df}$ are the posterior mean and covariance of the trend. \textbf{[??? Write out interpretation ???]}
 
 [\textbf{Note that if we change the reference team then TDI is just 1 - TDI so it's symmetric}]
 
 To each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, as a global index of excitement. The index is defined as the expected number of changes in monotonicity of the posterior distribution of $d_m$ which is equivalent to the expected number of zero-crossings of the posterior distribution of $d^\prime_m$. We hence define
-\begin{align*}
+\begin{align}
+\begin{split}
   \text{ETI}_m \mid \BTheta_m &= \E\left[\#\left\{t \in \mathcal{I}_m : d^\prime_m(t) = 0\right\} \mid \mathcal{D}_m, \BTheta_m\right]\\
   &= \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
-\end{align*}
+\end{split}
+\label{eq:ETIdef}
+\end{align}
 where $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that $d\mathrm{ETI}$ is equal to
 \begin{align*}
 d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda(t \mid \BTheta_m)\phi\left(\frac{\mu_{df}(t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\right)\left(2\phi(\zeta(t\mid \BTheta_m)) + \zeta(t\mid \BTheta_m)\Erf\left(\frac{\zeta(t\mid \BTheta_m		)}{2^{1/2}}\right)\right)
@@ -138,37 +142,41 @@ where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the st
 \end{align*}
 A derivation of this expression can be found in the supplementary material to @ToT.
 
-We need to argue that ETI for $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" in $D_m$ is not important. The reason is that we look at both up- and down-crossings at $0$ of $df_m$ so the choice of sign in $D_m$ is not relevant.
+[\textbf{???} We need to argue that ETI for $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" in $D_m$ is not important. The reason is that we look at both up- and down-crossings at $0$ of $df_m$ so the choice of sign in $D_m$ is not relevant. ??? ]
+
+Both the Trend Direction Index and the Excitement Trend Index in Equations (\ref{eq:TDIdef}) and (\ref{eq:ETIdef}) are random variables due to their dependence on the hyper-parameters $\BTheta_m$. In our Bayesian framework these are specified under an addition layer of prior distributions according to $H(\BTheta_m \mid \bm{\Psi}_m)$. By fitting the model using Markov-Chain Monte Carlo methods (MCMC) we obtain the posterior distribution $\widetilde{\BTheta}_m \sim P(\BTheta_m \mid \mathcal{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ given by
+\begin{align*}
+  \widetilde{\BTheta}_m &\sim \frac{H(\BTheta_m \mid \bm{\Psi}_m) \int P(\mathbf{D}_m \mid d_m(\mathbf{t}_m), \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)dP(d_m(\mathbf{t}_m) \mid \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)}{\iint P(\mathbf{D}_m \mid d_m(\mathbf{t}_m), \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)dP(d_m(\mathbf{t}_m) \mid \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)dH(\BTheta_m \mid \bm{\Psi}_m)}
+\end{align*}
+and the posterior estimates of TDI and ETI are therefore the random variables $\textrm{TDI}_m(t) \mid \widetilde{\BTheta}_m$ and $\textrm{ETI}_m \mid \widetilde{\BTheta}_m$. \textbf{[??? check notation ???]}
+
+To summarize the posterior distributions of TDI and ETI we one can either use the average value calculated by integrating over the distribution of $\widetilde{\BTheta}_m$ or
+\begin{align*}
+\overline{\mathrm{TDI}}_m(t) &= \int \BTheta_m \mathrm{TDI}_m(t \mid \widetilde{\BTheta}_m)dP(\widetilde{\BTheta}_m)\\
+\overline{\mathrm{TDI}^p}_m(t) &= \sup\left\{\mathrm{TDI}_m(t \mid \widetilde{\BTheta}_m) : \mathrm{TDI}_m(t \mid \widetilde{\BTheta}_m) < p\right\}
+\end{align*}
+\textbf{[??? and now I go to bed ???]}
+
 
 ## Estimation
+To complete the specification of the model in Equation (\ref{eq:hierarchicalmodel}) we need to specify prior mean and covariance functions for the latent process. The choice of these are application specific and can be based on prior knowledge of the game dynamics. We refer to the discussion in @ToT for more information on such choices.
 
-We have implemented the model described in the previous section in Stan [@carpenter2017stan]. 
-
-Prior mean and covariance:
+In our application we used a constant prior mean and the squared exponential covariance function given by
 \begin{align*}
-  \mu_{\bm{\beta}_m}(t) = \beta_{m}, \quad C_{\bm{\theta}_m}(s, t) = \alpha^2_m\exp\left(-\frac{(s-t)^2}{2\rho^2_m}\right)
+  \mu_{\bm{\beta}_m}(t) = \beta_m, \quad C_{\bm{\theta}_m}(s, t) = \alpha^2_m\exp\left(-\frac{(s-t)^2}{2\rho^2_m}\right)
 \end{align*}
-with $\bm{\theta}_m = (\alpha_m, \rho_m) > 0$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]}
-
-Hyper-parameters:
-We used independent priors on $\BTheta_m = (\beta_m, \alpha_m, \rho_m, \sigma_m)$ of the form
+with $\bm{\theta}_m = (\alpha_m, \rho_m) > 0$ and hence $\BTheta_m = (\beta_m,\alpha_m, \rho_m,\sigma^2)$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]} For the hyper-parameters of $\BTheta_m$ we used independent, heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates of the form
 \begin{align*}
 H(\BTheta_m \mid \bm{\Psi}_m) = H(\beta_m \mid \Psi_{\beta_m})H(\alpha_m \mid \Psi_{\alpha_m})H(\rho_m \mid \Psi_{\rho_m})H(\sigma_m \mid \Psi_{\sigma_m})
 \end{align*}
-where each prior is a heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates. We used the following distributions
+with
 \begin{align*}
 \beta_{m} \sim T\left(\widehat{\beta_m^\text{ML}}, 3, 3\right), \quad \alpha_m \sim T^+\left(\widehat{\alpha_m^\text{ML}}, 3, 3\right), \quad \rho_m \sim N^+\left(\widehat{\rho_m^\text{ML}}, 1\right), \quad \sigma_m \sim T^+\left(\widehat{\sigma_m^\text{ML}}, 3, 3\right)
 \end{align*}
 where $T^+(\cdot, \cdot, \mathrm{df})$ and $N^+(\cdot, \cdot)$ denotes the location-scale half T- and normal distribution functions with $\mathrm{df}$ degrees of freedom.  
 
-The posterior distribution of the hyper-parameters given the observed data is then. We define $\widetilde{\bm{\Theta}}_m \sim P(\bm{\Theta}_m \mid \mathbf{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ hence
-\begin{align*}
-  \widetilde{\bm{\Theta}}_m &\sim \frac{G(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m) \int P(\mathbf{D}_m \mid f(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)}{\iint P(\mathbf{D}_m \mid f_m(\mathbf{t}_m), \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dP(f_m(\mathbf{t}_m) \mid \bm{\Theta}_m, \bm{\Psi}_m, \mathbf{t}_m)dG(\bm{\Theta}_m \mid \bm{\Psi}_m, \mathbf{t}_m)}
-\end{align*}
+We have implemented the estimation procedure in the probabilistic programming language Stan [@carpenter2017stan] using Hamiltonian Markov Chain Monte Carlo. For each match we ran four independent Markov chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by trace plots of the MCMC draws and the potential scale reduction factor, $\widehat{R}$, of @gelman1992inference.
 
-What we estimate is then the random variable $\widehat{\mathrm{ETI}}_m = \mathrm{ETI}_m(\widetilde{\bm{\Theta}}_m)$ which can be summarized by its moments or quantiles.
-
-For each match we ran four independent Markov chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by trace plots of the MCMC draws and the potential scale reduction factor, $\widehat{R}$, of @gelman1992inference.
 
 
 # Application: The 2019--2020 NBA basketball season {#sec:application}
@@ -216,9 +224,9 @@ Figure \ref{fig3} shows ...
 
 Some summarization goes on here. We have introduced etc...
 
-We could define a weighted Excitement Trend Index, $\mathrm{ETI}^\mathrm{W}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team. This motivates a weighted ETI of the form
+We could define a weighted Excitement Trend Index, $\mathrm{WETI}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team. This motivates a weighted ETI of the form
 \begin{align*}
-  \mathrm{ETI}_m^\mathrm{W} \mid \BTheta_m = \int_{\mathcal{I}_m} w(t, |d_m(t)|)d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
+  \mathrm{WETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} w(t, |d_m(t)|)d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
 \end{align*}
 where $w$ is a bivariate weight function being increasing in its first variable and decreasing in its second variable. Such weight function could be constructed as a product of two kernel functions on $[0;48] \times \mathbb{R}_{\geq 0}$ with bandwidths based on studies of psychological perception.
 
