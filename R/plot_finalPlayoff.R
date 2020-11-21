@@ -48,5 +48,3 @@ lines(c(0, 48), c(50, 50), lty=2)
 axis(1, seq(0, 48, length.out=9))
 
 dev.off()
-
-
