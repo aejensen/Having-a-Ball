@@ -106,21 +106,23 @@ In addition to obtaining inference for the latent process we may also estimate i
   \begin{bmatrix}d_m(s)\\ d^{\prime}_m(t)\\ d^{\prime\prime}_m(u)\end{bmatrix} \mid \BTheta_m &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_{\bm{\beta}_m}(s)\\ \mu^{\prime}_{\bm{\beta}_m}(t)\\ \mu^{\prime\prime}_{\bm{\beta}_m}(u)\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}_m}(s, s^\prime) & \partial_2 C_{\bm{\theta}_m}(s, t) & \partial_2^2 C_{\bm{\theta}_m}(s, u)\\ \partial_1 C_{\bm{\theta}_m}(t, s) & \partial_1 \partial_2 C_{\bm{\theta}_m}(t, t^\prime) & \partial_1 \partial_2^2 C_{\bm{\theta}_m}(t, u)\\ \partial_1^2 C_{\bm{\theta}_m}(u, s) & \partial_1^2\partial_2 C_{\bm{\theta}_m}(u, t) & \partial_1^2 \partial_2^2 C_{\bm{\theta}_m}(u, u^\prime)\end{bmatrix}\right)
 \label{eq:dynamics}
 \end{align}
-where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable. Combining the models in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) we therefore also have explicit expressions for the posterior distributions $d^\prime_m \mid \mathcal{D}_m, \BTheta_m$ and $d^{\prime \prime}_m \mid \mathcal{D}_m, \BTheta_m$. We use the posteriors of the first and second time derivatives of the latent process to characterize the dynamical properties of each match through the Trend Direction Index (TDI) and the Excitement Trend Index (ETI).
+where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable. Combining the models in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) we obtain explicit expressions for the posterior distributions $d^\prime_m \mid \mathcal{D}_m, \BTheta_m$ and $d^{\prime \prime}_m \mid \mathcal{D}_m, \BTheta_m$. The posterior joint distributions of the latent processes can be expressed as the multivariate Gaussian process
+\begin{align}
+\begin{bmatrix}d_m(s)\\ d_m^\prime(t)\\ d_m^{\prime\prime}(u)\end{bmatrix} \mid \mathcal{D}_m, \BTheta_m \sim \mathcal{GP}\left(\begin{bmatrix}\mu_{d_m}(s)\\ \mu_{d_m^\prime}(t)\\ \mu_{d_m^{\prime\prime}}(u)\end{bmatrix}, \begin{bmatrix} \Sigma_{d_m}(s, s^\prime) & \Sigma_{d_m d_m^\prime}(s,t) & \Sigma_{d_m d_m^{\prime\prime}}(s,u)\\ \Sigma_{d_m^\prime d_m}(t,s) & \Sigma_{d_m^\prime}(t,t^\prime) & \Sigma_{d_m^\prime d_m^{\prime\prime}}(t,u)\\ \Sigma_{d_m^{\prime\prime} d_m}(u,s) & \Sigma_{d_m^{\prime\prime} d_m^\prime}(u,t) & \Sigma_{d_m^{\prime\prime}}(u,u^\prime)\end{bmatrix}\right)
+\label{eq:posterior}
+\end{align}
+where explicit expressions for the posterior mean and covariance functions are given in the supplementary material. In practice this means that we can sample from the posterior joint distribution at any finite number of time points as this will be equal to sampling from a high-dimensional normal distribution. We use the posteriors of the first and second time derivatives of the latent process to characterize the dynamical properties of each match through the Trend Direction Index (TDI) and the Excitement Trend Index (ETI).
 
-[\textbf{??? Introduce and fix notation for the posteriors and refer to supplementary for explicit expressions ???}]
 
-We define the Trend Direction Index (TDI) of a particular match $m$ as the local posterior probability that $d_m$ is an increasing function at any time in $\mathcal{I}_m$. Under our model this is equal to
+We define the Trend Direction Index (TDI) of a particular match $m$ as the local posterior probability that $d_m$ is an increasing function for all time points $t \in \mathcal{I}_m$. Under our model this is equal to
 \begin{align}
 \begin{split}
   \textrm{TDI}_m(t \mid \BTheta_m) &= P\left(d_m^\prime(t) > 0 \mid \mathcal{D}_m, \BTheta_m\right)\\
-     &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{f^\prime}(t \mid \BTheta_m)}{2^{1/2}\Sigma_{f^\prime f^\prime}(t, t \mid \BTheta_m)^{1/2}}\right)
+     &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{d_m^\prime}(t \mid \BTheta_m)}{2^{1/2}\Sigma_{d_m^\prime}(t, t \mid \BTheta_m)^{1/2}}\right)
 \end{split}
 \label{eq:TDIdef}
 \end{align}
-where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function and $\mu_{df}$ and $\Sigma_{df}$ are the posterior mean and covariance of the trend. \textbf{[??? Write out interpretation ???]}
-
-[\textbf{Note that if we change the reference team then TDI is just 1 - TDI so it's symmetric}]
+where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function and $\mu_{d_m^\prime}$ and $\Sigma_{d_m^\prime}$ are the posterior mean and covariance functions of the time derivative defined in Equation (\ref{eq:posterior}). The interpretation of the TDI is that it quantifies the probability that one team is currently increasing the differences in scores or equivalently that they are changing the trend in their favor. A TDI equal to $50\%$ means that the game is in a stagnant state. We note that the TDI is symmetric with respect to the reference team in the definition of the score difference. Is the reference team is changed, then $\textrm{TDI}$ changes to $1 - \textrm{TDI}$.
 
 To each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, as a global index of excitement. The index is defined as the expected number of changes in monotonicity of the posterior distribution of $d_m$ which is equivalent to the expected number of zero-crossings of the posterior distribution of $d^\prime_m$. We hence define
 \begin{align}
@@ -132,14 +134,13 @@ To each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, a
 \end{align}
 where $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that $d\mathrm{ETI}$ is equal to
 \begin{align*}
-d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda(t \mid \BTheta_m)\phi\left(\frac{\mu_{df}(t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\right)\left(2\phi(\zeta(t\mid \BTheta_m)) + \zeta(t\mid \BTheta_m)\Erf\left(\frac{\zeta(t\mid \BTheta_m		)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda_m(t)\phi\left(\frac{\mu_{d_m^\prime}(t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\right)\left(2\phi\left(\zeta_m(t)\right) + \zeta_m(t)\Erf\left(\frac{\zeta_m(t)}{2^{1/2}}\right)\right)
 \end{align*}
-where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, and $\lambda$, $\omega$ and $\zeta$ are functions defined by		
-\begin{align*}
-  \lambda(t \mid \BTheta_m) &= \frac{\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\left(1-\omega(t \mid \BTheta_m)^2\right)^{1/2}\\
-  \omega(t \mid \BTheta_m) &= \frac{\Sigma_{df,d^2\!f}(t,t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}\\
-  \zeta(t\mid \BTheta_m) &= \frac{\mu_{df}(t\mid \BTheta_m)\Sigma_{d^2\!f}(t,t\mid \BTheta_m)^{1/2}\omega(t)\Sigma_{df}(t,t\mid \BTheta_m)^{-1/2} - \mu_{d^2\!f}(t\mid \BTheta_m)}{\Sigma_{d^2\!f}(t,t\mid \BTheta_m)^{1/2}\left(1 - \omega(t\mid \BTheta_m)^2\right)^{1/2}}
-\end{align*}
+where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, and $\lambda_m$, $\omega_m$ and $\zeta_m$ are functions defined by		
+\begin{gather*}
+  \lambda_m(t) = \frac{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\left(1-\omega_m(t)^2\right)^{1/2}, \quad \omega_m(t) = \frac{\Sigma_{d_m^\prime d_m^{\prime\prime}}(t,t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}\\
+  \zeta_m(t) = \frac{\mu_{d_m^\prime}(t)\Sigma_{d_m^{\prime^\prime}}(t,t)^{1/2}\omega_m(t)\Sigma_{d_m^\prime}(t,t)^{-1/2} - \mu_{d_m^{\prime\prime}}(t)}{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}\left(1 - \omega_m(t)^2\right)^{1/2}}
+\end{gather*}
 A derivation of this expression can be found in the supplementary material to @ToT.
 
 [\textbf{???} We need to argue that ETI for $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" in $D_m$ is not important. The reason is that we look at both up- and down-crossings at $0$ of $df_m$ so the choice of sign in $D_m$ is not relevant. ??? ]
@@ -158,7 +159,8 @@ To summarize the posterior distributions of TDI and ETI we one can either use th
 \textbf{[??? and now I go to bed ???]}
 
 
-## Estimation
+## Estimation {-}
+
 To complete the specification of the model in Equation (\ref{eq:hierarchicalmodel}) we need to specify prior mean and covariance functions for the latent process. The choice of these are application specific and can be based on prior knowledge of the game dynamics. We refer to the discussion in @ToT for more information on such choices.
 
 In our application we used a constant prior mean and the squared exponential covariance function given by
@@ -197,6 +199,12 @@ The left panel of Figure \ref{fig2} shows the distribution of the median posteri
 
 Summarizing the posterior median ETIs at the team level lead to comparable values across all 30 teams. The New Orleans Pelicans had the highest average posterior median ETI during the season with a value of 11.67 (SD = 4.91, IQR = $[3.09; 23.57]$), while the Charlotte Hornets had the lowest average posterior median ETI during the season with a value of 9.29 (SD = 3.74, IQR = $[1.96; 15.98]$). This implies that each team played games during the season that where comparable on average in terms their excitement, and the major source of variation in excitement is governed by the individual matches. The supplementary material to this paper provides summary statistics for all 30 teams.
 
+\begin{figure}[htbp]
+\includegraphics{../figures/fig2-5.pdf}
+\caption{}
+\label{fig2-5}
+\end{figure}
+
 The asymmetry of the distribution of the Excitement Trend Indices in Figure \ref{fig2} conjectures the possibility of a latent, categorical variable labeling the matches to different classes. We thus fitted a heteroscedastic Gaussian mixture model to the median posterior Excitement Trend Indices on the match level, where the number of latent classes was determined by a bootstrapped likelihood ratio test using 10,000 bootstrap replicates (@mclust). Testing for 1 vs 2 latent classes gave a p-value of $< 0.001$, 2 vs 3 gave a p-value of $0.027$, 3 vs 4 gave a p-value of $0.008$, and 4 vs 5 gave a p-value of $0.300$ implying that the distribution of median posterior Excitement Trend Indices can be modeled by a 4-component Gaussian mixture distribution. The following table shows the maximum likelihood estimates of the parameters of the Gaussian mixture model.
 
 |           | class 1| class 2| class 3| class 4|
@@ -205,16 +213,10 @@ The asymmetry of the distribution of the Excitement Trend Indices in Figure \ref
 |$\mu$      |    5.70|    8.89|   12.64|   14.45|
 |$\sigma^2$ |    4.44|    1.87|    5.15|   23.31|
 
+
 Figure \ref{fig2-5} shows the estimated Gaussian mixture model along with the histogram (left panel), and the proportion of matches classified into the four latent classes as determined by a maximum posterior decision rule (right panel). 
 
 [\textbf{So we basically have a group of average matches (class 2), a group below average (class 1), a group above average (class 3) and then also group of 150 matches with an even large average but also a larger variance (class 4). Can we say something about these classes?}]
-
-\begin{figure}[htbp]
-\includegraphics{../figures/fig2-5.pdf}
-\caption{}
-\label{fig2-5}
-\end{figure}
-
 
 
 Figure \ref{fig3} shows ...
