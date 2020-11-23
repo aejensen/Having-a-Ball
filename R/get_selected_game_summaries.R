@@ -68,4 +68,4 @@ save(min_summary,
      medianIndex, 
      quant75Index,
      maxIndex,
-     file="results/game_summaries.RData")
+     file="results/selected_game_summaries.RData")

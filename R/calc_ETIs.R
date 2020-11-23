@@ -12,19 +12,14 @@ ETIs <- do.call("rbind", mclapply(files, function(f) {
   hp <- HDInterval::hdi(eti)
   
   out <- data.frame(file = f,
-  	         mean = mean(eti), 
-  	         var = var(eti), 
-  	         median = median(eti), 
-  	         hp["lower"], 
-  	         hp["upper"])
+                    mean = mean(eti), 
+                    var = var(eti), 
+                    median = median(eti), 
+                    hp["lower"], 
+                    hp["upper"])
   colnames(out) <- c("file", "mean", "var", "median", "lower", "upper")
   rownames(out) <- NULL
   out
 }, mc.cores=64))
 
-ETIs[order(ETIs$mean, decreasing=TRUE),][1:20,]
-range(ETIs$mean)
-txtplot::txtdensity(ETIs$mean)
-range(ETIs$mean)
-
-save(ETIs, file="../est_ETIs.RData")
+save(ETIs, file="results/est_ETIs.RData")

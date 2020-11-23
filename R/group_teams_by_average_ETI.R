@@ -31,7 +31,7 @@ estPartitions <- function(nPart) {
   opt
 }
 
-set.seed(12345)
+set.seed(87374674)
 part_2 <- estPartitions(1)
 part_3 <- estPartitions(2)
 part_4 <- estPartitions(3)
@@ -42,40 +42,15 @@ part_8 <- estPartitions(7)
 
 stopCluster(cl)
 
+save(part_2, part_3, part_4, part_5, 
+     part_6, part_7, part_8, teamData,
+     file="results/ETI_team_analysis.RData")
+
+
+######################################################
 c(part_2$optim$bestval, part_3$optim$bestval,
   part_4$optim$bestval, part_5$optim$bestval,
-	part_6$optim$bestval, part_7$optim$bestval,
-	part_8$optim$bestval)
+  part_6$optim$bestval, part_7$optim$bestval,
+  part_8$optim$bestval)
 
-table(as.vector(floor(part_2$optim$bestmem)))
-table(as.vector(floor(part_3$optim$bestmem)))
 table(as.vector(floor(part_4$optim$bestmem)))
-table(as.vector(floor(part_5$optim$bestmem)))
-table(as.vector(floor(part_6$optim$bestmem)))
-
-####
-teamData$groups <- teamData$team
-levels(teamData$groups) <- as.vector(floor(part_4$optim$bestmem))
-table(teamData$groups)
-
-m_means <- lm(ETI ~ -1 + groups, data = teamData)
-summary(m_means)
-
-tab <- as.matrix(table(teamData$team, teamData$groups))
-
-teamAverages <- sapply(rownames(tab), function(name) {
-	mean(teamData[teamData$team == name, "ETI"])
-})
-teamSD <- sapply(rownames(tab), function(name) {
-	sd(teamData[teamData$team == name, "ETI"])
-})
-teamLower <- sapply(rownames(tab), function(name) {
-	quantile(teamData[teamData$team == name, "ETI"], 0.025)
-})
-teamUpper <- sapply(rownames(tab), function(name) {
-	quantile(teamData[teamData$team == name, "ETI"], 0.975)
-})
-group = apply(tab, 1, function(q) as.numeric(colnames(tab))[which.max(q)])
-
-tab <- cbind(tab, average = teamAverages, SD = teamSD, lower = teamLower, upper = teamUpper, group = group)
-round(tab[order(tab[,"average"], decreasing=TRUE),], 2)[,-c(1:3)]

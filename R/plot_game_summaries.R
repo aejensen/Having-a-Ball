@@ -1,8 +1,8 @@
 rm(list=ls())
 
+load("data/nba20192020.rda")
 load("results/est_ETIs.RData")
 load("results/game_summaries.RData")
-load("data/nba20192020.rda")
 
 band <- function(t, l, u, col) {
   polygon(c(t, rev(t)), c(l, rev(u)), col=col, border = NA)

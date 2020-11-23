@@ -1,6 +1,6 @@
 rm(list=ls())
-load("results/est_ETIs.RData")
 load("data/nba20192020.rda")
+load("results/est_ETIs.RData")
 load("results/ETI_mixture_density.RData")
 
 ETIs$date <- as.Date(sapply(results, function(q) attributes(q)$date), format="%B %e, %Y")
