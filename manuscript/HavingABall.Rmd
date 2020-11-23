@@ -247,19 +247,27 @@ teamSD <- sapply(rownames(teams_tab), function(name) {
 teamLower <- sapply(rownames(teams_tab), function(name) {
 	quantile(teamData[teamData$team == name, "ETI"], 0.025)
 })
+teamMedian <- sapply(rownames(teams_tab), function(name) {
+	quantile(teamData[teamData$team == name, "ETI"], 0.5)
+})
 teamUpper <- sapply(rownames(teams_tab), function(name) {
 	quantile(teamData[teamData$team == name, "ETI"], 0.975)
 })
 class = apply(teams_tab, 1, function(q) as.numeric(colnames(teams_tab))[which.max(q)])
 
-tab <- data.frame(Average = teamAverages, SD = teamSD, "2.5%" = teamLower, "upper" = teamUpper, class= class)
-colnames(tab) <- c("Average", "SD", "2.5%", "97.5%", "Class")
+tab <- data.frame(Average = teamAverages, 
+                  SD = teamSD, 
+                  "lower" = teamLower, 
+                  "median" = teamMedian,
+                  "upper" = teamUpper,
+                  class= class)
+colnames(tab) <- c("Average", "SD", "2.5%", "50%", "97.5%", "Class")
 tab <- tab[order(tab$Average, decreasing=TRUE), ]
 
 kable(tab, 
       format = "latex", digits = 2, booktabs = TRUE,
       linesep = c("", "", "", ""), 
-      align = c("r|", "r", "r", "r|", "r"),
+      align = c("r", "r|", "r", "r", "r|", "r"),
 			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\% and 97.5\\% percentiles are shown. The cluster column shows the group to which each team was assigned by the .... algorithm.\\label{tab:teamsummary}")
 ```
 
