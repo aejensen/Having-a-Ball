@@ -25,9 +25,9 @@ team_summary <- t(sapply(split(team_averages, team_averages$team), function(q) {
 round(team_summary[order(team_summary[,"mean"], decreasing=TRUE),], 2)
 
 
-# Fit normal mixutre for marginal median ETIs at match level
+# Fit normal mixture for marginal median ETIs at the match level
 set.seed(12345)
-nClust <- mclustBootstrapLRT(ETIs[,"median"], modelName = "V", nboot = 10 * 10^3, maxG=5)
+nClust <- mclustBootstrapLRT(ETIs[,"median"], modelName = "V", nboot = 10 * 10^3)
 nClust
 
 mix_fit <- Mclust(ETIs[,"median"], G = 4, modelNames="V")
@@ -41,4 +41,4 @@ mixture_parameters <- rbind(lambda, mu, sigma2)
 colnames(mixture_parameters) <- paste("class", 1:4)
 knitr::kable(round(mixture_parameters, 2))
 
-save(lambda, mu, sigma2, file = "results/ETI_mixture_density.RData")
+save(nClust, lambda, mu, sigma2, file = "results/ETI_mixture_density.RData")

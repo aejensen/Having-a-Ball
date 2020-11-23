@@ -20,7 +20,7 @@ LOOCV <- function(data, formula) {
 cl <- makeForkCluster(64)
 
 estPartitions <- function(nPart) {
-  ctl <- DEoptim.control(itermax = 1000, trace = 10, cluster = cl)
+  ctl <- DEoptim.control(itermax = 5000, trace = 10, cluster = cl)
   opt <- DEoptim(function(x) {
   	lev <- floor(x)
 	  teamData$relevel <- teamData$team
@@ -37,12 +37,15 @@ part_3 <- estPartitions(2)
 part_4 <- estPartitions(3)
 part_5 <- estPartitions(4)
 part_6 <- estPartitions(5)
+part_7 <- estPartitions(6)
+part_8 <- estPartitions(7)
 
 stopCluster(cl)
 
 c(part_2$optim$bestval, part_3$optim$bestval,
   part_4$optim$bestval, part_5$optim$bestval,
-  part_6$optim$bestval)
+	part_6$optim$bestval, part_7$optim$bestval,
+	part_8$optim$bestval)
 
 table(as.vector(floor(part_2$optim$bestmem)))
 table(as.vector(floor(part_3$optim$bestmem)))
@@ -52,11 +55,27 @@ table(as.vector(floor(part_6$optim$bestmem)))
 
 ####
 teamData$groups <- teamData$team
-levels(teamData$groups) <- as.vector(floor(part_2$optim$bestmem))
+levels(teamData$groups) <- as.vector(floor(part_4$optim$bestmem))
 table(teamData$groups)
 
-m_means <- lm(ETI ~ 1 + groups, data = teamData)
+m_means <- lm(ETI ~ -1 + groups, data = teamData)
 summary(m_means)
 
-tab <- table(teamData$team, teamData$groups)
-tab[order(tab[,2], decreasing=TRUE),]
+tab <- as.matrix(table(teamData$team, teamData$groups))
+
+teamAverages <- sapply(rownames(tab), function(name) {
+	mean(teamData[teamData$team == name, "ETI"])
+})
+teamSD <- sapply(rownames(tab), function(name) {
+	sd(teamData[teamData$team == name, "ETI"])
+})
+teamLower <- sapply(rownames(tab), function(name) {
+	quantile(teamData[teamData$team == name, "ETI"], 0.025)
+})
+teamUpper <- sapply(rownames(tab), function(name) {
+	quantile(teamData[teamData$team == name, "ETI"], 0.975)
+})
+group = apply(tab, 1, function(q) as.numeric(colnames(tab))[which.max(q)])
+
+tab <- cbind(tab, average = teamAverages, SD = teamSD, lower = teamLower, upper = teamUpper, group = group)
+round(tab[order(tab[,"average"], decreasing=TRUE),], 2)[,-c(1:3)]
