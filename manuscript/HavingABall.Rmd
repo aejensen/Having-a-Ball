@@ -268,7 +268,7 @@ kable(tab,
       format = "latex", digits = 2, booktabs = TRUE,
       linesep = c("", "", "", ""), 
       align = c("r", "r|", "r", "r", "r|", "r"),
-			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\% and 97.5\\% percentiles are shown. The cluster column shows the group to which each team was assigned by the .... algorithm.\\label{tab:teamsummary}")
+			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\%, 50\\%, and 97.5\\% percentiles are shown. The class column shows the group to which each team was assigned by the .... algorithm.\\label{tab:teamsummary}")
 ```
 
 \newpage
