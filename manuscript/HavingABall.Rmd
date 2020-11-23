@@ -260,9 +260,15 @@ tab <- data.frame(Average = teamAverages,
                   "lower" = teamLower, 
                   "median" = teamMedian,
                   "upper" = teamUpper,
-                  class= class)
-colnames(tab) <- c("Average", "SD", "2.5%", "50%", "97.5%", "Class")
+                  class = class)
+colnames(tab) <- c("Average", "SD", "2.5%", "50%", "97.5%", "class_num")
 tab <- tab[order(tab$Average, decreasing=TRUE), ]
+tab$Class <- tab$class_num
+tab$Class[tab$class_num == "2"] <- "A"
+tab$Class[tab$class_num == "0"] <- "B"
+tab$Class[tab$class_num == "3"] <- "C"
+tab$Class[tab$class_num == "1"] <- "D"
+tab$class_num <- NULL
 
 kable(tab, 
       format = "latex", digits = 2, booktabs = TRUE,
