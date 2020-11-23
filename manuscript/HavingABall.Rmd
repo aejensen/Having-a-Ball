@@ -262,6 +262,6 @@ knitr::kable(tab[,c("Team", "Average", "SD", "2.5%", "50%", "97.5%", "group")],
 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig3.pdf}
-\caption{Observed score differences with posteriors of the latent processes (left panels), posterior trends (middle panels) and posterior Trend Direction Indices (right panels) for five games from the NBA season 2019--2020 with median posterior Excitement Trend Indices corresponding to the 0\%, 25\%, 50\%, 75\%, and 100\% percentiles of the distribution of all games in the season. Gray regions depict 50\%, 95\%, and 99\% point-wise credible intervals.}
+\caption{Observed score differences with posteriors of the latent processes (left panels), posterior trends (middle panels) and posterior Trend Direction Indices (right panels) for five games from the NBA season 2019--2020 with median posterior Excitement Trend Indices corresponding to the 0\%, 25\%, 50\%, 75\%, and 100\% percentiles of the distribution of all games in the season. Gray regions depict 50\% and 95\% point-wise credible intervals.}
 \label{fig3}
 \end{figure}
