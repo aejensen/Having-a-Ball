@@ -63,7 +63,7 @@ The trend in score difference between the two teams is a proxy for their underly
 
 Figure \ref{fig1} shows the development of the score difference for the final match of the playoffs in the 2020 National Basketball Association (NBA) series between Los Angeles Lakers and Miami Heat. Positive numbers indicate that LA Lakers are leading and the running score difference shows that the Lakers pulled ahead until the third quarter where Miami Heat started to keep up the scoring pace before overtaking the Lakers and reducing the lead.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
 \includegraphics{../figures/fig1-raw.pdf}
 \caption{Game development in the final match of the NBA 2019--2020 season between Los Angeles Lakers and Miami Heat. October 11, 2020. Positive values indicate that LA Lakers are leading.}
 \label{fig1}
@@ -77,18 +77,18 @@ Other authors have considered using continuous processes to model the score diff
 * @chen2020rank
 * @chen2018functional
 
-The paper is structured as follows. In the next section we introduce trend modeling through latent a Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply the our proposed methodology to analyze both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We show how this distribution can be used to assess relative match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
+The paper is structured as follows. In the next section we introduce trend modeling of score differences through a latent Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply the our proposed methodology to analyze both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We show how this distribution can be used to assess relative match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
 
 Unused stuff for now: 
-*Philosophical question: What exactly is the sampling model for a single match?
-We could have a motivating figure here -- e.g. a variation of Figure 1 (see its caption).*
+
+* Philosophical question: What exactly is the sampling model for a single match?
 
 
 # Methods {#sec:method}
 
 Our model is based on the observed score differences $D_m$ in a given match indexed by $m$. For each match we observe the random variables $\mathcal{D}_m = \left(t_{mi}, D_{mi}\right)_{0 < i \leq J_m}$ where $t_{m1} < t_{m2} < t_{mi} < \ldots < t_{m J_m}$ are the ordered time points at which any teams scores, $D_{mi} = D_m(t_{mi})$ is the associated difference in scores at time $t_{mi}$, and $J_m$ is the total number of scorings during the match. We use the convention that $D_m$ is the difference in scores of the away team with respect to the home team, so that $D_m(t) > 0$ means that the away team is leading at time $t$.
 
-We assume that the observed match data from a given match are noisy realizations of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. Our objective is to infer $d_m$ and its time dynamics from $\mathcal{D}_m$. In pursuance of this intention we propose the following hierarchical model where $d_m$ is a Gaussian process defined on a compact subset of the real line $\mathcal{I}_m$ corresponding to the duration of the $m$'th game, and the observed data conditional on the scoring times and the values of the latent process at these times are independently normally distributed random variables with a match specific variance. This model for a given match can be written as
+We assume that the observed match data from a given match are noisy realizations of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. Our objective is to infer $d_m$ and its time dynamics from $\mathcal{D}_m$. In pursuance of this ambition we propose the following model where $d_m$ is a Gaussian process defined on a compact subset of the real line $\mathcal{I}_m$ corresponding to the duration of the $m$'th game, and the observed data conditional on the scoring times and the values of the latent process at these times are independently normally distributed random variables with a match specific variance. This model for a given match can be stated hierarchically as
 \begin{align}
 \begin{split}
   \BTheta_m \mid \bm{\Psi_m}, \mathbf{t}_m &\sim H(\BTheta_m \mid \bm{\Psi}_m)\\
@@ -106,21 +106,23 @@ In addition to obtaining inference for the latent process we may also estimate i
   \begin{bmatrix}d_m(s)\\ d^{\prime}_m(t)\\ d^{\prime\prime}_m(u)\end{bmatrix} \mid \BTheta_m &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_{\bm{\beta}_m}(s)\\ \mu^{\prime}_{\bm{\beta}_m}(t)\\ \mu^{\prime\prime}_{\bm{\beta}_m}(u)\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}_m}(s, s^\prime) & \partial_2 C_{\bm{\theta}_m}(s, t) & \partial_2^2 C_{\bm{\theta}_m}(s, u)\\ \partial_1 C_{\bm{\theta}_m}(t, s) & \partial_1 \partial_2 C_{\bm{\theta}_m}(t, t^\prime) & \partial_1 \partial_2^2 C_{\bm{\theta}_m}(t, u)\\ \partial_1^2 C_{\bm{\theta}_m}(u, s) & \partial_1^2\partial_2 C_{\bm{\theta}_m}(u, t) & \partial_1^2 \partial_2^2 C_{\bm{\theta}_m}(u, u^\prime)\end{bmatrix}\right)
 \label{eq:dynamics}
 \end{align}
-where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable. Combining the models in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) we therefore also have explicit expressions for the posterior distributions $d^\prime_m \mid \mathcal{D}_m, \BTheta_m$ and $d^{\prime \prime}_m \mid \mathcal{D}_m, \BTheta_m$. We use the posteriors of the first and second time derivatives of the latent process to characterize the dynamical properties of each match through the Trend Direction Index (TDI) and the Excitement Trend Index (ETI).
+where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivatives, $\partial_j^k$ is the $k$'th order partial derivative with respect to the $j$'th variable. Combining the models in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) we obtain explicit expressions for the posterior distributions $d^\prime_m \mid \mathcal{D}_m, \BTheta_m$ and $d^{\prime \prime}_m \mid \mathcal{D}_m, \BTheta_m$. The posterior joint distributions of the latent processes can be expressed as the multivariate Gaussian process
+\begin{align}
+\begin{bmatrix}d_m(s)\\ d_m^\prime(t)\\ d_m^{\prime\prime}(u)\end{bmatrix} \mid \mathcal{D}_m, \BTheta_m \sim \mathcal{GP}\left(\begin{bmatrix}\mu_{d_m}(s)\\ \mu_{d_m^\prime}(t)\\ \mu_{d_m^{\prime\prime}}(u)\end{bmatrix}, \begin{bmatrix} \Sigma_{d_m}(s, s^\prime) & \Sigma_{d_m d_m^\prime}(s,t) & \Sigma_{d_m d_m^{\prime\prime}}(s,u)\\ \Sigma_{d_m^\prime d_m}(t,s) & \Sigma_{d_m^\prime}(t,t^\prime) & \Sigma_{d_m^\prime d_m^{\prime\prime}}(t,u)\\ \Sigma_{d_m^{\prime\prime} d_m}(u,s) & \Sigma_{d_m^{\prime\prime} d_m^\prime}(u,t) & \Sigma_{d_m^{\prime\prime}}(u,u^\prime)\end{bmatrix}\right)
+\label{eq:posterior}
+\end{align}
+where explicit expressions for the posterior mean and covariance functions are given in the supplementary material. In practice this means that we can sample from the posterior joint distribution at any finite number of time points as this will be equal to sampling from a high-dimensional normal distribution. We use the posteriors of the first and second time derivatives of the latent process to characterize the dynamical properties of each match through the Trend Direction Index (TDI) and the Excitement Trend Index (ETI).
 
-[\textbf{??? Introduce and fix notation for the posteriors and refer to supplementary for explicit expressions ???}]
 
-We define the Trend Direction Index (TDI) of a particular match $m$ as the local posterior probability that $d_m$ is an increasing function at any time in $\mathcal{I}_m$. Under our model this is equal to
+We define the Trend Direction Index (TDI) of a particular match $m$ as the local posterior probability that $d_m$ is an increasing function for all time points $t \in \mathcal{I}_m$. Under our model this is equal to
 \begin{align}
 \begin{split}
   \textrm{TDI}_m(t \mid \BTheta_m) &= P\left(d_m^\prime(t) > 0 \mid \mathcal{D}_m, \BTheta_m\right)\\
-     &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{f^\prime}(t \mid \BTheta_m)}{2^{1/2}\Sigma_{f^\prime f^\prime}(t, t \mid \BTheta_m)^{1/2}}\right)
+     &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{d_m^\prime}(t)}{2^{1/2}\Sigma_{d_m^\prime}(t, t)^{1/2}}\right)
 \end{split}
 \label{eq:TDIdef}
 \end{align}
-where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function and $\mu_{df}$ and $\Sigma_{df}$ are the posterior mean and covariance of the trend. \textbf{[??? Write out interpretation ???]}
-
-[\textbf{Note that if we change the reference team then TDI is just 1 - TDI so it's symmetric}]
+where $\Erf\colon\, x \mapsto 2\pi^{-1/2}\int_0^x \exp(-u^2)\mathrm{d}u$ is the error function and $\mu_{d_m^\prime}$ and $\Sigma_{d_m^\prime}$ are the posterior mean and covariance functions of the time derivative defined in Equation (\ref{eq:posterior}). The interpretation of the TDI is that it quantifies the probability that one team is currently increasing the differences in scores or equivalently that they are changing the trend in their favor. A TDI equal to $50\%$ means that the game is in a stagnant state. We note that the TDI is symmetric with respect to the reference team in the definition of the score difference. Is the reference team is changed, then $\textrm{TDI}$ changes to $1 - \textrm{TDI}$.
 
 To each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, as a global index of excitement. The index is defined as the expected number of changes in monotonicity of the posterior distribution of $d_m$ which is equivalent to the expected number of zero-crossings of the posterior distribution of $d^\prime_m$. We hence define
 \begin{align}
@@ -132,19 +134,16 @@ To each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, a
 \end{align}
 where $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that $d\mathrm{ETI}$ is equal to
 \begin{align*}
-d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda(t \mid \BTheta_m)\phi\left(\frac{\mu_{df}(t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\right)\left(2\phi(\zeta(t\mid \BTheta_m)) + \zeta(t\mid \BTheta_m)\Erf\left(\frac{\zeta(t\mid \BTheta_m		)}{2^{1/2}}\right)\right)
+d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda_m(t)\phi\left(\frac{\mu_{d_m^\prime}(t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\right)\left(2\phi\left(\zeta_m(t)\right) + \zeta_m(t)\Erf\left(\frac{\zeta_m(t)}{2^{1/2}}\right)\right)
 \end{align*}
-where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, and $\lambda$, $\omega$ and $\zeta$ are functions defined by		
-\begin{align*}
-  \lambda(t \mid \BTheta_m) &= \frac{\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}}\left(1-\omega(t \mid \BTheta_m)^2\right)^{1/2}\\
-  \omega(t \mid \BTheta_m) &= \frac{\Sigma_{df,d^2\!f}(t,t \mid \BTheta_m)}{\Sigma_{df}(t,t \mid \BTheta_m)^{1/2}\Sigma_{d^2\!f}(t,t \mid \BTheta_m)^{1/2}}\\
-  \zeta(t\mid \BTheta_m) &= \frac{\mu_{df}(t\mid \BTheta_m)\Sigma_{d^2\!f}(t,t\mid \BTheta_m)^{1/2}\omega(t)\Sigma_{df}(t,t\mid \BTheta_m)^{-1/2} - \mu_{d^2\!f}(t\mid \BTheta_m)}{\Sigma_{d^2\!f}(t,t\mid \BTheta_m)^{1/2}\left(1 - \omega(t\mid \BTheta_m)^2\right)^{1/2}}
-\end{align*}
-A derivation of this expression can be found in the supplementary material to @ToT.
+where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the standard normal density function, and $\lambda_m$, $\omega_m$ and $\zeta_m$ are functions defined by		
+\begin{gather*}
+  \lambda_m(t) = \frac{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\left(1-\omega_m(t)^2\right)^{1/2}, \quad \omega_m(t) = \frac{\Sigma_{d_m^\prime d_m^{\prime\prime}}(t,t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}\\
+  \zeta_m(t) = \frac{\mu_{d_m^\prime}(t)\Sigma_{d_m^{\prime^\prime}}(t,t)^{1/2}\omega_m(t)\Sigma_{d_m^\prime}(t,t)^{-1/2} - \mu_{d_m^{\prime\prime}}(t)}{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}\left(1 - \omega_m(t)^2\right)^{1/2}}
+\end{gather*}
+A derivation of these expressions can be found in the supplementary material to @ToT. \textbf{[??? give some explanation/intuition about the value ???]}. We note that ETI is invariant with respect to the reference team in the definition of the score differences as it is defined as the expected number of both up- and down-crossings at zero of the posterior trend.
 
-[\textbf{???} We need to argue that ETI for $S_a(t_{m_i}) - S_{b}(t_{m_i})$ is symmetric in $a$ and $b$ so that our choice of "reference group" in $D_m$ is not important. The reason is that we look at both up- and down-crossings at $0$ of $df_m$ so the choice of sign in $D_m$ is not relevant. ??? ]
-
-Both the Trend Direction Index and the Excitement Trend Index in Equations (\ref{eq:TDIdef}) and (\ref{eq:ETIdef}) are random variables due to their dependence on the hyper-parameters $\BTheta_m$. In our Bayesian framework these are specified under an addition layer of prior distributions according to $H(\BTheta_m \mid \bm{\Psi}_m)$. By fitting the model using Markov-Chain Monte Carlo methods (MCMC) we obtain the posterior distribution $\widetilde{\BTheta}_m \sim P(\BTheta_m \mid \mathcal{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ given by
+Both the Trend Direction Index and the Excitement Trend Index in Equations (\ref{eq:TDIdef}) and (\ref{eq:ETIdef}) are random variables due to their dependence on the hyper-parameters $\BTheta_m$. In our Bayesian framework these are specified under an additional layer of prior distributions according to $H(\BTheta_m \mid \bm{\Psi}_m)$. By fitting the model using Markov-Chain Monte Carlo methods (MCMC) we obtain the posterior distribution $\widetilde{\BTheta}_m \sim P(\BTheta_m \mid \mathcal{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ given by
 \begin{align*}
   \widetilde{\BTheta}_m &\sim \frac{H(\BTheta_m \mid \bm{\Psi}_m) \int P(\mathbf{D}_m \mid d_m(\mathbf{t}_m), \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)dP(d_m(\mathbf{t}_m) \mid \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)}{\iint P(\mathbf{D}_m \mid d_m(\mathbf{t}_m), \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)dP(d_m(\mathbf{t}_m) \mid \BTheta_m, \bm{\Psi}_m, \mathbf{t}_m)dH(\BTheta_m \mid \bm{\Psi}_m)}
 \end{align*}
@@ -152,13 +151,15 @@ and the posterior estimates of TDI and ETI are therefore the random variables $\
 
 To summarize the posterior distributions of TDI and ETI we one can either use the average value calculated by integrating over the distribution of $\widetilde{\BTheta}_m$ or
 \begin{align*}
-\overline{\mathrm{TDI}}_m(t) &= \int \BTheta_m \mathrm{TDI}_m(t \mid \widetilde{\BTheta}_m)dP(\widetilde{\BTheta}_m)\\
+\overline{\mathrm{TDI}}_m(t) &= \int \widetilde{\BTheta}_m \mathrm{TDI}_m(t \mid \widetilde{\BTheta}_m)dP(\widetilde{\BTheta}_m)\\
 \overline{\mathrm{TDI}^p}_m(t) &= \sup\left\{\mathrm{TDI}_m(t \mid \widetilde{\BTheta}_m) : \mathrm{TDI}_m(t \mid \widetilde{\BTheta}_m) < p\right\}
 \end{align*}
-\textbf{[??? and now I go to bed ???]}
+
+\textbf{[??? look this through ???]}
 
 
-## Estimation
+## Estimation {-}
+
 To complete the specification of the model in Equation (\ref{eq:hierarchicalmodel}) we need to specify prior mean and covariance functions for the latent process. The choice of these are application specific and can be based on prior knowledge of the game dynamics. We refer to the discussion in @ToT for more information on such choices.
 
 In our application we used a constant prior mean and the squared exponential covariance function given by
@@ -171,79 +172,123 @@ H(\BTheta_m \mid \bm{\Psi}_m) = H(\beta_m \mid \Psi_{\beta_m})H(\alpha_m \mid \P
 \end{align*}
 with
 \begin{align*}
-\beta_{m} \sim T\left(\widehat{\beta_m^\text{ML}}, 3, 3\right), \quad \alpha_m \sim T^+\left(\widehat{\alpha_m^\text{ML}}, 3, 3\right), \quad \rho_m \sim N^+\left(\widehat{\rho_m^\text{ML}}, 1\right), \quad \sigma_m \sim T^+\left(\widehat{\sigma_m^\text{ML}}, 3, 3\right)
+\beta_{m} \sim T_4\left(\widehat{\beta_m^\text{ML}}, 5\right), \quad \alpha_m \sim T^+_4\left(\widehat{\alpha_m^\text{ML}}, 5\right), \quad \rho_m \sim T_4^+\left(\widehat{\rho_m^\text{ML}}, 5\right), \quad \sigma_m \sim T^+_4\left(\widehat{\sigma_m^\text{ML}}, 5\right)
 \end{align*}
-where $T^+(\cdot, \cdot, \mathrm{df})$ and $N^+(\cdot, \cdot)$ denotes the location-scale half T- and normal distribution functions with $\mathrm{df}$ degrees of freedom.  
+where $T_{\text{df}}$ denotes a location-scale T distribution with $\mathrm{df}$ degrees of freedom, and $T_{\text{df}}^+$ is the distribution truncated to the positive real line.
 
-We have implemented the estimation procedure in the probabilistic programming language Stan [@carpenter2017stan] using Hamiltonian Markov Chain Monte Carlo. For each match we ran four independent Markov chains for 25,000 iterations each with half of the iterations used for warm-up. Convergence was assessed by trace plots of the MCMC draws and the potential scale reduction factor, $\widehat{R}$, of @gelman1992inference.
-
+We have implemented the estimation procedure in the probabilistic programming language Stan [@carpenter2017stan] using the Hamiltonian MCMC (Markov Chain Monte Carlo) algorithm to sample from the posterior distributions $\textrm{TDI}_m(t \mid \widetilde{\BTheta}_m)$ and $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ on a equidistant grid of $200$ time points in $\mathcal{I}_m$. For each match we ran four independent chains for 25,000 iterations each with half of the iterations used for warm-up. The posterior distribution of $\text{ETI}_m \mid \widetilde{\BTheta}_m$ was calculated by numerical integration of $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ using the trapezoidal rule on the grid of time points.
 
 
 # Application: The 2019--2020 NBA basketball season {#sec:application}
 
-To show the applicability of our proposed model we will apply it to data from all regular games from the 2019--2020 NBA basketball season (obtained from @BBreference and provided in @HavingABall). A lot of points are scored during a basketball match so it is easy to see the development of the score difference. 
+To show the applicability of our proposed model we will apply it to data from all regular games from the 2019--2020 NBA basketball season (obtained from @BBreference and provided in @HavingABall). A lot of points are scored during a basketball match so it is easy to see the development of the score difference in a single match. 
 
-The 2019--2020 NBA season was suspended mid-March because of Covid-19 but it was resumed again in July 2020. There were a total of 1059 regular season matches. The subsequent playoffs comprised 84 matches including thee final for a grand total of 1143 matches. For ease of comparison we are only considering the first 48 regular minutes of each match --- any part of a match that goes into overtime will be disregarded. Thus, $\mathcal{I}_m = [0; 48]$ minutes without overtime.
+The 2019--2020 NBA season was suspended mid-March because of Covid-19 but it was resumed again in July 2020. There were a total of 1059 regular season matches. The subsequent playoffs comprised 84 matches including the final for a grand total of 1143 matches. For ease of comparison we are only considering the first 48 regular minutes of each match --- any part of a match that goes into overtime will be disregarded, and we hence let $\mathcal{I}_m = [0; 48]$ minutes.
+
+We wish to use the trend analysis proposed for three purposes: 1) to show how the Trend Direction Index can be used to infer real-time and post-game evaluation of the trends in a match. 2) To evaluate the Excitement Trend Index for all 1143 matches in the 2019--2020 season to provide background and reference information about the matches, and 3) to summarize ETI at the team level in order to identify group of teams more/less likely to give an exciting game. 
+
+For our first purpose of analyzing trends in individuals matches we consider the final match of the 2019-2020 season. The raw data for the running score difference between LA Lakers and Miami Heat was shown in Figure \ref{fig1}. Figure \ref{fig1b} shows the results from the post-game analysis. 
+
+\begin{figure}[htbp]
+\includegraphics{../figures/fig1.pdf}
+\caption{Results from fitting the latent Gaussian Process to the final match between LA Lakers and Miami Heat in the 2019--2020 NBA season. The first panel shows the posterior distribution of the the latent process with the posterior means in bold. The gray areas show point-wise probability intervals for the posterior distribution. The middle panel provides similar information for the derivative of the latent process. The final panel shows the Trend Direction Index and can be used to read off probability statements about the trends in the running score difference.}
+\label{fig1b}
+\end{figure}
+
+Evaluating the game trends from the TDI in Figure \ref{fig1b} shows that LA Lakers had control of most of the match since the posterior probability of a positive trend was high throughout most of the match. First towards the end of the third quarter did Miami Heat gain the upper hand and had a period where they
+
+
+
 
 For each of the 1143 matches during the season we fitted our model, and [\textbf{???}].
 
+
 \begin{figure}[htbp]
 \includegraphics{../figures/fig2.pdf}
-\caption{Histogram and kernel density estimate of the distribution of 1143 median posterior Excitement Trend Indices from the NBA 2019--2020 season (left panel) and the median posterios ETIs as a function of calender time from October 22, 2019 to October 11, 2020 (right panel).}
+\caption{Histogram and Gaussian mixture distribution estimate of the distribution of 1143 median posterior ETIs from the NBA 2019--2020 season (left panel) and the median posterior ETIs as a function of calender time from October 22, 2019 to October 11, 2020 (right panel).}
 \label{fig2}
 \end{figure}
 
-The left panel of Figure \ref{fig2} shows the distribution of the median posterior Excitement Trend Indices estimated using our model for each of the 1143 games in the 2019--2020 NBA season. The distribution of game excitements is right skewed (skewness = 0.53) with a range of $[0.23; 26.28]$, and an median of 10.09 (mean = 10.62, SD = 4.52). This implies that the time-varying score differences of the games in the season changes monotonicity approximately 10 times during a game on average. The right panel of the same figure shows the values of the median posterior ETIs as a function of the calendar time were the matches were played. Besides illustrating the gap from the Covid-19 hiatus, the figure shows that the excitement indices are relatively evenly distributed throughout the season.
+The left panel of Figure \ref{fig2} shows the marginal distribution of the median posterior Excitement Trend Indices estimated using our model for each of the 1143 games in the 2019--2020 NBA season. The solid line shows the fit of a Gaussian mixture model with four components, where the number of components were determined by sequential bootstrapped likelihood ratio testing (@mclust). The marginal distribution of ETIs is right skewed (skewness = 0.53) with a range of $[0.23; 26.28]$, and an median of 10.09 (mean = 10.62, SD = 4.52). This implies that the time-varying score differences of the games in the season changes monotonicity approximately 10 times during a game on average but with a large variation between matches. \textbf{[??? examplify the extremes in words here ???]}.
 
-Summarizing the posterior median ETIs at the team level lead to comparable values across all 30 teams. The New Orleans Pelicans had the highest average posterior median ETI during the season with a value of 11.67 (SD = 4.91, IQR = $[3.09; 23.57]$), while the Charlotte Hornets had the lowest average posterior median ETI during the season with a value of 9.29 (SD = 3.74, IQR = $[1.96; 15.98]$). This implies that each team played games during the season that where comparable on average in terms their excitement, and the major source of variation in excitement is governed by the individual matches. The supplementary material to this paper provides summary statistics for all 30 teams.
-
-The asymmetry of the distribution of the Excitement Trend Indices in Figure \ref{fig2} conjectures the possibility of a latent, categorical variable labeling the matches to different classes. We thus fitted a heteroscedastic Gaussian mixture model to the median posterior Excitement Trend Indices on the match level, where the number of latent classes was determined by a bootstrapped likelihood ratio test using 10,000 bootstrap replicates (@mclust). Testing for 1 vs 2 latent classes gave a p-value of $< 0.001$, 2 vs 3 gave a p-value of $0.027$, 3 vs 4 gave a p-value of $0.008$, and 4 vs 5 gave a p-value of $0.300$ implying that the distribution of median posterior Excitement Trend Indices can be modeled by a 4-component Gaussian mixture distribution. The following table shows the maximum likelihood estimates of the parameters of the Gaussian mixture model.
-
-|           | class 1| class 2| class 3| class 4|
-|:----------|-------:|-------:|-------:|-------:|
-|$\pi$      |    0.24|    0.22|    0.28|    0.26|
-|$\mu$      |    5.70|    8.89|   12.64|   14.45|
-|$\sigma^2$ |    4.44|    1.87|    5.15|   23.31|
-
-Figure \ref{fig2-5} shows the estimated Gaussian mixture model along with the histogram (left panel), and the proportion of matches classified into the four latent classes as determined by a maximum posterior decision rule (right panel). 
-
-[\textbf{So we basically have a group of average matches (class 2), a group below average (class 1), a group above average (class 3) and then also group of 150 matches with an even large average but also a larger variance (class 4). Can we say something about these classes?}]
-
-\begin{figure}[htbp]
-\includegraphics{../figures/fig2-5.pdf}
-\caption{}
-\label{fig2-5}
-\end{figure}
-
-
+The right panel of Figure \ref{fig2} shows the median posterior ETIs as a function of calendar time at which the matches were played.. Besides illustrating the gap from the Covid-19 hiatus, the figure shows that the excitement indices are relatively evenly distributed throughout the season.
 
 Figure \ref{fig3} shows ...
+
+Summarizing the posterior median ETIs at the team level across all their matches during the season leads to comparable values for all 30 teams. Table \ref{tab:teamsummary} shows the summary statistics for all 30 teams ordered by their season average excitement. The New Orleans Pelicans had the highest median posterior ETI averaged over the season with an average median posterior ETI of 11.67 (SD = 4.91, IQR = $[3.09; 23.57]$), while the Charlotte Hornets had the lowest average median posterior ETI with a value of 9.29 (SD = 3.74, IQR = $[1.96; 15.98]$). This small fluctuation on average suggests that the teams are comparable in terms of excitement when averaging across the season, and that the major source of variation in excitement during the season (as seen in Figure \ref{fig2}) is governed by the specific matches. 
+
+Although the team averages in Table \ref{tab:teamsummary} show limited variability it is of interest to estimate a number of subgroups among the teams that exhibited similar degree of excitement on average during the season -- effectively clustering the teams. This is mathematically equivalent to looking at the relationship between the median ETIs as the outcome in a regression model where the explanatory categorical variable ranges over the set of all partitions of 30 elements, and as the objective we seek the smallest number of partitions that best explains the observed ETIs. This will then define subgroups of teams. \textbf{[??? Insert more stuff here ???]} Our sequential optimization procedure showed that the leave-one-out cross-validated root mean squared error of prediction stabilized at four subgroups ($\textrm{RMSEP}_\text{LOO-CV} = 4.500$ for two groups, $\textrm{RMSEP}_\text{LOO-CV} = 4.497$ for three groups, $\textrm{RMSEP}_\text{LOO-CV} = 4.496$ for four groups, and subsequently for five to eight groups it remained at the samle value). The labels of these groups are shown in the right most column in Table  \ref{tab:teamsummary}. The result is thus an identification of three estimated change-points in the ranking of the teams according to the average median posterior ETI. \textbf{[??? some more here ???]}
 
 
 # Discussion {#sec:discussion}
 
 Some summarization goes on here. We have introduced etc...
 
-We could define a weighted Excitement Trend Index, $\mathrm{WETI}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team. This motivates a weighted ETI of the form
+We could define a weighted Excitement Trend Index, $\mathrm{WETI}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team as measured by the absolute value of the posterior mean $\mu_{d_m}$. This motivates a modification of the definition of the ETI in Equation (\ref{eq:ETIdef}) to the following weighted form
 \begin{align*}
-  \mathrm{WETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} w(t, |d_m(t)|)d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
+  \mathrm{WETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)w(t, |\mu_{d_m}(t)|)\mathrm{d}t
 \end{align*}
-where $w$ is a bivariate weight function being increasing in its first variable and decreasing in its second variable. Such weight function could be constructed as a product of two kernel functions on $[0;48] \times \mathbb{R}_{\geq 0}$ with bandwidths based on studies of psychological perception.
+where $w\colon\, \mathcal{I}_m \times \mathbb{R}_{\geq 0} \mapsto \mathbb{R}_{\geq 0}$ is a weight function being increasing in its first variable and decreasing in its second variable. Such weight functions could be constructed as a product of two kernel functions defined on their individual domains and with bandwidths based on studies of psychological perception.
 
 A different approach would be to define team-specific excitement index nested with a match. Here we would only look at the **up**-crossings at zero of $df_m$ and we would get two excitement indices for each match $(\mathrm{ETI}_{am}, \mathrm{ETI}_{bm})$. for teams $a$ and $b$. This would somehow reflect how exciting each team were in match $m$ with respect to chancing the sign of the score differences in their favor.
-
-
-# Acknowledgements {-}
 
 # Bibliography {-}
 
 <div id="refs"></div>
 
-
 \newpage
 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig3.pdf}
-\caption{Observed score differences with posteriors of the latent processes (left panels), posterior trends (middle panels) and posterior Trend Direction Indices (right panels) for five games from the NBA season 2019--2020 with median posterior Excitement Trend Indices corresponding to the 0\%, 25\%, 50\%, 75\%, and 100\% percentiles of the distribution of all games in the season. Gray regions depict 50\%, 95\%, and 99\% point-wise credible intervals.}
+\caption{Observed score differences with posteriors of the latent processes (left panels), posterior trends (middle panels) and posterior Trend Direction Indices (right panels) for five games from the NBA season 2019--2020 with median posterior Excitement Trend Indices corresponding to the 0\%, 25\%, 50\%, 75\%, and 100\% percentiles of the distribution of all games in the season. Gray regions depict 50\% and 95\% point-wise credible intervals.}
 \label{fig3}
 \end{figure}
+
+\newpage 
+
+```{r, echo=FALSE}
+library(kableExtra)
+load("../results/ETI_team_analysis.RData")
+
+teamData$groups <- teamData$team
+levels(teamData$groups) <- as.vector(floor(part_4$optim$bestmem))
+
+teams_tab <- as.matrix(table(teamData$team, teamData$groups))
+teamAverages <- sapply(rownames(teams_tab), function(name) {
+	mean(teamData[teamData$team == name, "ETI"])
+})
+teamSD <- sapply(rownames(teams_tab), function(name) {
+	sd(teamData[teamData$team == name, "ETI"])
+})
+teamLower <- sapply(rownames(teams_tab), function(name) {
+	quantile(teamData[teamData$team == name, "ETI"], 0.025)
+})
+teamMedian <- sapply(rownames(teams_tab), function(name) {
+	quantile(teamData[teamData$team == name, "ETI"], 0.5)
+})
+teamUpper <- sapply(rownames(teams_tab), function(name) {
+	quantile(teamData[teamData$team == name, "ETI"], 0.975)
+})
+class = apply(teams_tab, 1, function(q) as.numeric(colnames(teams_tab))[which.max(q)])
+
+tab <- data.frame(Average = teamAverages, 
+                  SD = teamSD, 
+                  "lower" = teamLower, 
+                  "median" = teamMedian,
+                  "upper" = teamUpper,
+                  class = class)
+colnames(tab) <- c("Average", "SD", "2.5%", "50%", "97.5%", "class_num")
+tab <- tab[order(tab$Average, decreasing=TRUE), ]
+tab$Group <- tab$class_num
+tab$Group[tab$class_num == "2"] <- "A"
+tab$Group[tab$class_num == "0"] <- "B"
+tab$Group[tab$class_num == "3"] <- "C"
+tab$Group[tab$class_num == "1"] <- "D"
+tab$class_num <- NULL
+
+kable(tab, 
+      format = "latex", digits = 2, booktabs = TRUE,
+      linesep = c("", "", "", ""), 
+      align = c("r", "r|", "r", "r", "r|", "r"),
+			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\%, 50\\%, and 97.5\\% percentiles are shown. The group column shows the clustering induced by the .... algorithm.\\label{tab:teamsummary}") %>% row_spec(8, hline_after = TRUE) %>% row_spec(18, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
+```

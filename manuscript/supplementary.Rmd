@@ -49,25 +49,25 @@ editor_options:
 
 # Expressions for the posterior distributions of $(d_m, d^\prime_m, d^{\prime \prime}_m)$
 
-The joint distribution of $(d, d^\prime, d_m^{\prime \prime})$ conditional on the observed score differences $\mathcal{D}_m$ and the hyper-parameters $\BTheta_m$ evaluated at any finite vector $\mathbf{t}^\ast$ of $p$ time points is
+The joint distribution of $(d, d^\prime, d_m^{\prime \prime})$ conditional on the observed score differences $\mathcal{D}_m = (\mathbf{D}_m, \mathbf{t}_m)$ and the hyper-parameters $\BTheta_m$ evaluated at any finite vector $\mathbf{t}^\ast$ of $p$ time points follows the multivariate normal distribution
 \begin{align*}
-\begin{bmatrix}d_m(\mathbf{t}^\ast)\\ d_m^{\prime}(\mathbf{t}^\ast)\\ d_m^{\prime \prime}(\mathbf{t}^\ast)\end{bmatrix} \mid \mathcal{D}_m, \BTheta_m \sim N\left(\bm{\mu},  \bm{\Sigma}\right)
+\begin{bmatrix}d_m(\mathbf{t}^\ast)\\ d_m^{\prime}(\mathbf{t}^\ast)\\ d_m^{\prime \prime}(\mathbf{t}^\ast)\end{bmatrix} \mid \mathcal{D}_m, \BTheta_m \sim N\left(\bm{\mu}_m,  \bm{\Sigma}_m\right)
 \end{align*}
-where $\bm{\mu} \in \mathbb{R}^{3p}$ is the column vector of posterior expectations and $\bm{\Sigma} \in \mathbb{R}^{3p \times 3p}$ is the joint posterior covariance matrix. Partitioning these as
+where $\bm{\mu}_m \in \mathbb{R}^{3p}$ is the column vector of posterior means and $\bm{\Sigma}_m \in \mathbb{R}^{3p \times 3p}$ is the posterior covariance matrix. These can be partitioned as
 \begin{align*}
-  \bm{\mu} = \begin{bmatrix}\mu_{f}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{df}(\mathbf{t^\ast} \mid \bm{\Theta})\\ \mu_{d^2\!f}(\mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix}, \quad \bm{\Sigma} = \begin{bmatrix}\Sigma_{f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) &  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{f,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\  \Sigma_{f,df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta}) & \Sigma_{df,d^2\!f}(\mathbf{t^\ast},\mathbf{t^\ast} \mid \bm{\Theta})\\ \Sigma_{f,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{df,d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})^T & \Sigma_{d^2\!f}(\mathbf{t^\ast}, \mathbf{t^\ast} \mid \bm{\Theta})\end{bmatrix} 
+  \bm{\mu}_m = \begin{bmatrix}\mu_{d_m}(\mathbf{t^\ast})\\ \mu_{d_m^\prime}(\mathbf{t^\ast})\\ \mu_{d_m^{\prime\prime}}(\mathbf{t^\ast})\end{bmatrix}, \quad \bm{\Sigma}_m = \begin{bmatrix}\Sigma_{d_m}(\mathbf{t^\ast},\mathbf{t^\ast}) &  \Sigma_{d_m d_m^\prime}(\mathbf{t^\ast},\mathbf{t^\ast}) & \Sigma_{d_m d_m^{\prime\prime}}(\mathbf{t^\ast},\mathbf{t^\ast})\\  \Sigma_{d_m d_m^\prime}(\mathbf{t^\ast},\mathbf{t^\ast})^T & \Sigma_{d_m^\prime}(\mathbf{t^\ast},\mathbf{t^\ast}) & \Sigma_{d_m^\prime d_m^{\prime\prime}}(\mathbf{t^\ast},\mathbf{t^\ast})\\ \Sigma_{d_m d_m^{\prime\prime}}(\mathbf{t^\ast}, \mathbf{t^\ast})^T & \Sigma_{d_m^\prime d_m^{\prime \prime}}(\mathbf{t^\ast}, \mathbf{t^\ast})^T & \Sigma_{d_m^{\prime\prime}}(\mathbf{t^\ast}, \mathbf{t^\ast})\end{bmatrix} 
 \end{align*}
-the individual components are given by
+Using properties of the multivariate normal distribution the individual components are given by
 \begin{align*}
-  \mu_{f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= \mu_{\bm{\beta}}(\mathbf{t}^\ast) + C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
-  \mu_{df}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right) \\
-  \mu_{d^2\!f}(\mathbf{t}^\ast \mid \bm{\Theta}) &= d^2\!\mu_{\bm{\beta}}(\mathbf{t}^\ast) + \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1}\left(\mathbf{Y} - \mu_{\bm{\beta}}(\mathbf{t})\right)\\
-  \Sigma_{f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1\partial_2C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1^2\partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{f, df}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{f, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)\\
-  \Sigma_{df, d^2\!f}(\mathbf{t}^\ast, \mathbf{t}^\ast \mid \bm{\Theta}) &= \partial_1 \partial_2^2 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t})\left(C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}) + \sigma^2 I\right)^{-1} \partial_2^2 C_{\bm{\theta}}(\mathbf{t}, \mathbf{t}^\ast)
+  \mu_{d_m}(\mathbf{t}^\ast) &= \mu_{\bm{\beta}_m}(\mathbf{t}^\ast) + C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1}\left(\mathbf{D}_m - \mu_{\bm{\beta}_m}(\mathbf{t}_m)\right)\\
+  \mu_{d_m^\prime}(\mathbf{t}^\ast) &= \mu^\prime_{\bm{\beta}_m}(\mathbf{t}^\ast) + \partial_1 C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1}\left(\mathbf{D}_m - \mu_{\bm{\beta}_m}(\mathbf{t}_m)\right) \\
+  \mu_{d_m^{\prime\prime}}(\mathbf{t}^\ast) &= \mu^{\prime\prime}_{\bm{\beta}_m}(\mathbf{t}^\ast) + \partial_1^2 C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1}\left(\mathbf{D}_m - \mu_{\bm{\beta}_m}(\mathbf{t}_m)\right)\\
+  \Sigma_{d_m}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1} C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}^\ast)\\
+  \Sigma_{d_m^\prime}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_1\partial_2C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1} \partial_2C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}^\ast)\\
+  \Sigma_{d_m^{\prime\prime}}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_1^2\partial_2^2 C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1^2 C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1} \partial_2^2 C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}^\ast)\\
+  \Sigma_{d_m d_m^\prime}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_2 C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1} \partial_2 C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}^\ast)\\
+  \Sigma_{d_m d_m^{\prime\prime}}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_2^2 C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast) - C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1} \partial_2^2 C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}^\ast)\\
+  \Sigma_{d_m^\prime d_m^{\prime\prime}}(\mathbf{t}^\ast, \mathbf{t}^\ast) &= \partial_1 \partial_2^2 C_{\bm{\theta}_m}(\mathbf{t}^\ast, \mathbf{t}^\ast) - \partial_1 C_{\bm{\theta}}(\mathbf{t}^\ast, \mathbf{t}_m)\left(C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma^2_m I\right)^{-1} \partial_2^2 C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}^\ast)
 \end{align*}
 
 
@@ -79,21 +79,6 @@ load("../data/nba20192020.rda")
 ETIs$date <- as.Date(sapply(results, function(q) attributes(q)$date), format="%B %e, %Y")
 ETIs$home <- as.factor(sapply(results, function(q) attributes(q)$home))
 ETIs$away <- as.factor(sapply(results, function(q) attributes(q)$away))
-```
-
-# Median posterior excitement per team across season
-```{r, echo=FALSE}
-# Get team-specific average ETIs during season
-team_averages <- rbind(data.frame(Team = ETIs$home, ETI = ETIs$median),
-                       data.frame(Team = ETIs$away, ETI = ETIs$median))
-team_summary <- t(sapply(split(team_averages, team_averages$Team), function(q) {
-  c(Average = mean(q$ETI), SD = sd(q$ETI), quantile(q$ETI, 0.025), quantile(q$ETI, 0.5), quantile(q$ETI, 0.975))
-}))
-team_summary <- round(as.data.frame(team_summary), 2)
-team_summary$Team <- rownames(team_summary)
-
-tab <- team_summary[order(team_summary[,"Average"], decreasing=TRUE),]
-knitr::kable(tab[,c("Team", "Average", "SD", "2.5%", "50%", "97.5%")], row.names=FALSE, digits=2, booktabs = TRUE, format="latex", longtable=TRUE, linesep = c("", "", "", ""), align=c("l", "r", "r|", "r", "r", "r"))
 ```
 
 # Games ordered by decreasing average excitement

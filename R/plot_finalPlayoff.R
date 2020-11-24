@@ -49,8 +49,6 @@ axis(1, seq(0, 48, length.out=9))
 
 dev.off()
 
-
-
 ## Also make a raw plot
 
 
