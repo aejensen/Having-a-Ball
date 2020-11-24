@@ -1,9 +1,9 @@
 ---
 title: "Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation"
 author: | 
-  | Claus Thorn Ekstrøm and Andreas Kryger Jensen
+  | Andreas Kryger Jensen and Claus Thorn Ekstrøm
   | Biostatistics, Institute of Public Health, University of Copenhagen
-  | ekstrom@sund.ku.dk, aeje@sund.ku.dk
+  | aeje@sund.ku.dk, ekstrom@sund.ku.dk
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 fontsize: 11pt  
 header-includes:
@@ -50,26 +50,26 @@ Nu ved jeg godt nok intet om sport, men... \faBasketballBall!
 \end{abstract}
 
 \begin{center}
-\textbf{Keywords:} APBRmetrics, Bayesian Statistics, Gaussian Processes, Sports Statistics, Trends
+\textbf{Keywords:} Bayesian Statistics, Gaussian Processes, Sports Statistics, Trends, APBRmetrics
 \end{center}
 
 # Introduction
 
 Sports analytics receive increasing attention within statistics and not just for match prediction or betting but also for game evaluation, in-game and post-game coaching purposes, and for setting strategies and tactics in future matches. 
 
-Many popular sports such as football (soccer), basketball, boxing, table tennis, volleyball, American football, and handball involves matches between two teams or players where each team have the possibility of scoring throughout the match. Several research papers seek to predict match results (e.g., @skellam2; @groll2019; @Gu2019) or match winners for single matches (@cattelan2013bradley) in order to infer the match winner and potentially the winner of a tournament (@ekstrom2020trps; @baboota).  While the overall result is highly interesting it conveys very little information about the individual development and trends throughout the match and modeling approaches that allow a finer granularity of the score difference throughout the match is needed.
+Many popular sports such as football (soccer), basketball, boxing, table tennis, volleyball, American football, and handball involves matches between two teams or players where each team have the possibility of scoring throughout the match. Several research papers seek to predict match results (e.g., @skellam2; @groll2019; @Gu2019) or match winners for single matches (@cattelan2013bradley) in order to infer the match winner and potentially the winner of a tournament (@ekstrom2020trps; @baboota).  While the overall result is highly interesting it conveys very little information about the individual development and trends throughout the match and modeling approaches that allow a finer granularity of the score difference throughout the match are needed.
 
 The trend in score difference between the two teams is a proxy for their underlying strengths. In particular, sustained periods of time where the score difference increases suggests that one team outperforms the other whereas periods where the teams are constantly catching up to each other suggest that the team's strengths in those periods are similar. Modeling the local trend of the score difference will therefore reflect several aspects of the game in particular the team strengths and game dynamics and momentum as they develop through the match.
 
 Figure \ref{fig1} shows the development of the score difference for the final match of the playoffs in the 2020 National Basketball Association (NBA) series between Los Angeles Lakers and Miami Heat. Positive numbers indicate that LA Lakers are leading and the running score difference shows that the Lakers pulled ahead until the third quarter where Miami Heat started to keep up the scoring pace before overtaking the Lakers and reducing the lead.
 
 \begin{figure}[htbp]
-\includegraphics{../figures/fig1.pdf}
-\caption{Los Angeles Lakers at Miami Heat. October 11, 2020 \textbf{[??? elaborate ???]}}
+\includegraphics{../figures/fig1-raw.pdf}
+\caption{Game development in the final match of the NBA 2019--2020 season between Los Angeles Lakers and Miami Heat. October 11, 2020. Positive values indicate that LA Lakers are leading.}
 \label{fig1}
 \end{figure}
 
-In this paper we will consider the score difference between two teams as a latent Gaussian process and use the Trend Direction Index (TDI) from @ToT as an accommodating measure to evaluate the local probability of the *monotonicity* of the latent process at a given time point during a match. The Trend Direction Index uses a Bayesian framework to provide a direct answer to questions such as "What is the probability that the latent process (i.e., that one team is doing better than another) is increasing at a given time-point?". This will allow real-time evaluation of the score difference trend at the current time-point in the game and will provide post-game inference about the "hot" periods of a match where one team out-performed the other. Furthermore we will present the Excitement Trend Index (ETI) as an objective measure of spectator excitement in a given match. The ETI is defined as the expected number of times that the score difference changes monotonicity during a match. If the score difference changes monotonicity often then that echos a game where both teams frequently score that the whereas a game with a low ETI will represent a one-sided match where one team is doing consistently better than the other over sustained periods of time.
+In this paper we will consider the score difference between two teams as a latent Gaussian process and use the Trend Direction Index (TDI) from @ToT as an accommodating measure to evaluate the local probability of the *monotonicity* of the latent process at a given time point during a match. The Trend Direction Index uses a Bayesian framework to provide a direct answer to questions such as "What is the probability that the latent process (i.e., that one team is doing better than another) is increasing at a given time-point?". This will allow real-time evaluation of the score difference trend at the current time-point in the game and will provide post-game inference about the "hot" periods of a match where one team out-performed the other. Furthermore we will present the Excitement Trend Index (ETI) as an objective measure of spectator excitement in a given match. The ETI is defined as the expected number of times that the score difference changes monotonicity during a match. If the score difference changes monotonicity often then that echos a game where both teams frequently score whereas a game with a low ETI will represent a one-sided match where one team is doing consistently better than the other over sustained periods of time.
 
 
 Other authors have considered using continuous processes to model the score difference of matches. @gabel2012random shows that NBA basketball score difference is well described by a continuous-time anti-persistent random walk which suggests that a latent Gaussian process might be viable.
