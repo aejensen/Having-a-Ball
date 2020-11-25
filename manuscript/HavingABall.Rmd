@@ -2,6 +2,7 @@
 title: "Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation"
 author: | 
   | `r x <- sample(1:2) ; paste0((c("Andreas Kryger Jensen", "Claus Thorn Ekstrøm")[x]), collapse=" and ")`
+  | `r paste0(c("(Andreases Orcid)", "(0000-0003-1191-373X)")[x], collapse=", ")`
   | Biostatistics, Department of Public Health, University of Copenhagen
   | `r paste0(c("aeje@sund.ku.dk", "ekstrom@sund.ku.dk")[x], collapse=", ")`
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -22,12 +23,8 @@ header-includes:
   - \usepackage{float}
   - \floatstyle{plaintop}
   - \restylefloat{table}
-  - \usepackage[amsthm,thmmarks]{ntheorem}
-  - \newtheorem{definition}{Definition}
-  - \newtheorem{assumption}{Assumption}
-  - \newtheorem{proposition}{Proposition}
+  - \usepackage[thmmarks]{ntheorem}
   - \theoremstyle{nonumberplain}
-  - \newtheorem{Proof}{Proof}
   - \usepackage{xcolor}
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
   - \usepackage{fontawesome5}
@@ -37,10 +34,14 @@ output:
   pdf_document: 
     keep_tex: no
     number_sections: yes
+documentclass: svjour3
 bibliography: bibliography.bib    
 editor_options: 
   chunk_output_type: console
 ---
+
+
+\newpage
 
 \newcounter{bbsym4theta}
 \setcounter{bbsym4theta}{1}
@@ -66,7 +67,7 @@ as a measure of overall game excitement.
 
 We apply the our proposed methodology to analyze all 1143 matches from
 the 2019--2020 National Basketball Association (NBA) season, and show
-how the trends can be interpreted in individuals games and how the
+how the trends can be interpreted in individual games and how the
 excitement score can be used to cluster teams according to how
 exciting they are to watch.
 \end{abstract}
@@ -74,6 +75,20 @@ exciting they are to watch.
 \begin{center}
 \textbf{Keywords:} Bayesian Statistics, Gaussian Processes, Sports Statistics, Trends, APBRmetrics
 \end{center}
+
+
+# Declarations
+
+**Funding**: The research was funded by the University of Copenhagen.
+
+**Conflicts of interest/Competing interests**: None
+
+**Availability of data and material**: All data are available at  \texttt{https://github.com/aejensen/Having-a-Ball}
+
+**Code availability**: All code are available at \texttt{https://github.com/aejensen/Having-a-Ball} and \texttt{https://github.com/aejensen/TrendinessOfTrends}.
+
+
+\newpage
 
 # Introduction
 
