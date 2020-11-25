@@ -46,7 +46,29 @@ editor_options:
 \setcounter{bbsym4theta}{1}
 
 \begin{abstract}
-Nu ved jeg godt nok intet om sport, men... \faBasketballBall!
+
+Many popular sports involve matches between two teams or players where
+each team have the possibility of scoring throughout the match. While
+the overall winner and result is interesting it conveys little
+information about the underlying scoring trends throughout the
+match. Modeling approaches that accommodate a finer granularity of the
+score difference throughout the match is needed in order to evaluate
+game strategies, discuss scoring streaks, teams strengths, and other
+aspects of the game.
+
+We propose a latent Gaussian process to model the score difference
+between two teams and introduce the Trend Direction Index as an easily
+interpretable probabilistic measure of the current trend in the match
+as well as a measure of post-game trend evaluation. In addition we
+propose the Excitement Trend Index --- the expected number of
+monotonicity changes in the trend of the running score difference ---
+as a measure of overall game excitement.
+
+We apply the our proposed methodology to analyze all 1143 matches from
+the 2019--2020 National Basketball Association (NBA) season, and show
+how the trends can be interpreted in individuals games and how the
+excitement score can be used to cluster teams according to how
+exciting they are to watch.
 \end{abstract}
 
 \begin{center}
@@ -57,13 +79,14 @@ Nu ved jeg godt nok intet om sport, men... \faBasketballBall!
 
 Sports analytics receive increasing attention within statistics and not just for match prediction or betting but also for game evaluation, in-game and post-game coaching purposes, and for setting strategies and tactics in future matches. 
 
-Many popular sports such as football (soccer), basketball, boxing, table tennis, volleyball, American football, and handball involves matches between two teams or players where each team have the possibility of scoring throughout the match. Several research papers seek to predict match results (e.g., @skellam2; @groll2019; @Gu2019) or match winners for single matches (@cattelan2013bradley) in order to infer the match winner and potentially the winner of a tournament (@ekstrom2020trps; @baboota).  While the overall result is highly interesting it conveys very little information about the individual development and trends throughout the match and modeling approaches that allow a finer granularity of the score difference throughout the match are needed.
+Many popular sports such as football (soccer), basketball, boxing, table tennis, volleyball, American football, and handball involve matches between two teams or players where each team have the possibility of scoring throughout the match. Several research papers seek to predict match results (e.g., @skellam2; @groll2019; @Gu2019) or match winners for single matches (@cattelan2013bradley) in order to infer the match winner and potentially the winner of a tournament (@ekstrom2020trps; @baboota).  While the overall result is highly interesting it conveys very little information about the individual development and trends throughout the match and modeling approaches that allow a finer granularity of the score difference throughout the match are needed.
 
 The trend in score difference between the two teams is a proxy for their underlying strengths. In particular, sustained periods of time where the score difference increases suggests that one team outperforms the other whereas periods where the teams are constantly catching up to each other suggest that the team's strengths in those periods are similar. Modeling the local trend of the score difference will therefore reflect several aspects of the game in particular the team strengths and game dynamics and momentum as they develop through the match.
 
 Figure \ref{fig1} shows the development of the score difference for the final match of the playoffs in the 2020 National Basketball Association (NBA) series between Los Angeles Lakers and Miami Heat. Positive numbers indicate that LA Lakers are leading and the running score difference shows that the Lakers pulled ahead until the third quarter where Miami Heat started to keep up the scoring pace before overtaking the Lakers and reducing the lead.
 
 \begin{figure}[htb]
+\center
 \includegraphics{../figures/fig1-raw.pdf}
 \caption{Game development in the final match of the NBA 2019--2020 season between Los Angeles Lakers and Miami Heat. October 11, 2020. Positive values indicate that LA Lakers are leading.}
 \label{fig1}
@@ -77,7 +100,7 @@ Other authors have considered using continuous processes to model the score diff
 * @chen2020rank
 * @chen2018functional
 
-The paper is structured as follows. In the next section we introduce trend modeling of score differences through a latent Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply the our proposed methodology to analyze both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We show how this distribution can be used to assess relative match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
+The paper is structured as follows. In the next section we introduce trend modeling of score differences through a latent Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply the our proposed methodology to analyze both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We show how this distribution can be used to assess relative match excitement and how the ETI can be used to classify teams according to their average level of match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
 
 Unused stuff for now: 
 
@@ -214,7 +237,12 @@ If we rank the matches from lowest to highest ETI we can extract the analyses fo
 Summarizing the posterior median ETIs at the team level across all matches during the season lead to comparable values for all 30 teams. Table \ref{tab:teamsummary} shows the summary statistics for all 30 teams ordered by their season average excitement. The New Orleans Pelicans had the highest median posterior ETI averaged over the season with an average median posterior ETI of 11.67 (SD = 4.91, IQR = $[3.09; 23.57]$), while the Charlotte Hornets had the lowest average median posterior ETI with a value of 9.29 (SD = 3.74, IQR = $[1.96; 15.98]$). This small fluctuation of averages suggests that the teams are comparable in terms of excitement when averaging across the season, and that the major source of variation in excitement during the season (as seen in Figure \ref{fig2}) is governed by the specific matches. 
 
 Although the team averages in Table \ref{tab:teamsummary} show limited variability it is of interest to estimate a number of subgroups among the teams that exhibited similar degree of excitement on average during the season -- effectively clustering the teams. This would enable fans, promoters, and sponsors to infer which teams were more likely to partake in an exciting game.
-The problem is mathematically equivalent to looking at the relationship between the median ETIs as the outcome in a regression model where the explanatory categorical variable ranges over the set of all partitions of 30 elements, and as the objective we seek the smallest number of partitions that best explains the observed ETIs \textbf{by comparing all possible splits of the ranked teams for a given number of partitions}. This will then define subgroups of teams. Our sequential optimization procedure showed that the leave-one-out cross-validated root mean squared error of prediction stabilized at four subgroups ($\textrm{RMSEP}_\text{LOO-CV} = 4.500$ for two groups, $\textrm{RMSEP}_\text{LOO-CV} = 4.497$ for three groups, $\textrm{RMSEP}_\text{LOO-CV} = 4.496$ for four groups, and subsequently for five to eight groups it remained at the same value). The labels of these groups are shown in the rightmost column in Table  \ref{tab:teamsummary}. The result is thus an identification of three estimated change-points in the ranking of the teams according to the average median posterior ETI. The most noticeable result is that Charlotte Hornets constitute a singleton since that team has substantial lower ETI than the team with the second lowest ETI. To have a higher probability of seeing an exciting game it would be wise to avoid the Hornets.
+The problem is mathematically equivalent to looking at the relationship between the median ETIs as the outcome in a linear regression model where the explanatory categorical variable ranges over the set of all partitions of 30 elements, and as the objective we seek the smallest number of partitions that best explains the observed ETIs by comparing all possible splits of the ranked teams for a given number of partitions. This will then define subgroups of teams.
+
+As a optimization criterion we used root mean squared error of predicting based on leave-one-out cross-validation, denoted $\textrm{RMSEP}_\text{LOO-CV}$. [\textbf{??? finish this ???}].
+
+Our sequential optimization procedure showed that the leave-one-out cross-validated root mean squared error of prediction stabilized at four subgroups ($\textrm{RMSEP}_\text{LOO-CV}^{C=2} = 4.500$, $\textrm{RMSEP}_\text{LOO-CV}^{C=3} = 4.497$, $\textrm{RMSEP}_\text{LOO-CV}^{C=4} = 4.496$, and subsequently for $C = 5,\ldots,8$ it remained at the same value). The labels of these groups are shown in the rightmost column in Table  \ref{tab:teamsummary}. The result is thus an identification of three estimated change-points in the ranking of the teams according to the average median posterior ETI. The most noticeable result is that Charlotte Hornets constitute a singleton since that team has substantial lower ETI than the team with the second lowest ETI. To have a higher probability of seeing an exciting game it would be wise to avoid the Hornets.
+
 
 # Discussion {#sec:discussion}
 
