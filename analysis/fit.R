@@ -37,12 +37,11 @@ fitTrendR <- function(d) {
   sDat$rho_mu <- par[3]
   sDat$sigma_mu <- par[4]
 
-  iter <- 25 * 10^3
+  iter <- 30 * 10^3
   seed <- 12345
   fit <- sampling(m, data = sDat, iter = iter, seed = seed, chains = 4)
-  #pred <- extract(fit, "pred")$pred
   
-  list(data = sDat, posterior = fit)
+  list(data = d, sDat = sDat, posterior = fit)
 }
 
 fit <- fitTrendR(data[[task_id]])
