@@ -2,13 +2,13 @@ library(HDInterval)
 library(rstan)
 library(parallel)
 
-files <- list.files(pattern = "\\.RData$")
+files <- list.files(path = "analysis/output/", pattern = "^fit-.*\\.RData$")
 
 ETIs <- do.call("rbind", mclapply(files, function(f) {
   cat(f, "\n")
   load(f)
   posterior <- extract(fit$posterior, "pred")$pred
-  eti <- apply(posterior[,,6], 1, function(q) pracma::trapz(fit$data$tPred, q))
+  eti <- apply(posterior[,,6], 1, function(q) pracma::trapz(fit$sDat$tPred, q))
   hp <- HDInterval::hdi(eti)
   
   out <- data.frame(file = f,
@@ -22,4 +22,4 @@ ETIs <- do.call("rbind", mclapply(files, function(f) {
   out
 }, mc.cores=64))
 
-save(ETIs, file="results/est_ETIs.RData")
+save(ETIs, file="results/ETIs.RData")
