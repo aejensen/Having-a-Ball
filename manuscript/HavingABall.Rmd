@@ -2,7 +2,7 @@
 title: "Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation"
 author: | 
   | `r x <- sample(1:2) ; paste0((c("Andreas Kryger Jensen", "Claus Thorn Ekstrøm")[x]), collapse=" and ")`
-  | `r paste0(c("(Andreases Orcid)", "(0000-0003-1191-373X)")[x], collapse=", ")`
+  | `r paste0(c("(0000-0002-8233-9176)", "(0000-0003-1191-373X)")[x], collapse=", ")`
   | Biostatistics, Department of Public Health, University of Copenhagen
   | `r paste0(c("aeje@sund.ku.dk", "ekstrom@sund.ku.dk")[x], collapse=", ")`
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -30,6 +30,9 @@ header-includes:
   - \usepackage{fontawesome5}
   - \usepackage{todonotes}
   - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=1}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
+  - \authorrunning{`r paste0((c("AK Jensen", "CT Ekstrøm")[x]), collapse=" and ")`}
+  - \titlerunning{Having a Ball}
+  - \institute{Biostatistics, Department of Public Health\\University of Copenhagen\\ Øster Farimagsgade 5\\ 1014 København K\\ DENMARK}
 output:
   pdf_document: 
     keep_tex: no
@@ -39,7 +42,6 @@ bibliography: bibliography.bib
 editor_options: 
   chunk_output_type: console
 ---
-
 
 \newpage
 
@@ -77,15 +79,15 @@ exciting they are to watch.
 \end{center}
 
 
-# Declarations
+# Declarations {-}
 
 **Funding**: The research was funded by the University of Copenhagen.
 
 **Conflicts of interest/Competing interests**: None
 
-**Availability of data and material**: All data are available at  \texttt{https://github.com/aejensen/Having-a-Ball}
+**Availability of data and material**: All data are available at \url{https://github.com/aejensen/Having-a-Ball}
 
-**Code availability**: All code are available at \texttt{https://github.com/aejensen/Having-a-Ball} and \texttt{https://github.com/aejensen/TrendinessOfTrends}.
+**Code availability**: All code are available at \url{https://github.com/aejensen/Having-a-Ball} and \url{https://github.com/aejensen/TrendinessOfTrends}.
 
 
 \newpage

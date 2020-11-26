@@ -12,7 +12,6 @@ options(mc.cores = 1)
 
 m <- stan_model("gptrend.stan")
 load("../data/nba20192020.rda")
-data <- results[sapply(results, is.list)]
 
 fitTrendR <- function(d) {
   tPred <- seq(0, 48, length.out = 200)
@@ -27,7 +26,7 @@ fitTrendR <- function(d) {
     mu <- rep(par[1], nrow(d))
     cMat <- outer(d$time, d$time, seCov, par[2], par[3]) + diag(par[4]^2 , nrow(d))
     -mvtnorm::dmvnorm(d$scorediff, mu, cMat, log=TRUE)
-  }, lower = c(-50,0,0,0), upper = c(50,20,50,10), control = ctl)
+  }, lower = c(-50,0,0,0), upper = c(50,30,50,10), control = ctl)
   par <- opt$optim$bestmem
 	
   #Fit model
@@ -44,7 +43,7 @@ fitTrendR <- function(d) {
   list(data = d, sDat = sDat, posterior = fit)
 }
 
-fit <- fitTrendR(data[[task_id]])
+fit <- fitTrendR(results[[task_id]])
 
 fit
 
