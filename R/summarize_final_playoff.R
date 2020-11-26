@@ -22,7 +22,13 @@ post_summary <- data.frame(tPred = fit$sDat$tPred,
                            TDI_50_L = apply(posterior[,,5], 2, quantile, prob=0.25),
                            TDI_50_U = apply(posterior[,,5], 2, quantile, prob=0.75),
                            TDI_95_L = apply(posterior[,,5], 2, quantile, prob=0.025),
-                           TDI_95_U = apply(posterior[,,5], 2, quantile, prob=0.975))
+                           TDI_95_U = apply(posterior[,,5], 2, quantile, prob=0.975),
+                           dETI_mean = apply(posterior[,,6], 2, mean),
+                           dETI_median = apply(posterior[,,6], 2, median),
+                           dETI_50_L = apply(posterior[,,6], 2, quantile, prob=0.25),
+                           dETI_50_U = apply(posterior[,,6], 2, quantile, prob=0.75),
+                           dETI_95_L = apply(posterior[,,6], 2, quantile, prob=0.025),
+                           dETI_95_U = apply(posterior[,,6], 2, quantile, prob=0.975))
 
 ETI <- apply(posterior[,,6], 1, function(q) pracma::trapz(fit$sDat$tPred, q)) 
 
