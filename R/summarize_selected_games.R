@@ -1,37 +1,38 @@
 library(rstan)
 
-load(file="results/est_ETIs.RData")
+load(file="../results/posterior_ETIs.RData")
 
 getSummary <- function(fit) {
   posterior <- extract(fit$posterior, "pred")$pred	
-  data.frame(t = fit$data$tPred,
+  data.frame(t = fit$sDat$tPred,
              #Mean function
-             f = apply(posterior[,,1], 2, mean),
-  					 f_med = apply(posterior[,,1], 2, median),
+             f_mean = apply(posterior[,,1], 2, mean),
+             f_median = apply(posterior[,,1], 2, median),
              f_50_L = apply(posterior[,,1], 2, quantile, prob = 0.25),
              f_50_U = apply(posterior[,,1], 2, quantile, prob = 0.75),
              f_95_L = apply(posterior[,,1], 2, quantile, prob = 0.025),
              f_95_U = apply(posterior[,,1], 2, quantile, prob = 0.975),
-             f_99_L = apply(posterior[,,1], 2, quantile, prob = 0.005),
-             f_99_U = apply(posterior[,,1], 2, quantile, prob = 0.995),
              #Derivative
-             df = apply(posterior[,,3], 2, mean),
-  					 df_med = apply(posterior[,,3], 2, median),
+             df_mean = apply(posterior[,,3], 2, mean),
+             df_median = apply(posterior[,,3], 2, median),
              df_50_L = apply(posterior[,,3], 2, quantile, prob = 0.25),
              df_50_U = apply(posterior[,,3], 2, quantile, prob = 0.75),
              df_95_L = apply(posterior[,,3], 2, quantile, prob = 0.025),
              df_95_U = apply(posterior[,,3], 2, quantile, prob = 0.975),
-             df_99_L = apply(posterior[,,3], 2, quantile, prob = 0.005),
-             df_99_U = apply(posterior[,,3], 2, quantile, prob = 0.995),
              #Trend Direction Index
-             TDI = apply(posterior[,,5], 2, mean),
-  					 TDI_med = apply(posterior[,,5], 2, median),
+             TDI_mean = apply(posterior[,,5], 2, mean),
+             TDI_median = apply(posterior[,,5], 2, median),
              TDI_50_L = apply(posterior[,,5], 2, quantile, prob = 0.25),
              TDI_50_U = apply(posterior[,,5], 2, quantile, prob = 0.75),
              TDI_95_L = apply(posterior[,,5], 2, quantile, prob = 0.025),
              TDI_95_U = apply(posterior[,,5], 2, quantile, prob = 0.975),
-             TDI_99_L = apply(posterior[,,5], 2, quantile, prob = 0.005),
-             TDI_99_U = apply(posterior[,,5], 2, quantile, prob = 0.995))
+             #Local Excitement Trend Index
+             dETI_mean = apply(posterior[,,6], 2, mean),
+             dETI_median = apply(posterior[,,6], 2, median),
+             dETI_50_L = apply(posterior[,,6], 2, quantile, prob=0.25),
+             dETI_50_U = apply(posterior[,,6], 2, quantile, prob=0.75),
+             dETI_95_L = apply(posterior[,,6], 2, quantile, prob=0.025),
+             dETI_95_U = apply(posterior[,,6], 2, quantile, prob=0.975))
 }
 
 minIndex <- which(ETIs[,"median"] == min(ETIs[,"median"]))
@@ -43,19 +44,19 @@ maxIndex <- which(ETIs[,"median"] == max(ETIs[,"median"]))
 ETIs[c(minIndex, quant25Index, medianIndex, quant75Index, maxIndex),]
 
 #####
-load(paste("analysis/output/", ETIs[minIndex, "file"], sep=""))
+load(paste("../analysis/output/", ETIs[minIndex, "file"], sep=""))
 min_summary <- getSummary(fit)
 
-load(paste("analysis/output/", ETIs[quant25Index, "file"], sep=""))
+load(paste("../analysis/output/", ETIs[quant25Index, "file"], sep=""))
 quant25_summary <- getSummary(fit)
 
-load(paste("analysis/output/", ETIs[medianIndex, "file"], sep=""))
+load(paste("../analysis/output/", ETIs[medianIndex, "file"], sep=""))
 median_summary <- getSummary(fit)
 
-load(paste("analysis/output/", ETIs[quant75Index, "file"], sep=""))
+load(paste("../analysis/output/", ETIs[quant75Index, "file"], sep=""))
 quant75_summary <- getSummary(fit)
 
-load(paste("analysis/output/", ETIs[maxIndex, "file"], sep=""))
+load(paste("../analysis/output/", ETIs[maxIndex, "file"], sep=""))
 max_summary <- getSummary(fit)
 
 save(min_summary, 
@@ -68,4 +69,4 @@ save(min_summary,
      medianIndex, 
      quant75Index,
      maxIndex,
-     file="results/selected_game_summaries.RData")
+     file="../results/summary_selected_games.RData")

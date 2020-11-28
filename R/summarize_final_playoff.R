@@ -1,6 +1,6 @@
 library(rstan)
 
-load("analysis/output/fit_finalPlayoff.RData")
+load("../analysis/output/fit_finalPlayoff.RData")
 
 posterior <- extract(fit$posterior, "pred")$pred
 
@@ -34,4 +34,4 @@ ETI <- apply(posterior[,,6], 1, function(q) pracma::trapz(fit$sDat$tPred, q))
 
 data <- fit$data
 
-save(data, post_summary, ETI, file = "results/summary_final_playoff.RData")
+save(data, post_summary, ETI, file = "../results/summary_final_playoff.RData")

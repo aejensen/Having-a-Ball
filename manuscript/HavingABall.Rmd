@@ -288,7 +288,7 @@ A different approach would be to define team-specific excitement index nested wi
 
 ```{r, echo=FALSE}
 library(kableExtra)
-load("../results/ETI_team_analysis.RData")
+load("../results/teams_grouped_by_ETI.RData")
 
 teamData$groups <- teamData$team
 levels(teamData$groups) <- as.vector(floor(part_4$optim$bestmem))
@@ -321,8 +321,8 @@ colnames(tab) <- c("Average", "SD", "2.5%", "50%", "97.5%", "class_num")
 tab <- tab[order(tab$Average, decreasing=TRUE), ]
 tab$Group <- tab$class_num
 tab$Group[tab$class_num == "2"] <- "A"
-tab$Group[tab$class_num == "0"] <- "B"
-tab$Group[tab$class_num == "3"] <- "C"
+tab$Group[tab$class_num == "0"] <- "C"
+tab$Group[tab$class_num == "3"] <- "B"
 tab$Group[tab$class_num == "1"] <- "D"
 tab$class_num <- NULL
 
@@ -330,5 +330,5 @@ kable(tab,
       format = "latex", digits = 2, booktabs = TRUE,
       linesep = c("", "", "", ""), 
       align = c("r", "r|", "r", "r", "r|", "r"),
-			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\%, 50\\%, and 97.5\\% percentiles are shown. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(8, hline_after = TRUE) %>% row_spec(18, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
+			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\%, 50\\%, and 97.5\\% percentiles are shown. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(19, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
 ```
