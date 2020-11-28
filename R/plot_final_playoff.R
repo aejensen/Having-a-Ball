@@ -16,14 +16,15 @@ plot(data$time, data$scorediff, pch = 19, xlab = "Game time [minutes]", ylab = "
      type = "n", ylim = c(0, 40), xlim = c(0,48), xaxt = "n")
 title("Running score difference", font.main = 1)
 axis(1, seq(0, 48, length.out=9))
+band(post_summary$tPred, post_summary$y_95_L, post_summary$y_95_U, col = "gray88")
 band(post_summary$tPred, post_summary$f_95_L, post_summary$f_95_U, col = "gray65")
 band(post_summary$tPred, post_summary$f_50_L, post_summary$f_50_U, col = "gray45")
 lines(post_summary$tPred, post_summary$f_mean, lwd = 2)
 points(data$time, data$scorediff, pch = 19, col = "black", cex = 0.6)
-legend("topleft", c("Mean", "50%", "95%"), 
-       col = c("black", "gray45", "gray65"), 
-       lwd = 2, bty = "n", cex = 0.8, lty = c(1, NA, NA), 
-       pch = c(NA, 15, 15), pt.cex = 1.5)
+legend("topleft", c("Mean", "50% CI", "95% CI", "95% PPI"), 
+       col = c("black", "gray45", "gray65", "gray88"), 
+       lwd = 2, bty = "n", cex = 0.8, lty = c(1, NA, NA, NA), 
+       pch = c(NA, 15, 15, 15), pt.cex = 1.5, seg.len=1)
 
 plot(post_summary$tPred, post_summary$df_mean, ylim = c(-5, 5), type = "n", lwd = 2,
 		 xlab = "Game time [minutes]", ylab = "Trend", yaxt = "n", xaxt = "n")
@@ -64,5 +65,4 @@ plot(data$time, data$scorediff, pch = 19, xlab = "Game time [minutes]", ylab = "
 title("Running score difference", font.main = 1)
 axis(1, seq(0, 48, length.out = 9))
 points(data$time, data$scorediff, pch = 19, col  ="black", cex = 0.6)
-
 dev.off()

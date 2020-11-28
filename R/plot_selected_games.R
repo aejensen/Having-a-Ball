@@ -8,7 +8,7 @@ band <- function(t, l, u, col) {
   polygon(c(t, rev(t)), c(l, rev(u)), col=col, border = NA)
 }
 
-pdf("../figures/fig3.pdf", width = 8, height = 9)
+pdf("../figures/fig3.pdf", width = 8, height = 13)
 
 ########################################
 # Min plot
@@ -37,8 +37,6 @@ legend("topright",
        lwd = 2, bty="n", cex=0.9, lty = c(1, NA, NA), 
 			 pch = c(NA, 15, 15), pt.cex=1.5, seg.len=1.3)
 
-
-
 plot(min_summary$t, min_summary$df_mean, type="n", xaxt="n", xlab="Game time [minutes]",
      ylab="Trend", ylim=c(-10, 10))
 axis(1, seq(0, 48, length.out=9))
@@ -48,13 +46,13 @@ band(min_summary$t, min_summary$df_50_L, min_summary$df_50_U, col="gray45")
 lines(min_summary$t, min_summary$df_mean, lwd=2)
 lines(c(0,48), c(0,0), lty=2)
 mtext(paste(attributes(results[[minIndex]])$home, 
-            " vs ", 
+            " vs. ", 
             attributes(results[[minIndex]])$away,
             ", ETI = ", 
             round(ETIs[minIndex, "median"], 2),
             #" (", attributes(results[[minIndex]])$date, ")",
             " (season minimum)",
-            sep=""), cex=1, font=2, padj=-0.9)
+            sep=""), cex=1.2, font=2, padj=-0.9)
 
 plot(min_summary$t, min_summary$TDI_median*100, type="n", xaxt="n", xlab="Game time [minutes]",
     ylab="TDI [%]", ylim=c(0,100))
@@ -88,13 +86,13 @@ band(quant25_summary$t, quant25_summary$df_50_L, quant25_summary$df_50_U, col="g
 lines(quant25_summary$t, quant25_summary$df_mean, lwd=2)
 lines(c(0,48), c(0,0), lty=2)
 mtext(paste(attributes(results[[quant25Index]])$home, 
-            " vs ", 
+            " vs. ", 
             attributes(results[[quant25Index]])$away,
             ", ETI = ", 
             round(ETIs[quant25Index, "median"], 2),
             #" (", attributes(results[[quant25Index]])$date, ")",
             " (season 25% percentile)",
-            sep=""), cex=1, font=2, padj=-0.9)
+            sep=""), cex=1.2, font=2, padj=-0.9)
 
 plot(quant25_summary$t, quant25_summary$TDI_median*100, type="n", xaxt="n", xlab="Game time [minutes]",
     ylab="TDI [%]", ylim=c(0,100))
@@ -128,13 +126,13 @@ band(median_summary$t, median_summary$df_50_L, median_summary$df_50_U, col="gray
 lines(median_summary$t, median_summary$df_mean, lwd=2)
 lines(c(0,48), c(0,0), lty=2)
 mtext(paste(attributes(results[[medianIndex]])$home, 
-            " vs ", 
+            " vs. ", 
             attributes(results[[medianIndex]])$away,
             ", ETI = ", 
             round(ETIs[medianIndex, "median"], 2),
             #" (", attributes(results[[medianIndex]])$date, ")",
             " (season median)",
-            sep=""), cex=1, font=2, padj=-0.9)
+            sep=""), cex=1.2, font=2, padj=-0.9)
 
 plot(median_summary$t, median_summary$TDI_median*100, type="n", xaxt="n",
     ylab="TDI [%]", ylim=c(0,100), xlab="Game time [minutes]")
@@ -168,13 +166,13 @@ band(quant75_summary$t, quant75_summary$df_50_L, quant75_summary$df_50_U, col="g
 lines(quant75_summary$t, quant75_summary$df_mean, lwd=2)
 lines(c(0,48), c(0,0), lty=2)
 mtext(paste(attributes(results[[quant75Index]])$home, 
-            " vs ", 
+            " vs. ", 
             attributes(results[[quant75Index]])$away,
             ", ETI = ", 
             round(ETIs[quant75Index, "median"], 2),
             #" (", attributes(results[[quant75Index]])$date, ")",
             " (season 75% percentile)",
-            sep=""), cex=1, font=2, padj=-0.9)
+            sep=""), cex=1.2, font=2, padj=-0.9)
 
 plot(quant75_summary$t, quant75_summary$TDI_median*100, type="n", xaxt="n",
     ylab="TDI [%]", ylim=c(0,100), xlab="Game time [minutes]")
@@ -208,13 +206,13 @@ band(max_summary$t, max_summary$df_50_L, max_summary$df_50_U, col="gray45")
 lines(max_summary$t, max_summary$df_mean, lwd=2)
 lines(c(0,48), c(0,0), lty=2)
 mtext(paste(attributes(results[[maxIndex]])$home, 
-            " vs ", 
+            " vs. ", 
             attributes(results[[maxIndex]])$away,
             ", ETI = ", 
             round(ETIs[maxIndex, "median"], 2),
             #" (", attributes(results[[maxIndex]])$date, ")",
             " (season maximum)",
-            sep=""), cex=1, font=2, padj=-0.9)
+            sep=""), cex=1.2, font=2, padj=-0.9)
 
 plot(max_summary$t, max_summary$TDI_median, type="n", xaxt="n", xlab="Game time [minutes]",
      ylab="TDI [%]", ylim=c(0,100))

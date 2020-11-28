@@ -12,7 +12,10 @@ getSummary <- function(fit) {
              f_50_U = apply(posterior[,,1], 2, quantile, prob = 0.75),
              f_95_L = apply(posterior[,,1], 2, quantile, prob = 0.025),
              f_95_U = apply(posterior[,,1], 2, quantile, prob = 0.975),
-             #Derivative
+             #Posterior predictive distribution
+             y_95_L = apply(posterior[,,2], 2, quantile, prob=0.025),
+             y_95_U = apply(posterior[,,2], 2, quantile, prob=0.975),
+             #Trend
              df_mean = apply(posterior[,,3], 2, mean),
              df_median = apply(posterior[,,3], 2, median),
              df_50_L = apply(posterior[,,3], 2, quantile, prob = 0.25),

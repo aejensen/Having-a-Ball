@@ -28,7 +28,6 @@ header-includes:
   - \usepackage{xcolor}
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
   - \usepackage{fontawesome5}
-  - \usepackage{todonotes}
   - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=1}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
   - \authorrunning{`r paste0((c("AK Jensen", "CT Ekstrøm")[x]), collapse=" and ")`}
   - \titlerunning{Having a Ball}
@@ -131,7 +130,7 @@ Our model is based on the observed score differences $D_m$ in a given match inde
 We assume that the observed match data from a given match are noisy realizations of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. Our objective is to infer $d_m$ and its time dynamics from $\mathcal{D}_m$. In pursuance of this ambition we propose the following model where $d_m$ is a Gaussian process defined on a compact subset of the real line $\mathcal{I}_m$ corresponding to the duration of the $m$'th game, and the observed data conditional on the scoring times and the values of the latent process at these times are independently normally distributed random variables with a match specific variance. This model for a given match can be stated hierarchically as
 \begin{align}
 \begin{split}
-  \BTheta_m \mid \bm{\Psi_m}, \mathbf{t}_m &\sim H(\BTheta_m \mid \bm{\Psi}_m)\\
+  \BTheta_m \mid \bm{\Psi}_m, \mathbf{t}_m &\sim H(\BTheta_m \mid \bm{\Psi}_m)\\
   d_m(t) \mid \BTheta_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(s, t))\\
   D_m(t_{mi}) \mid d_m(t_{mi}), t_{mi}, \BTheta_m &\overset{iid}{\sim} N\left(d_m(t_{mi}), \sigma_{m}^2\right)
 \end{split}
@@ -206,7 +205,7 @@ In our application we used a constant prior mean and the squared exponential cov
 \begin{align*}
   \mu_{\bm{\beta}_m}(t) = \beta_m, \quad C_{\bm{\theta}_m}(s, t) = \alpha^2_m\exp\left(-\frac{(s-t)^2}{2\rho^2_m}\right)
 \end{align*}
-with $\bm{\theta}_m = (\alpha_m, \rho_m) > 0$ and hence $\BTheta_m = (\beta_m,\alpha_m, \rho_m,\sigma^2)$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]} For the hyper-parameters of $\BTheta_m$ we used independent, heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates of the form
+and thus $\BTheta_m = (\beta_m,\alpha_m, \rho_m, \sigma_m) \in \mathbb{R} \times \mathbb{R}_{>0}^3$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]} For the hyper-parameters of $\BTheta_m$ we used independent, heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates of the form
 \begin{align*}
 H(\BTheta_m \mid \bm{\Psi}_m) = H(\beta_m \mid \Psi_{\beta_m})H(\alpha_m \mid \Psi_{\alpha_m})H(\rho_m \mid \Psi_{\rho_m})H(\sigma_m \mid \Psi_{\sigma_m})
 \end{align*}
@@ -214,9 +213,14 @@ with
 \begin{align*}
 \beta_{m} \sim T_4\left(\widehat{\beta_m^\text{ML}}, 5\right), \; \alpha_m \sim T^+_4\left(\widehat{\alpha_m^\text{ML}}, 5\right), \; \rho_m \sim T_4^+\left(\widehat{\rho_m^\text{ML}}, 5\right), \; \sigma_m \sim T^+_4\left(\widehat{\sigma_m^\text{ML}}, 5\right)
 \end{align*}
-where $T_{\text{df}}$ denotes a location-scale T distribution with $\mathrm{df}$ degrees of freedom, and $T_{\text{df}}^+$ is the distribution truncated to the positive real line.
+where $T_{\text{df}}$ denotes a location-scale T distribution with $\mathrm{df}$ degrees of freedom, and $T_{\text{df}}^+$ is the distribution truncated to the positive real line. By the properties of the model in Equation (\ref{eq:hierarchicalmodel}) the marginal maximum log-likelihood function has the following closed-form expression
+\begin{align*}
+\log L(\BTheta_m \mid \mathcal{D}_m) &\propto - \frac{1}{2}\log |C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma_m^2 I|\\
+&- \frac{1}{2}(\mathbf{D}_m - \mu_{\bm{\beta}_m}(\mathbf{t}_m))^T\left[C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma_m^2 I\right]^{-1}(\mathbf{D}_m - \mu_{\bm{\beta}_m}(\mathbf{t}_m))
+\end{align*}
+and the marginal maximum likelihood estimate $\widehat{\BTheta_m^\text{ML}} = \argsup_{\BTheta} \log L(\BTheta \mid \mathcal{D}_m)$ is obtained by numerical optimization or as the roots to the score equations $\nabla_{\BTheta} \log L(\BTheta \mid \mathcal{D}_m) = 0$. 
 
-We have implemented the estimation procedure in the probabilistic programming language Stan [@carpenter2017stan] using the Hamiltonian MCMC (Markov Chain Monte Carlo) algorithm to sample from the posterior distributions $\textrm{TDI}_m(t \mid \widetilde{\BTheta}_m)$ and $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ on a equidistant grid of $200$ time points in $\mathcal{I}_m$. For each match we ran four independent chains for 25,000 iterations each with half of the iterations used for warm-up. The posterior distribution of $\text{ETI}_m \mid \widetilde{\BTheta}_m$ was calculated by numerical integration of $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ using the trapezoidal rule on the grid of time points.
+We have implemented the estimation procedure in the probabilistic programming language Stan [@carpenter2017stan] using the Hamiltonian MCMC (Markov Chain Monte Carlo) algorithm to sample from the posterior distributions $\textrm{TDI}_m(t \mid \widetilde{\BTheta}_m)$ and $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ on a equidistant grid of $241$ time points in $\mathcal{I}_m$. For each match we ran four independent chains for 50,000 iterations each with half of the iterations used for warm-up. The posterior distribution of $\text{ETI}_m \mid \widetilde{\BTheta}_m$ was calculated by numerical integration of $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ using the trapezoidal rule on the grid of time points.
 
 
 # Application: The 2019--2020 NBA basketball season {#sec:application}
@@ -231,7 +235,7 @@ For our first purpose of analyzing trends in individuals matches we consider the
 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig1.pdf}
-\caption{Results from fitting the latent Gaussian Process to the final match between LA Lakers and Miami Heat in the 2019--2020 NBA season. Larger values in running score differences and the Trend Direction Index reflect the situation where LA Lakers are doing better. The top left panel shows the posterior distribution of the the latent process with the posterior means in bold. The gray areas show point-wise credibility intervals for the posterior distribution. The top right panel provides similar information for the derivative of the latent process, i.e., the posterior trend. The bottom left panel shows the Trend Direction Index and can be used to read off probability statements about the trends in the running score difference. The bottom right panel shows the local Excitement Trend Index and quantifies the instantaneous probability of a change in monotonificy of the score differences.}
+\caption{Results from fitting the latent Gaussian Process to the final match between LA Lakers and Miami Heat in the 2019--2020 NBA season. Larger values in running score differences and the Trend Direction Index reflect the situation where LA Lakers are doing better. The top left panel shows the posterior distribution of the the latent process with the posterior means in bold. The gray areas show point-wise credibility intervals for the posterior distribution. The top right panel provides similar information for the derivative of the latent process, i.e., the posterior trend. The bottom left panel shows the Trend Direction Index and can be used to read off probability statements about the trends in the running score difference. The bottom right panel shows the local Excitement Trend Index and quantifies the instantaneous probability of a change in monotonicity of the score differences.}
 \label{fig1b}
 \end{figure}
 
@@ -266,7 +270,7 @@ Some summarization goes on here. We have introduced etc...
 
 We could define a weighted Excitement Trend Index, $\mathrm{WETI}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team as measured by the absolute value of the posterior mean $\mu_{d_m}$. This motivates a modification of the definition of the ETI in Equation (\ref{eq:ETIdef}) to the following weighted form
 \begin{align*}
-  \mathrm{WETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)w(t, |\mu_{d_m}(t)|)\mathrm{d}t
+  \mathrm{wETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)w(t, |\mu_{d_m}(t)|)\mathrm{d}t
 \end{align*}
 where $w\colon\, \mathcal{I}_m \times \mathbb{R}_{\geq 0} \mapsto \mathbb{R}_{\geq 0}$ is a weight function being increasing in its first variable and decreasing in its second variable. Such weight functions could be constructed as a product of two kernel functions defined on their individual domains and with bandwidths based on studies of psychological perception.
 
@@ -275,8 +279,6 @@ A different approach would be to define team-specific excitement index nested wi
 # Bibliography {-}
 
 <div id="refs"></div>
-
-\newpage
 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig3.pdf}
@@ -330,5 +332,5 @@ kable(tab,
       format = "latex", digits = 2, booktabs = TRUE,
       linesep = c("", "", "", ""), 
       align = c("r", "r|", "r", "r", "r|", "r"),
-			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\%, 50\\%, and 97.5\\% percentiles are shown. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(19, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
+			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season and ordered by the season average. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(19, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
 ```
