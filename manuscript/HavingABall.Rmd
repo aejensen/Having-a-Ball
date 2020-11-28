@@ -220,7 +220,7 @@ where $T_{\text{df}}$ denotes a location-scale T distribution with $\mathrm{df}$
 \end{align*}
 and the marginal maximum likelihood estimate $\widehat{\BTheta_m^\text{ML}} = \argsup_{\BTheta} \log L(\BTheta \mid \mathcal{D}_m)$ is obtained by numerical optimization or as the roots to the score equations $\nabla_{\BTheta} \log L(\BTheta \mid \mathcal{D}_m) = 0$. 
 
-We have implemented the estimation procedure in the probabilistic programming language Stan [@carpenter2017stan] using the Hamiltonian MCMC (Markov Chain Monte Carlo) algorithm to sample from the posterior distributions $\textrm{TDI}_m(t \mid \widetilde{\BTheta}_m)$ and $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ on a equidistant grid of $241$ time points in $\mathcal{I}_m$. For each match we ran four independent chains for 50,000 iterations each with half of the iterations used for warm-up. The posterior distribution of $\text{ETI}_m \mid \widetilde{\BTheta}_m$ was calculated by numerical integration of $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ using the trapezoidal rule on the grid of time points.
+We have implemented our model in the probabilistic programming language Stan [@carpenter2017stan] that uses Hamiltonian MCMC (Markov Chain Monte Carlo) algorithm to sample from the posterior distributions $\textrm{TDI}_m(t \mid \widetilde{\BTheta}_m)$ and $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ on any finite set of time points $\mathbf{t}_m^\ast \subset \mathcal{I}_m$. 
 
 
 # Application: The 2019--2020 NBA basketball season {#sec:application}
@@ -230,6 +230,9 @@ To show the applicability of our proposed model we will apply it to data from al
 The 2019--2020 NBA season was suspended mid-March because of Covid-19 but it was resumed again in July 2020. There were a total of 1059 regular season matches. The subsequent playoffs comprised 84 matches including the final for a grand total of 1143 matches. For ease of comparison we are only considering the first 48 regular minutes of each match --- any part of a match that goes into overtime will be disregarded, and we hence let $\mathcal{I}_m = [0; 48]$ minutes.
 
 We wish to use the trend analysis proposed for three purposes: 1) to show how the Trend Direction Index can be used to infer real-time and post-game evaluation of the trends in a match. 2) To evaluate the Excitement Trend Index for all 1143 matches in the 2019--2020 season to provide background and reference information about the matches, and 3) to summarize ETI at the team level in order to identify group of teams more/less likely to give an exciting game. 
+
+\textbf{[??? fix fitting stuff here ???]}
+For each match we ran four independent chains for 50,000 iterations each with half of the iterations used for warm-up. Using 241 equidistant grid points in $[0; 48]$. The posterior distribution of $\text{ETI}_m \mid \widetilde{\BTheta}_m$ was calculated by numerical integration of $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ using the trapezoidal rule on the grid of time points.
 
 For our first purpose of analyzing trends in individuals matches we consider the final match of the 2019-2020 season. The raw data for the running score difference between LA Lakers and Miami Heat was shown in Figure \ref{fig1}. Figure \ref{fig1b} shows the results from the post-game analysis. 
 
