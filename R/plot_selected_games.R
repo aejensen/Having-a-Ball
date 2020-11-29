@@ -18,24 +18,24 @@ par(mfrow=c(5,3), bty="n", mar = c(2.7, 2.7, 2.5, 0), mgp=c(1.5,0.4,0),
 
 plot(min_summary$t, min_summary$f_mean, type="n", xaxt="n", xlab="Game time [minutes]",
   ylab="Score difference", ylim=c(-50, 0))
-points(results[[minIndex]]$time[results[[minIndex]]$time < 48], 
-			 results[[minIndex]]$scorediff[results[[minIndex]]$time < 48], 
-			 pch=19, cex=0.8)
 axis(1, seq(0, 48, length.out=9))
-#band(min_summary$t, min_summary$f_99_L, min_summary$f_99_U, col="gray80")
+band(min_summary$t, min_summary$y_95_L, min_summary$y_95_U, col="gray88")
 band(min_summary$t, min_summary$f_95_L, min_summary$f_95_U, col="gray65")
 band(min_summary$t, min_summary$f_50_L, min_summary$f_50_U, col="gray45")
 lines(min_summary$t, min_summary$f_mean, lwd=2)
+points(results[[minIndex]]$time[results[[minIndex]]$time < 48], 
+			 results[[minIndex]]$scorediff[results[[minIndex]]$time < 48], 
+			 pch=19, cex=0.8)
 #legend("bottomleft", 
 #			 c("Mean", "50%", "95%", "99%"), 
 #			 col = c("black", "gray45", "gray65", "gray85"),
 #       lwd = 2, bty="n", cex=0.9, lty = c(1, NA, NA, NA), 
 #			 pch = c(NA, 15, 15, 15), pt.cex=1.5, seg.len=1.3)
 legend("topright", 
-			 c("Mean", "50% CI", "95% CI"), 
-			 col = c("black", "gray45", "gray65"),
-       lwd = 2, bty="n", cex=0.9, lty = c(1, NA, NA), 
-			 pch = c(NA, 15, 15), pt.cex=1.5, seg.len=1.3)
+			 c("Mean", "50% CI", "95% CI", "95% PPI"), 
+			 col = c("black", "gray45", "gray65", "gray88"),
+       lwd = 2, bty="n", cex=0.9, lty = c(1, NA, NA, NA), 
+			 pch = c(NA, 15, 15, 15), pt.cex=1.5, seg.len=1.3)
 
 plot(min_summary$t, min_summary$df_mean, type="n", xaxt="n", xlab="Game time [minutes]",
      ylab="Trend", ylim=c(-10, 10))
@@ -68,14 +68,14 @@ lines(c(0,48), c(50,50), lty = 2)
 ########################################
 plot(quant25_summary$t, quant25_summary$f_mean, type="n", xaxt="n", xlab="Game time [minutes]",
   ylab="Score difference", ylim=c(-20, 10))
-points(results[[quant25Index]]$time[results[[quant25Index]]$time < 48], 
-			 results[[quant25Index]]$scorediff[results[[quant25Index]]$time < 48], 
-			 pch=19, cex=0.8)
 axis(1, seq(0, 48, length.out=9))
-#band(quant25_summary$t, quant25_summary$f_99_L, quant25_summary$f_99_U, col="gray80")
+band(quant25_summary$t, quant25_summary$y_95_L, quant25_summary$y_95_U, col="gray88")
 band(quant25_summary$t, quant25_summary$f_95_L, quant25_summary$f_95_U, col="gray65")
 band(quant25_summary$t, quant25_summary$f_50_L, quant25_summary$f_50_U, col="gray45")
 lines(quant25_summary$t, quant25_summary$f_mean, lwd=2)
+points(results[[quant25Index]]$time[results[[quant25Index]]$time < 48], 
+			 results[[quant25Index]]$scorediff[results[[quant25Index]]$time < 48], 
+			 pch=19, cex=0.8)
 
 plot(quant25_summary$t, quant25_summary$df_mean, type="n", xaxt="n", xlab="Game time [minutes]",
      ylab="Trend", ylim=c(-10, 10))
@@ -108,14 +108,14 @@ lines(c(0,48), c(50,50), lty = 2)
 ########################################
 plot(median_summary$t, median_summary$f_mean, type="n", xaxt="n", xlab="Game time [minutes]",
 		 ylab="Score difference", ylim=c(-20, 10))
-points(results[[medianIndex]]$time[results[[medianIndex]]$time < 48], 
-			 results[[medianIndex]]$scorediff[results[[medianIndex]]$time < 48], 
-			 pch=19, cex=0.8)
 axis(1, seq(0, 48, length.out=9))
-#band(median_summary$t, median_summary$f_99_L, median_summary$f_99_U, col="gray80")
+band(median_summary$t, median_summary$y_95_L, median_summary$y_95_U, col="gray88")
 band(median_summary$t, median_summary$f_95_L, median_summary$f_95_U, col="gray65")
 band(median_summary$t, median_summary$f_50_L, median_summary$f_50_U, col="gray45")
 lines(median_summary$t, median_summary$f_mean, lwd=2)
+points(results[[medianIndex]]$time[results[[medianIndex]]$time < 48], 
+			 results[[medianIndex]]$scorediff[results[[medianIndex]]$time < 48], 
+			 pch=19, cex=0.8)
 
 plot(median_summary$t, median_summary$df_mean, type="n", xaxt="n", xlab="Game time [minutes]",
      ylab="Trend", ylim=c(-10,10))
@@ -144,18 +144,18 @@ lines(median_summary$t, median_summary$TDI_mean*100, lwd=2)
 lines(c(0,48), c(50,50), lty = 2)
 
 ########################################
-# Quqnat75 plot
+# Quanat 75 plot
 ########################################
 plot(quant75_summary$t, quant75_summary$f_mean, type="n", xaxt="n", xlab="Game time [minutes]",
 		 ylab="Score difference", ylim=c(-20, 10))
-points(results[[quant75Index]]$time[results[[quant75Index]]$time < 48], 
-			 results[[quant75Index]]$scorediff[results[[quant75Index]]$time < 48], 
-			 pch=19, cex=0.8)
 axis(1, seq(0, 48, length.out=9))
-#band(quant75_summary$t, quant75_summary$f_99_L, quant75_summary$f_99_U, col="gray80")
+band(quant75_summary$t, quant75_summary$y_95_L, quant75_summary$y_95_U, col="gray88")
 band(quant75_summary$t, quant75_summary$f_95_L, quant75_summary$f_95_U, col="gray65")
 band(quant75_summary$t, quant75_summary$f_50_L, quant75_summary$f_50_U, col="gray45")
 lines(quant75_summary$t, quant75_summary$f_mean, lwd=2)
+points(results[[quant75Index]]$time[results[[quant75Index]]$time < 48], 
+			 results[[quant75Index]]$scorediff[results[[quant75Index]]$time < 48], 
+			 pch=19, cex=0.8)
 
 plot(quant75_summary$t, quant75_summary$df_mean, type="n", xaxt="n", xlab="Game time [minutes]",
      ylab="Trend", ylim=c(-10,10))
@@ -188,14 +188,14 @@ lines(c(0,48), c(50,50), lty = 2)
 ########################################
 plot(max_summary$t, max_summary$f_mean, type="n", xaxt="n", xlab="Game time [minutes]",
 		 ylab="Score difference", ylim=c(-10, 10))
-points(results[[maxIndex]]$time[results[[maxIndex]]$time < 48], 
-			 results[[maxIndex]]$scorediff[results[[maxIndex]]$time < 48],
-			 pch=19, cex=0.8)
 axis(1, seq(0, 48, length.out=9))
-#band(max_summary$t, max_summary$f_99_L, max_summary$f_99_U, col="gray80")
+band(max_summary$t, max_summary$y_95_L, max_summary$y_95_U, col="gray88")
 band(max_summary$t, max_summary$f_95_L, max_summary$f_95_U, col="gray65")
 band(max_summary$t, max_summary$f_50_L, max_summary$f_50_U, col="gray45")
 lines(max_summary$t, max_summary$f_mean, lwd=2)
+points(results[[maxIndex]]$time[results[[maxIndex]]$time < 48], 
+			 results[[maxIndex]]$scorediff[results[[maxIndex]]$time < 48],
+			 pch=19, cex=0.8)
 
 plot(max_summary$t, max_summary$df_mean, type="n", xaxt="n", xlab="Game time [minutes]",
     ylab="Trend", ylim=c(-10,10))
