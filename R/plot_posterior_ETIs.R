@@ -35,7 +35,7 @@ axis(1, at = as.Date(c("2019-10-01", "2019-11-01", "2019-12-01", "2020-01-01", "
                        "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01", "2020-07-01",
                        "2020-08-01", "2020-09-01", "2020-10-01", "2020-11-01")),
      labels=c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
-title("ETI over time", font.main=1)
+title("ETIs during the season", font.main=1)
 axis(2, seq(0, 28, length.out=8))
 dev.off()
 
