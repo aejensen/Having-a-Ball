@@ -2,8 +2,8 @@ rm(list=ls())
 library(parallel)
 library(DEoptim)
 
-load("results/est_ETIs.RData")
-load("data/nba20192020.rda")
+load("../results/posterior_ETIs.RData")
+load("../data/nba20192020.rda")
 
 ETIs$date <- as.Date(sapply(results, function(q) attributes(q)$date), format="%B %e, %Y")
 ETIs$home <- as.factor(sapply(results, function(q) attributes(q)$home))
@@ -44,7 +44,7 @@ stopCluster(cl)
 
 save(part_2, part_3, part_4, part_5, 
      part_6, part_7, part_8, teamData,
-     file="results/ETI_team_analysis.RData")
+     file="../results/teams_grouped_by_ETI.RData")
 
 
 ######################################################

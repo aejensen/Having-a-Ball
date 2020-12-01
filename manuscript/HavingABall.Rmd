@@ -28,7 +28,6 @@ header-includes:
   - \usepackage{xcolor}
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
   - \usepackage{fontawesome5}
-  - \usepackage{todonotes}
   - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=1}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
   - \authorrunning{`r paste0((c("AK Jensen", "CT Ekstrøm")[x]), collapse=" and ")`}
   - \titlerunning{Having a Ball}
@@ -51,12 +50,12 @@ editor_options:
 \begin{abstract}
 
 Many popular sports involve matches between two teams or players where
-each team have the possibility of scoring throughout the match. While
-the overall winner and result is interesting it conveys little
+each team have the possibility of scoring points throughout the match. While
+the overall match winner and result is interesting, it conveys little
 information about the underlying scoring trends throughout the
 match. Modeling approaches that accommodate a finer granularity of the
 score difference throughout the match is needed in order to evaluate
-game strategies, discuss scoring streaks, teams strengths, and other
+in-game strategies, discuss scoring streaks, teams strengths, and other
 aspects of the game.
 
 We propose a latent Gaussian process to model the score difference
@@ -67,8 +66,8 @@ propose the Excitement Trend Index --- the expected number of
 monotonicity changes in the trend of the running score difference ---
 as a measure of overall game excitement.
 
-We apply the our proposed methodology to analyze all 1143 matches from
-the 2019--2020 National Basketball Association (NBA) season, and show
+Our proposed methodology is applied to all 1143 matches from
+the 2019--2020 National Basketball Association (NBA) season, and we show
 how the trends can be interpreted in individual games and how the
 excitement score can be used to cluster teams according to how
 exciting they are to watch.
@@ -94,13 +93,13 @@ exciting they are to watch.
 
 # Introduction
 
-Sports analytics receive increasing attention within statistics and not just for match prediction or betting but also for game evaluation, in-game and post-game coaching purposes, and for setting strategies and tactics in future matches. 
+Sports analytics receive increasing attention in statistics and not just for match prediction or betting but also for game evaluation, in-game and post-game coaching purposes, and for setting strategies and tactics in future matches. 
 
-Many popular sports such as football (soccer), basketball, boxing, table tennis, volleyball, American football, and handball involve matches between two teams or players where each team have the possibility of scoring throughout the match. Several research papers seek to predict match results (e.g., @skellam2; @groll2019; @Gu2019) or match winners for single matches (@cattelan2013bradley) in order to infer the match winner and potentially the winner of a tournament (@ekstrom2020trps; @baboota).  While the overall result is highly interesting it conveys very little information about the individual development and trends throughout the match and modeling approaches that allow a finer granularity of the score difference throughout the match are needed.
+Many popular sports such as football (soccer), basketball, boxing, table tennis, volleyball, American football, and handball involve matches between two teams or players where each team have the possibility of scoring points throughout the match. Several research papers seek to predict the end match result (e.g., @skellam2; @groll2019; @Gu2019; @cattelan2013bradley) in order to infer the match winner and potentially the winner of a tournament (@ekstrom2020trps; @baboota).  While the overall match result is highly interesting it conveys very little information about the individual development and trends throughout the match and modeling approaches that allow a finer granularity of the running score difference throughout the match are needed.
 
-The trend in score difference between the two teams is a proxy for their underlying strengths. In particular, sustained periods of time where the score difference increases suggests that one team outperforms the other whereas periods where the teams are constantly catching up to each other suggest that the team's strengths in those periods are similar. Modeling the local trend of the score difference will therefore reflect several aspects of the game in particular the team strengths and game dynamics and momentum as they develop through the match.
+The trend in the score difference between the two teams is a proxy for their underlying strengths. In particular, sustained periods of time where the score difference increases suggests that one team outperforms the other whereas periods where the teams are constantly catching up to each other suggest that the team's strengths in those periods are similar. Modeling the local trend of the score difference will therefore reflect several aspects of the game in particular the team strengths and game dynamics and momentum as they develop through the match.
 
-Figure \ref{fig1} shows the development of the score difference for the final match of the playoffs in the 2020 National Basketball Association (NBA) series between Los Angeles Lakers and Miami Heat. Positive numbers indicate that LA Lakers are leading and the running score difference shows that the Lakers pulled ahead until the third quarter where Miami Heat started to keep up the scoring pace before overtaking the Lakers and reducing the lead.
+Figure \ref{fig1} shows the running score difference for the final match of the playoffs in the 2019--2020 National Basketball Association (NBA) series between Los Angeles Lakers and Miami Heat. Positive numbers indicate that LA Lakers are leading and the running score difference shows that the Lakers pulled ahead until the third quarter where Miami Heat started to keep up the scoring pace before overtaking the Lakers and reducing the lead.
 
 \begin{figure}[htb]
 \center
@@ -109,29 +108,28 @@ Figure \ref{fig1} shows the development of the score difference for the final ma
 \label{fig1}
 \end{figure}
 
-In this paper we will consider the score difference between two teams as a latent Gaussian process and use the Trend Direction Index (TDI) from @ToT as an accommodating measure to evaluate the local probability of the *monotonicity* of the latent process at a given time point during a match. The Trend Direction Index uses a Bayesian framework to provide a direct answer to questions such as "What is the probability that the latent process (i.e., that one team is doing better than another) is increasing at a given time-point?". This will allow real-time evaluation of the score difference trend at the current time-point in the game and will provide post-game inference about the "hot" periods of a match where one team out-performed the other. Furthermore we will present the Excitement Trend Index (ETI) as an objective measure of spectator excitement in a given match. The ETI is defined as the expected number of times that the score difference changes monotonicity during a match. If the score difference changes monotonicity often then that echos a game where both teams frequently score whereas a game with a low ETI will represent a one-sided match where one team is doing consistently better than the other over sustained periods of time.
+In this paper we will consider the score difference between two teams as a latent Gaussian process and use the Trend Direction Index (TDI) from @ToT as a measure to evaluate the local probability of the *monotonicity* of the latent process at a given time point during a match. The Trend Direction Index uses a Bayesian framework to provide a direct answer to questions such as "What is the probability that the latent process (i.e., that one team is doing better than another) is increasing at a given time-point?". This will allow real-time evaluation of the score difference trend at the current time-point in-game and will provide post-game inference about the "hot" periods of a match where one team out-performed the other. Furthermore we present the Excitement Trend Index (ETI) as an objective measure of spectator excitement in a given match. The ETI is defined as the expected number of times that the score difference changes monotonicity during a match. If the score difference changes monotonicity often then that echos a game where both teams frequently score whereas a game with a low ETI will represent a one-sided match where one team is doing consistently better than the other over sustained periods of time.
 
 
 Other authors have considered using continuous processes to model the score difference of matches. @gabel2012random shows that NBA basketball score difference is well described by a continuous-time anti-persistent random walk which suggests that a latent Gaussian process might be viable.
 
-* @chen2020rank
-* @chen2018functional
+* **@chen2020rank**
+* **@chen2018functional**
 
-The paper is structured as follows. In the next section we introduce trend modeling of score differences through a latent Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply the our proposed methodology to analyze both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 National Basketball Association (NBA) season. We show how this distribution can be used to assess relative match excitement and how the ETI can be used to classify teams according to their average level of match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
+The paper is structured as follows. In the next section we introduce trend modeling of score differences through a latent Gaussian process and define the Trend Direction Index and Excitement Trend Index that captures the local trends in monotonicity and game excitement, respectively. In Section \ref{sec:application} we apply our proposed methodology to analyze both the final match of the playoff as well as evaluating the game excitement distribution of the season by considering the ETI from all 1143 matches from the 2019--2020 NBA season. We show how this distribution can be used to assess relative match excitement and how the ETI can be used to classify teams according to their average level of match excitement. We conclude with a discussion in Section \ref{sec:discussion}. Materials to reproduce this manuscript and its analyses can be found at @HavingABall.
 
 Unused stuff for now: 
-
-* Philosophical question: What exactly is the sampling model for a single match?
+* **Philosophical question: What exactly is the sampling model for a single match?**
 
 
 # Methods {#sec:method}
 
 Our model is based on the observed score differences $D_m$ in a given match indexed by $m$. For each match we observe the random variables $\mathcal{D}_m = \left(t_{mi}, D_{mi}\right)_{0 < i \leq J_m}$ where $t_{m1} < t_{m2} < t_{mi} < \ldots < t_{m J_m}$ are the ordered time points at which any teams scores, $D_{mi} = D_m(t_{mi})$ is the associated difference in scores at time $t_{mi}$, and $J_m$ is the total number of scorings during the match. We use the convention that $D_m$ is the difference in scores of the away team with respect to the home team, so that $D_m(t) > 0$ means that the away team is leading at time $t$.
 
-We assume that the observed match data from a given match are noisy realizations of a latent smooth, random function defined in continuous time evaluated at the random time points where goals occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. Our objective is to infer $d_m$ and its time dynamics from $\mathcal{D}_m$. In pursuance of this ambition we propose the following model where $d_m$ is a Gaussian process defined on a compact subset of the real line $\mathcal{I}_m$ corresponding to the duration of the $m$'th game, and the observed data conditional on the scoring times and the values of the latent process at these times are independently normally distributed random variables with a match specific variance. This model for a given match can be stated hierarchically as
+We assume that the observed match data from a given match are noisy realizations of a latent smooth, random function defined in continuous time evaluated at the random time points where scorings occur. Let $d_m$ be the latent functions from which the realizations $\mathcal{D}_m$ are generated. Our objective is to infer $d_m$ and its time dynamics from $\mathcal{D}_m$. In pursuance of this ambition we propose the following model where $d_m$ is a Gaussian process defined on a compact subset of the real line $\mathcal{I}_m$ corresponding to the duration of the $m$'th game, and the observed data conditional on the scoring times and the values of the latent process at these times are independently normally distributed random variables with a match specific variance. This model for a given match can be stated hierarchically as
 \begin{align}
 \begin{split}
-  \BTheta_m \mid \bm{\Psi_m}, \mathbf{t}_m &\sim H(\BTheta_m \mid \bm{\Psi}_m)\\
+  \BTheta_m \mid \bm{\Psi}_m, \mathbf{t}_m &\sim H(\BTheta_m \mid \bm{\Psi}_m)\\
   d_m(t) \mid \BTheta_m &\sim \mathcal{GP}(\mu_{\bm{\beta}_m}(t), C_{\bm{\theta}_m}(s, t))\\
   D_m(t_{mi}) \mid d_m(t_{mi}), t_{mi}, \BTheta_m &\overset{iid}{\sim} N\left(d_m(t_{mi}), \sigma_{m}^2\right)
 \end{split}
@@ -206,7 +204,7 @@ In our application we used a constant prior mean and the squared exponential cov
 \begin{align*}
   \mu_{\bm{\beta}_m}(t) = \beta_m, \quad C_{\bm{\theta}_m}(s, t) = \alpha^2_m\exp\left(-\frac{(s-t)^2}{2\rho^2_m}\right)
 \end{align*}
-with $\bm{\theta}_m = (\alpha_m, \rho_m) > 0$ and hence $\BTheta_m = (\beta_m,\alpha_m, \rho_m,\sigma^2)$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]} For the hyper-parameters of $\BTheta_m$ we used independent, heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates of the form
+and thus $\BTheta_m = (\beta_m,\alpha_m, \rho_m, \sigma_m) \in \mathbb{R} \times \mathbb{R}_{>0}^3$. \textbf{[??? Note: Infinitely differetiable sample paths. Sample path derivatives are well-defined]} For the hyper-parameters of $\BTheta_m$ we used independent, heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates of the form
 \begin{align*}
 H(\BTheta_m \mid \bm{\Psi}_m) = H(\beta_m \mid \Psi_{\beta_m})H(\alpha_m \mid \Psi_{\alpha_m})H(\rho_m \mid \Psi_{\rho_m})H(\sigma_m \mid \Psi_{\sigma_m})
 \end{align*}
@@ -214,9 +212,14 @@ with
 \begin{align*}
 \beta_{m} \sim T_4\left(\widehat{\beta_m^\text{ML}}, 5\right), \; \alpha_m \sim T^+_4\left(\widehat{\alpha_m^\text{ML}}, 5\right), \; \rho_m \sim T_4^+\left(\widehat{\rho_m^\text{ML}}, 5\right), \; \sigma_m \sim T^+_4\left(\widehat{\sigma_m^\text{ML}}, 5\right)
 \end{align*}
-where $T_{\text{df}}$ denotes a location-scale T distribution with $\mathrm{df}$ degrees of freedom, and $T_{\text{df}}^+$ is the distribution truncated to the positive real line.
+where $T_{\text{df}}$ denotes a location-scale T distribution with $\mathrm{df}$ degrees of freedom, and $T_{\text{df}}^+$ is the distribution truncated to the positive real line. By the properties of the model in Equation (\ref{eq:hierarchicalmodel}) the marginal maximum log-likelihood function has the following closed-form expression
+\begin{align*}
+\log L(\BTheta_m \mid \mathcal{D}_m) &\propto - \frac{1}{2}\log |C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma_m^2 I|\\
+&- \frac{1}{2}(\mathbf{D}_m - \mu_{\bm{\beta}_m}(\mathbf{t}_m))^T\left[C_{\bm{\theta}_m}(\mathbf{t}_m, \mathbf{t}_m) + \sigma_m^2 I\right]^{-1}(\mathbf{D}_m - \mu_{\bm{\beta}_m}(\mathbf{t}_m))
+\end{align*}
+and the marginal maximum likelihood estimate $\widehat{\BTheta_m^\text{ML}} = \argsup_{\BTheta} \log L(\BTheta \mid \mathcal{D}_m)$ is obtained by numerical optimization or as the roots to the score equations $\nabla_{\BTheta} \log L(\BTheta \mid \mathcal{D}_m) = 0$. 
 
-We have implemented the estimation procedure in the probabilistic programming language Stan [@carpenter2017stan] using the Hamiltonian MCMC (Markov Chain Monte Carlo) algorithm to sample from the posterior distributions $\textrm{TDI}_m(t \mid \widetilde{\BTheta}_m)$ and $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ on a equidistant grid of $200$ time points in $\mathcal{I}_m$. For each match we ran four independent chains for 25,000 iterations each with half of the iterations used for warm-up. The posterior distribution of $\text{ETI}_m \mid \widetilde{\BTheta}_m$ was calculated by numerical integration of $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ using the trapezoidal rule on the grid of time points.
+We have implemented our model in the probabilistic programming language Stan [@carpenter2017stan] that uses Hamiltonian MCMC (Markov Chain Monte Carlo) algorithm to sample from the posterior distributions $\textrm{TDI}_m(t \mid \widetilde{\BTheta}_m)$ and $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ on any finite set of time points $\mathbf{t}_m^\ast \subset \mathcal{I}_m$. 
 
 
 # Application: The 2019--2020 NBA basketball season {#sec:application}
@@ -227,17 +230,20 @@ The 2019--2020 NBA season was suspended mid-March because of Covid-19 but it was
 
 We wish to use the trend analysis proposed for three purposes: 1) to show how the Trend Direction Index can be used to infer real-time and post-game evaluation of the trends in a match. 2) To evaluate the Excitement Trend Index for all 1143 matches in the 2019--2020 season to provide background and reference information about the matches, and 3) to summarize ETI at the team level in order to identify group of teams more/less likely to give an exciting game. 
 
+\textbf{[??? fix fitting stuff here ???]}
+For each match we ran four independent chains for 50,000 iterations each with half of the iterations used for warm-up. Using 241 equidistant grid points in $[0; 48]$. The posterior distribution of $\text{ETI}_m \mid \widetilde{\BTheta}_m$ was calculated by numerical integration of $d\mathrm{ETI}_m(t \mid \widetilde{\BTheta}_m)$ using the trapezoidal rule on the grid of time points.
+
 For our first purpose of analyzing trends in individuals matches we consider the final match of the 2019-2020 season. The raw data for the running score difference between LA Lakers and Miami Heat was shown in Figure \ref{fig1}. Figure \ref{fig1b} shows the results from the post-game analysis. 
 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig1.pdf}
-\caption{Results from fitting the latent Gaussian Process to the final match between LA Lakers and Miami Heat in the 2019--2020 NBA season. Larger values in running score differences and the Trend Direction Index reflect the situation where LA Lakers are doing better. The top left panel shows the posterior distribution of the the latent process with the posterior means in bold. The gray areas show point-wise credibility intervals for the posterior distribution. The top right panel provides similar information for the derivative of the latent process, i.e., the posterior trend. The bottom left panel shows the Trend Direction Index and can be used to read off probability statements about the trends in the running score difference. The bottom right panel shows the local Excitement Trend Index and quantifies the instantaneous probability of a change in monotonificy of the score differences.}
+\caption{Results from fitting the latent Gaussian Process to the final match between LA Lakers and Miami Heat in the 2019--2020 NBA season. Larger values in running score differences and the Trend Direction Index reflect the situation where LA Lakers are doing better. The top left panel shows the posterior distribution of the the latent process with the posterior means in bold. The gray areas show point-wise credibility intervals for the posterior distribution. The top right panel provides similar information for the derivative of the latent process, i.e., the posterior trend. The bottom left panel shows the Trend Direction Index and can be used to read off probability statements about the trends in the running score difference. The bottom right panel shows the local Excitement Trend Index and quantifies the instantaneous probability of a change in monotonicity of the score differences.}
 \label{fig1b}
 \end{figure}
 
 Evaluating the game trends from the TDI in Figure \ref{fig1b} shows that LA Lakers had control of most of the match since the posterior probability of a positive trend was high throughout most of the match. Only towards the end of the third quarter did Miami Heat gain the upper hand and had a period where they fought back. In the 4th quarter from around 38 minutes to 43 minutes we can see that mean TDI increases to over 80% but the probability interval is very wide reflecting that it is difficult to say whether the trend is increasing or if it might as well just be random fluctuations in scores. Similarly for the first half of the 3rd quarter. Teams wishing to evaluate the match should primarily concentrate on periods where the latent trend and its probability interval is either close to 50% or when the trend is disadvantageous for the team. \textbf{[??? something about the local ETI???]}
 
-To evaluate the overall distribution of ETIs we fitted our model to each of the 1143 matches during the season and estimated the ETI for each. The results are summarized in the left panel of Figure \ref{fig2} which shows the marginal distribution of the median posterior Excitement Trend Indices. The solid line shows the fit of a Gaussian mixture model with four components, where the number of components were determined by sequential bootstrapped likelihood ratio testing (@mclust). The marginal distribution of ETIs is right skewed (skewness = 0.53) with a range of $[0.23; 26.28]$, and an median of 10.09 (mean = 10.62, SD = 4.52). This implies that the time-varying score differences of the games in the season changes monotonicity approximately 10 times during a game on average but with a large variation between matches. For comparison, the final match between LA Lakers and Miami Heat shown in Figure \ref{fig1b} has an median posterior ETI of $`r load("../results/summary_final_playoff.RData"); round(median(ETI), 2)`$.
+To evaluate the overall distribution of ETIs we fitted our model to each of the 1143 matches during the season and estimated the ETI for each. The results are summarized in the left panel of Figure \ref{fig2} which shows the marginal distribution of the median posterior Excitement Trend Indices. The solid line shows the fit of a Gaussian mixture model with four components, where the number of components were determined by sequential bootstrapped likelihood ratio tests (@mclust). The marginal distribution of the posterior median ETI is right skewed (skewness = `r load("../results/posterior_ETIs.RData"); library(moments); round(skewness(ETIs$median), 2)`) with a range of [`r load("../results/posterior_ETIs.RData"); paste(round(range(ETIs$median), 2), collapse="; ")`], and an median of `r load("../results/posterior_ETIs.RData"); round(median(ETIs$median), 2)` (mean = `r load("../results/posterior_ETIs.RData"); round(mean(ETIs$median), 2)`, SD = `r load("../results/posterior_ETIs.RData"); round(sd(ETIs$median), 2)`). This implies that the time-varying score differences of the games in the season changes monotonicity approximately 10 times during a game on average but with a large variation between matches. For comparison, the final match between LA Lakers and Miami Heat shown in Figure \ref{fig1b} has an median posterior ETI of $`r load("../results/summary_final_playoff.RData"); round(median(ETI), 2)`$.
 
 
 \begin{figure}[htbp]
@@ -266,7 +272,7 @@ Some summarization goes on here. We have introduced etc...
 
 We could define a weighted Excitement Trend Index, $\mathrm{WETI}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team as measured by the absolute value of the posterior mean $\mu_{d_m}$. This motivates a modification of the definition of the ETI in Equation (\ref{eq:ETIdef}) to the following weighted form
 \begin{align*}
-  \mathrm{WETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)w(t, |\mu_{d_m}(t)|)\mathrm{d}t
+  \mathrm{wETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)w(t, |\mu_{d_m}(t)|)\mathrm{d}t
 \end{align*}
 where $w\colon\, \mathcal{I}_m \times \mathbb{R}_{\geq 0} \mapsto \mathbb{R}_{\geq 0}$ is a weight function being increasing in its first variable and decreasing in its second variable. Such weight functions could be constructed as a product of two kernel functions defined on their individual domains and with bandwidths based on studies of psychological perception.
 
@@ -275,8 +281,6 @@ A different approach would be to define team-specific excitement index nested wi
 # Bibliography {-}
 
 <div id="refs"></div>
-
-\newpage
 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig3.pdf}
@@ -288,7 +292,7 @@ A different approach would be to define team-specific excitement index nested wi
 
 ```{r, echo=FALSE}
 library(kableExtra)
-load("../results/ETI_team_analysis.RData")
+load("../results/teams_grouped_by_ETI.RData")
 
 teamData$groups <- teamData$team
 levels(teamData$groups) <- as.vector(floor(part_4$optim$bestmem))
@@ -321,8 +325,8 @@ colnames(tab) <- c("Average", "SD", "2.5%", "50%", "97.5%", "class_num")
 tab <- tab[order(tab$Average, decreasing=TRUE), ]
 tab$Group <- tab$class_num
 tab$Group[tab$class_num == "2"] <- "A"
-tab$Group[tab$class_num == "0"] <- "B"
-tab$Group[tab$class_num == "3"] <- "C"
+tab$Group[tab$class_num == "0"] <- "C"
+tab$Group[tab$class_num == "3"] <- "B"
 tab$Group[tab$class_num == "1"] <- "D"
 tab$class_num <- NULL
 
@@ -330,5 +334,5 @@ kable(tab,
       format = "latex", digits = 2, booktabs = TRUE,
       linesep = c("", "", "", ""), 
       align = c("r", "r|", "r", "r", "r|", "r"),
-			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season ordered by the season average. Additionally, standard deviations and 2.5\\%, 50\\%, and 97.5\\% percentiles are shown. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(8, hline_after = TRUE) %>% row_spec(18, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
+			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season and ordered by the season average. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(19, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
 ```

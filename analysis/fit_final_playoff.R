@@ -9,7 +9,7 @@ m <- stan_model("gptrend.stan")
 d <- read.csv("../data/finalPlayoff2020.csv")
 
 fitTrendR <- function(d) {
-  tPred <- seq(0, 48, length.out = 200)
+  tPred <- seq(0, 48, length.out = 241)
 	
   seCov <- function(s, t, alpha, rho) {
     alpha^2 * exp(-(s-t)^2 / (2 * rho^2))
@@ -31,7 +31,7 @@ fitTrendR <- function(d) {
   sDat$rho_mu <- par[3]
   sDat$sigma_mu <- par[4]
 
-  iter <- 30 * 10^3
+  iter <- 50 * 10^3
   seed <- 12345
   fit <- sampling(m, data = sDat, iter = iter, seed = seed, chains = 4)
 

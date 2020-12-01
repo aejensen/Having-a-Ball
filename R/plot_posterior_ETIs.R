@@ -1,7 +1,7 @@
 rm(list=ls())
-load("data/nba20192020.rda")
-load("results/est_ETIs.RData")
-load("results/ETI_mixture_density.RData")
+load("../data/nba20192020.rda")
+load("../results/posterior_ETIs.RData")
+load("../results/posterior_ETIs_mixture_density.RData")
 
 ETIs$date <- as.Date(sapply(results, function(q) attributes(q)$date), format="%B %e, %Y")
 ETIs$home <- as.factor(sapply(results, function(q) attributes(q)$home))
@@ -14,7 +14,7 @@ mixtureDensity <- function(x) {
   lambda[4]*dnorm(x, mu[4], sqrt(sigma2[4]))
 }
 
-pdf("figures/fig2.pdf", width = 8, height = 3)
+pdf("../figures/fig2.pdf", width = 8, height = 3)
 
 par(mfrow=c(1,2), bty="n", mar = c(2.7, 2.7, 1, 0), mgp=c(1.6,0.4,0), 
     bty="n", cex.axis=0.9, cex.lab=1, cex.main=1)
@@ -35,7 +35,7 @@ axis(1, at = as.Date(c("2019-10-01", "2019-11-01", "2019-12-01", "2020-01-01", "
                        "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01", "2020-07-01",
                        "2020-08-01", "2020-09-01", "2020-10-01", "2020-11-01")),
      labels=c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
-title("ETI over time", font.main=1)
+title("ETIs during the season", font.main=1)
 axis(2, seq(0, 28, length.out=8))
 dev.off()
 

@@ -73,7 +73,7 @@ Using properties of the multivariate normal distribution the individual componen
 
 ```{r, echo=FALSE}
 rm(list=ls())
-load("../analysis/est_ETIs.RData")
+load("../results/posterior_ETIs.RData")
 load("../data/nba20192020.rda")
 
 ETIs$date <- as.Date(sapply(results, function(q) attributes(q)$date), format="%B %e, %Y")
@@ -81,15 +81,19 @@ ETIs$home <- as.factor(sapply(results, function(q) attributes(q)$home))
 ETIs$away <- as.factor(sapply(results, function(q) attributes(q)$away))
 ```
 
-# Games ordered by decreasing average excitement
+# NBA season 2019--2020 games ordered by decreasing median posterior Excitement Trend Index
 ```{r, echo=FALSE}
 library(kableExtra)
-dat <- ETIs[order(ETIs$mean, decreasing=TRUE),]
+dat <- ETIs[order(ETIs$median, decreasing=TRUE),]
 res1 <- dat[, c("date", "home", "away", "mean", "lower", "median", "upper")]
-colnames(res1) <- c("Date", "Home team", "Away team", "Mean ETI", "2.5% ETI", "50% ETI", "97.5% ETI")
+colnames(res1) <- c("Date", "Home team", "Away team", "Mean", "2.5%", "Median", "97.5%")
 rownames(res1) <- NULL
-knitr::kable(res1, digits=2, booktabs = TRUE, format="latex", longtable=TRUE, linesep = c("", "", "", ""),  align =c("l|", "l", "l|", "r", "r", "r", "r")) %>%
+res1 <- cbind("No" = 1:nrow(res1), res1)
+res1 <- res1[, c("No", "Date", "Home team", "Away team", "Median", "Mean", "2.5%", "97.5%")]
+
+knitr::kable(res1, digits=2, booktabs = TRUE, format="latex", longtable=TRUE, 
+             linesep = rep("", 5), 
+             align = c("r", "l|", "l", "l", "r|", "r", "r", "r")) %>%
   kable_styling(latex_options = c("hold_position", "repeat_header")) %>% 
   kable_styling(font_size = 8)
 ```
-

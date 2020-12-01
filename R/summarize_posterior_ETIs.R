@@ -2,8 +2,8 @@ rm(list=ls())
 library(moments)
 library(mclust)
 
-load("results/est_ETIs.RData")
-load("data/nba20192020.rda")
+load("../results/posterior_ETIs.RData")
+load("../data/nba20192020.rda")
 
 ETIs$date <- as.Date(sapply(results, function(q) attributes(q)$date), format="%B %e, %Y")
 ETIs$home <- as.factor(sapply(results, function(q) attributes(q)$home))
@@ -32,4 +32,4 @@ mixture_parameters <- rbind(lambda, mu, sigma2)
 colnames(mixture_parameters) <- paste("class", 1:4)
 round(mixture_parameters, 2)
 
-save(nClust, lambda, mu, sigma2, file = "results/ETI_mixture_density.RData")
+save(nClust, lambda, mu, sigma2, file = "../results/posterior_ETIs_mixture_density.RData")
