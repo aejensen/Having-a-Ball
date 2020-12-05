@@ -340,8 +340,8 @@ plot(tab$Average, tab$SD,
      col=tab$class_num + 1, 
      cex=1, 
      pch=c(15,19,17,18)[tab$class_num + 1],
-     xlab="Average of median posterior ETI", 
-     ylab="SD of median posterior ETI",
+     xlab="Average of median posterior ETI across season", 
+     ylab="SD of median posterior ETI across season",
      xlim=c(9, 12), ylim=c(3.5,5.5))
 m <- lm(SD ~ Average, data = tab)
 curve(predict(m, data.frame(Average = x)), 9, 12, add=TRUE, lty=2)
