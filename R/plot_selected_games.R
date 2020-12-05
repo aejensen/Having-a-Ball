@@ -52,9 +52,9 @@ mtext(paste(attributes(results[[minIndex]])$home,
             round(ETIs[minIndex, "median"], 2),
             #" (", attributes(results[[minIndex]])$date, ")",
             " (season minimum)",
-            sep=""), cex=1.2, font=2, padj=-0.9)
+            sep=""), cex=1.1, font=2, padj=-0.9)
 
-plot(min_summary$t, min_summary$TDI_median*100, type="n", xaxt="n", xlab="Game time [minutes]",
+plot(min_summary$t, min_summary$TDI_mean*100, type="n", xaxt="n", xlab="Game time [minutes]",
     ylab="TDI [%]", ylim=c(0,100))
 axis(1, seq(0, 48, length.out=9))
 #band(min_summary$t, min_summary$TDI_99_L*100, min_summary$TDI_99_U*100, col="gray80")
@@ -67,7 +67,7 @@ lines(c(0,48), c(50,50), lty = 2)
 # Quant 25 plot
 ########################################
 plot(quant25_summary$t, quant25_summary$f_mean, type="n", xaxt="n", xlab="Game time [minutes]",
-  ylab="Score difference", ylim=c(-20, 10))
+  ylab="Score difference", ylim=c(-25, 5))
 axis(1, seq(0, 48, length.out=9))
 band(quant25_summary$t, quant25_summary$y_95_L, quant25_summary$y_95_U, col="gray88")
 band(quant25_summary$t, quant25_summary$f_95_L, quant25_summary$f_95_U, col="gray65")
@@ -92,9 +92,9 @@ mtext(paste(attributes(results[[quant25Index]])$home,
             round(ETIs[quant25Index, "median"], 2),
             #" (", attributes(results[[quant25Index]])$date, ")",
             " (season 25% percentile)",
-            sep=""), cex=1.2, font=2, padj=-0.9)
+            sep=""), cex=1.1, font=2, padj=-0.9)
 
-plot(quant25_summary$t, quant25_summary$TDI_median*100, type="n", xaxt="n", xlab="Game time [minutes]",
+plot(quant25_summary$t, quant25_summary$TDI_mean*100, type="n", xaxt="n", xlab="Game time [minutes]",
     ylab="TDI [%]", ylim=c(0,100))
 axis(1, seq(0, 48, length.out=9))
 #band(quant25_summary$t, quant25_summary$TDI_99_L*100, quant25_summary$TDI_99_U*100, col="gray80")
@@ -132,9 +132,9 @@ mtext(paste(attributes(results[[medianIndex]])$home,
             round(ETIs[medianIndex, "median"], 2),
             #" (", attributes(results[[medianIndex]])$date, ")",
             " (season median)",
-            sep=""), cex=1.2, font=2, padj=-0.9)
+            sep=""), cex=1.1, font=2, padj=-0.9)
 
-plot(median_summary$t, median_summary$TDI_median*100, type="n", xaxt="n",
+plot(median_summary$t, median_summary$TDI_mean*100, type="n", xaxt="n",
     ylab="TDI [%]", ylim=c(0,100), xlab="Game time [minutes]")
 axis(1, seq(0, 48, length.out=9))
 #band(median_summary$t, median_summary$TDI_99_L*100, median_summary$TDI_99_U*100, col="gray80")
@@ -172,9 +172,9 @@ mtext(paste(attributes(results[[quant75Index]])$home,
             round(ETIs[quant75Index, "median"], 2),
             #" (", attributes(results[[quant75Index]])$date, ")",
             " (season 75% percentile)",
-            sep=""), cex=1.2, font=2, padj=-0.9)
+            sep=""), cex=1.1, font=2, padj=-0.9)
 
-plot(quant75_summary$t, quant75_summary$TDI_median*100, type="n", xaxt="n",
+plot(quant75_summary$t, quant75_summary$TDI_mean*100, type="n", xaxt="n",
     ylab="TDI [%]", ylim=c(0,100), xlab="Game time [minutes]")
 axis(1, seq(0, 48, length.out=9))
 #band(quant75_summary$t, quant75_summary$TDI_99_L*100, quant75_summary$TDI_99_U*100, col="gray80")
@@ -212,9 +212,9 @@ mtext(paste(attributes(results[[maxIndex]])$home,
             round(ETIs[maxIndex, "median"], 2),
             #" (", attributes(results[[maxIndex]])$date, ")",
             " (season maximum)",
-            sep=""), cex=1.2, font=2, padj=-0.9)
+            sep=""), cex=1.1, font=2, padj=-0.9)
 
-plot(max_summary$t, max_summary$TDI_median, type="n", xaxt="n", xlab="Game time [minutes]",
+plot(max_summary$t, max_summary$TDI_mean, type="n", xaxt="n", xlab="Game time [minutes]",
      ylab="TDI [%]", ylim=c(0,100))
 axis(1, seq(0, 48, length.out=9))
 #band(max_summary$t, max_summary$TDI_99_L*100, max_summary$TDI_99_U*100, col="gray80")

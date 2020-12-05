@@ -42,15 +42,12 @@ part_8 <- estPartitions(7)
 
 stopCluster(cl)
 
-save(part_2, part_3, part_4, part_5, 
-     part_6, part_7, part_8, teamData,
-     file="../results/teams_grouped_by_ETI.RData")
-
-
-######################################################
 c(part_2$optim$bestval, part_3$optim$bestval,
   part_4$optim$bestval, part_5$optim$bestval,
   part_6$optim$bestval, part_7$optim$bestval,
   part_8$optim$bestval)
-
 table(as.vector(floor(part_4$optim$bestmem)))
+
+save(part_2, part_3, part_4, part_5, 
+     part_6, part_7, part_8, teamData,
+     file="../results/teams_grouped_by_ETI.RData")

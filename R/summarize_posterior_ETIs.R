@@ -18,7 +18,7 @@ quantile(ETIs$median)
 
 # Fit normal mixture for marginal median ETIs at the match level
 set.seed(12345)
-nClust <- mclustBootstrapLRT(ETIs[,"median"], modelName = "V", nboot = 10 * 10^3)
+nClust <- mclustBootstrapLRT(ETIs[,"median"], modelName = "V", nboot = 25 * 10^3)
 nClust
 
 mix_fit <- Mclust(ETIs[,"median"], G = 4, modelNames="V")

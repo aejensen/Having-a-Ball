@@ -21,6 +21,6 @@ ETIs <- do.call("rbind", mclapply(files, function(f) {
   colnames(out) <- c("file", "mean", "var", "median", "lower", "upper")
   rownames(out) <- NULL
   out
-}, mc.cores=64))
+}, mc.cores=5))
 
 save(ETIs, file="../results/posterior_ETIs.RData")
