@@ -1146,4 +1146,7 @@ bash-4.2$ ls -lgGho *.RData
 -rw-r--r--. 1 2.0G Dec  5 12:02 fit-1142.RData
 -rw-r--r--. 1 2.1G Dec  5 12:01 fit-1143.RData
 -rw-r--r--. 1 2.0G Nov 28 15:44 fit_finalPlayoff.RData
+bash-4.2$ du -ch .
+2.3T    .
+2.3T    total
 </pre>
