@@ -335,16 +335,18 @@ kable(tab[, -which(colnames(tab) == "class_num")],
 ```
 
 ```{r, echo=FALSE}
-par(mar=c(3, 3, 0, 0), mgp=c(2,1,0), bty="n")
+par(mar=c(3, 3.3, 0, 0), mgp=c(2,1,0), bty="n")
+
 plot(tab$Average, tab$SD, 
      col=tab$class_num + 1, 
      cex=1, 
      pch=c(15,19,17,18)[tab$class_num + 1],
-     xlab="Average of median posterior ETI across season", 
-     ylab="SD of median posterior ETI across season",
-     xlim=c(9, 12), ylim=c(3.5,5.5))
+     xlab=expression("Seasonal average" ~ widehat(ETI[m])), 
+     ylab=expression("Seasonal SD of" ~ widehat(ETI[m])),
+     xlim=c(9.2, 11.8), ylim=c(3.5,5.5), xaxt="n")
+axis(1, seq(9.2, 11.8, length.out=5))
 m <- lm(SD ~ Average, data = tab)
-curve(predict(m, data.frame(Average = x)), 9, 12, add=TRUE, lty=2)
+curve(predict(m, data.frame(Average = x)), 9.2, 11.8, add=TRUE, lty=1, col="gray")
 #legend("topleft", rep(c("Class ?"), 4), bty="n", col=1:4, pch=c(15,19,17,18), pt.cex=1.5)
 text(tab$Average, tab$SD, rownames(tab), cex=0.3, pos=3)
 ```
