@@ -159,11 +159,12 @@ For each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, 
 \begin{align}
 \begin{split}
   \text{ETI}_m \mid \BTheta_m &= \E\left[\#\left\{t \in \mathcal{I}_m : d^\prime_m(t) = 0\right\} \mid \mathcal{D}_m, \BTheta_m\right]\\
+  &= \int_{\mathcal{I}_m} \int_{-\infty}^\infty \left|v\right| f_{d^\prime_m(t), d^{\prime\prime}_m(t)}(0, v \mid \mathcal{D}_m, \BTheta_m)\textrm{d}v\textrm{d}t \\
   &= \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
 \end{split}
 \label{eq:ETIdef}
 \end{align}
-where $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that $d\mathrm{ETI}$ is equal to
+where $f_{d^\prime_m(t), d^{\prime\prime}_m(t)}(\cdot, \cdot \mid \mathcal{D}_m, \BTheta_m)$ denotes the posterior density function of $(d^\prime, d^{\prime\prime})$ at time $t$ and  $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that $d\mathrm{ETI}$ is equal to
 \begin{align*}
 d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda_m(t)\phi\left(\frac{\mu_{d_m^\prime}(t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\right)\left(2\phi\left(\zeta_m(t)\right) + \zeta_m(t)\Erf\left(\frac{\zeta_m(t)}{2^{1/2}}\right)\right)
 \end{align*}
@@ -172,7 +173,7 @@ where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the st
   \lambda_m(t) = \frac{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\left(1-\omega_m(t)^2\right)^{1/2}, \quad \omega_m(t) = \frac{\Sigma_{d_m^\prime d_m^{\prime\prime}}(t,t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}\\
   \zeta_m(t) = \frac{\mu_{d_m^\prime}(t)\Sigma_{d_m^{\prime^\prime}}(t,t)^{1/2}\omega_m(t)\Sigma_{d_m^\prime}(t,t)^{-1/2} - \mu_{d_m^{\prime\prime}}(t)}{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}\left(1 - \omega_m(t)^2\right)^{1/2}}
 \end{gather*}
-A derivation of these expressions can be found in the supplementary material to @ToT. \textbf{[??? give some explanation/intuition about the value ???]}. We note that ETI is invariant with respect to the reference team in the definition of the score differences as it is defined as the expected number of both up- and down-crossings at zero of the posterior trend.
+A derivation of these expressions can be found in the supplementary material to @ToT. We note that ETI is invariant with respect to the reference team in the definition of the score differences as it is defined as the expected number of both up- and down-crossings at zero of the posterior trend.
 
 Both the Trend Direction Index and the Excitement Trend Index in Equations (\ref{eq:TDIdef}) and (\ref{eq:ETIdef}) are random variables due to their dependence on the hyper-parameters $\BTheta_m$. In our Bayesian framework these are specified under an additional layer of prior distributions according to $H(\BTheta_m \mid \bm{\Psi}_m)$. By fitting the model using Markov-Chain Monte Carlo methods (MCMC) we obtain the posterior distribution $\widetilde{\BTheta}_m \sim P(\BTheta_m \mid \mathcal{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ given by
 \begin{align*}
