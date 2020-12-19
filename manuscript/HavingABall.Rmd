@@ -144,7 +144,6 @@ where $^\prime$ and $^{\prime\prime}$ denote the first and second time derivativ
 \end{align}
 where explicit expressions for the posterior mean and covariance functions are given in the supplementary material. In practice this means that we can sample from the posterior joint distribution at any finite number of time points as this will be equal to sampling from a high-dimensional normal distribution. We use the posteriors of the first and second time derivatives of the latent process to characterize the dynamical properties of each match through the Trend Direction Index (TDI) and the Excitement Trend Index (ETI).
 
-
 We define the Trend Direction Index (TDI) of a particular match $m$ as the local posterior probability that $d_m$ is an increasing function for any time points $t \in \mathcal{I}_m$. Under our model this is equal to
 \begin{align}
 \begin{split}
@@ -164,7 +163,7 @@ For each match we assign its Excitement Trend Index, denoted by $\text{ETI}_m$, 
 \end{split}
 \label{eq:ETIdef}
 \end{align}
-where $f_{d^\prime_m(t), d^{\prime\prime}_m(t)}(\cdot, \cdot \mid \mathcal{D}_m, \BTheta_m)$ denotes the posterior density function of $(d^\prime, d^{\prime\prime})$ at time $t$ and  $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that $d\mathrm{ETI}$ is equal to
+where $f_{d^\prime_m(t), d^{\prime\prime}_m(t)}(\cdot, \cdot \mid \mathcal{D}_m, \BTheta_m)$ denotes the posterior density function of $(d^\prime, d^{\prime\prime})$ at time $t$ according to Equation (\ref{eq:posterior}), and  $d\mathrm{ETI}_m$ is the instantaneous posterior probability of a zero-crossing of $d^\prime$ at any time point $t \in \mathcal{I}_m$. Under the model described in Equations (\ref{eq:hierarchicalmodel}) and (\ref{eq:dynamics}) it can be shown that the instantaneous posterior probability of a zero-crossing of $d^\prime$ is equal to
 \begin{align*}
 d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda_m(t)\phi\left(\frac{\mu_{d_m^\prime}(t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\right)\left(2\phi\left(\zeta_m(t)\right) + \zeta_m(t)\Erf\left(\frac{\zeta_m(t)}{2^{1/2}}\right)\right)
 \end{align*}
@@ -173,7 +172,7 @@ where $\phi\colon\, x \mapsto 2^{-1/2}\pi^{-1/2}\exp(-\frac{1}{2}x^2)$ is the st
   \lambda_m(t) = \frac{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\left(1-\omega_m(t)^2\right)^{1/2}, \quad \omega_m(t) = \frac{\Sigma_{d_m^\prime d_m^{\prime\prime}}(t,t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}}\\
   \zeta_m(t) = \frac{\mu_{d_m^\prime}(t)\Sigma_{d_m^{\prime^\prime}}(t,t)^{1/2}\omega_m(t)\Sigma_{d_m^\prime}(t,t)^{-1/2} - \mu_{d_m^{\prime\prime}}(t)}{\Sigma_{d_m^{\prime\prime}}(t,t)^{1/2}\left(1 - \omega_m(t)^2\right)^{1/2}}
 \end{gather*}
-A derivation of these expressions can be found in the supplementary material to @ToT. We note that ETI is invariant with respect to the reference team in the definition of the score differences as it is defined as the expected number of both up- and down-crossings at zero of the posterior trend.
+And therefore $\text{ETI}_m \mid \BTheta_m$ is given by integrating the previous expression of $d\mathrm{ETI}_m(t \mid \BTheta_m)$ over $t \in \mathcal{I}_m$. The derivation of the expression of $d\mathrm{ETI}_m$ can be found in the supplementary material to @ToT. We note that ETI is invariant with respect to the reference team in the definition of the score differences as it is defined as the expected number of both up- and down-crossings at zero of the posterior trend.
 
 Both the Trend Direction Index and the Excitement Trend Index in Equations (\ref{eq:TDIdef}) and (\ref{eq:ETIdef}) are random variables due to their dependence on the hyper-parameters $\BTheta_m$. In our Bayesian framework these are specified under an additional layer of prior distributions according to $H(\BTheta_m \mid \bm{\Psi}_m)$. By fitting the model using Markov-Chain Monte Carlo methods (MCMC) we obtain the posterior distribution $\widetilde{\BTheta}_m \sim P(\BTheta_m \mid \mathcal{D}_m, \bm{\Psi}_m, \mathbf{t}_m)$ given by
 \begin{align*}
