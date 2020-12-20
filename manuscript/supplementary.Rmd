@@ -1,6 +1,6 @@
 ---
 title: |
-  | Supplementary Material for
+  | Online Supplementary Material for
   | Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation
 author: | 
   | Claus Thorn Ekstrøm and Andreas Kryger Jensen
