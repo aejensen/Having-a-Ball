@@ -326,19 +326,43 @@ kable(tab[, -which(colnames(tab) == "class_num")],
 			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season and ordered by the season average. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(21, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
 ```
 
-```{r echo=FALSE, message=FALSE, fig.cap="\\label{fig:linplot}Ohoy \\textbf{[??? Can we make the points different (like pch) so that the plot can be read in black/white and also the average line in black?. Ticks at the x-axis could also be improved. Tænk dog på de farveblinde!]}"}
+```{r echo=FALSE, message=FALSE, fig.cap="\\label{fig:linplot}Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. The line represents the best linear regression line through the origin. The plot indicates a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores."}
 
 library("ggplot2")
 library("ggrepel")
+library("lemon")
+
+tab2 <- data.frame(
+    Average=rnorm(40, mean=12, sd=3),
+    SD =rnorm(40, mean=12, sd=3),
+    names = LETTERS[1:40],
+    class_num = sample(1:4, size=40, replace=TRUE)
+    )
+
+
 
 ggplot(data=tab,
        aes(x=Average, y=SD, label=rownames(tab))) + 
-    stat_smooth(method="lm", se=FALSE) +
-    geom_point(aes(col=factor(class_num)), size=2) + geom_text_repel(size=2) + 
-    xlab(expression("Seasonal average" ~ widehat(ETI[m]))) +
-    ylab(expression("Seasonal SD of" ~ widehat(ETI[m]))) + 
-    scale_x_continuous(breaks =seq(9.2, 11.8, length.out=5)) + 
-    theme_classic() + theme(legend.position="none")
+    stat_smooth(method="lm", size=1, se=FALSE, col="black") +
+    geom_point(aes(col=factor(class_num), shape=factor(class_num)), size=2.5) + 
+    geom_text_repel(size=3) + 
+    xlab(expression("Seasonal average" ~ widehat(ETI)[m])) +
+    ylab(expression("Seasonal SD of" ~ widehat(ETI)[m])) + 
+    scale_x_continuous(breaks =seq(9.25, 11.75, length.out=6)) + 
+    scale_y_continuous(breaks=seq(3, 5, length.out=6)) +    
+    scale_shape_manual(values=c(15, 16, 17, 18)) +
+    scale_color_manual(values=c("#CC0000", "darkgreen", "#0000CC", "#000000")) + 
+#    xlim(9, 12) + 
+#    ylim(3.5, 5.5) + 
+    theme_classic() + 
+    theme(legend.position="none",
+          axis.ticks.length = unit(.25, "cm"), 
+          axis.line = element_line(),
+          axis.text.x = element_text(colour="black"),
+          axis.text.y = element_text(colour="black")) + 
+    lemon::coord_flex_cart(bottom=capped_horizontal(), 
+                     left=capped_vertical(capped="both"))
+
 
 
 #plot(tab$Average, tab$SD, 
