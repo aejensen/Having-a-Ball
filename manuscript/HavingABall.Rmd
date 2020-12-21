@@ -101,7 +101,7 @@ The trend in the score difference between the two teams is a proxy for their und
 
 \begin{figure}[htb]
 \center
-\includegraphics{../figures/fig1-raw.pdf}
+\includegraphics{../figures/fig1.pdf}
 \caption{Game development in the final match of the NBA 2019--2020 season between Los Angeles Lakers and Miami Heat at October 11, 2020. Positive values indicate that LA Lakers are leading.}
 \label{fig1}
 \end{figure}
@@ -216,7 +216,7 @@ For each match we used the prior specification from Section \ref{sec:estimation}
 For our first purpose of analyzing trends in individuals matches we consider the final match of the 2019-2020 season. The raw data for the running score difference between LA Lakers and Miami Heat was shown in Figure \ref{fig1}. Figure \ref{fig1b} shows the results from the post-game analysis. 
 
 \begin{figure}[htbp]
-\includegraphics{../figures/fig1.pdf}
+\includegraphics{../figures/fig2.pdf}
 \caption{Results from fitting the latent Gaussian Process to the final match between LA Lakers and Miami Heat in the 2019--2020 NBA season. Larger values in running score differences and the Trend Direction Index reflect the situation where LA Lakers are doing better. The top left panel shows the posterior distribution of the the latent process with the posterior means in bold. The gray areas show point-wise credible and posterior prediction intervals. The top right panel provides similar information for the the posterior trend. The bottom left panel shows the TDI and can be used to read off probability statements about the trends in the running score difference. The bottom right panel shows the local ETI and quantifies the instantaneous probability of a change in monotonicity of the score differences.}
 \label{fig1b}
 \end{figure}
@@ -226,7 +226,7 @@ Evaluating the game trends from the TDI in Figure \ref{fig1b} shows that LA Lake
 To evaluate the overall distribution of the ETIs we fitted our model to each of the 1143 matches during the season and estimated the ETI for each. The results are summarized in the left panel of Figure \ref{fig2} showing the marginal distribution of the median posterior ETIs. The solid line shows the fit of a Gaussian mixture model with four components, where the number of components were determined by sequential bootstrapped likelihood ratio tests (@mclust). The marginal distribution of the posterior median ETIs is right skewed (skewness = `r load("../results/posterior_ETIs.RData"); library(moments); round(skewness(ETIs$median), 2)`) with a range of [`r load("../results/posterior_ETIs.RData"); paste(round(range(ETIs$median), 2), collapse="; ")`], and an median of `r load("../results/posterior_ETIs.RData"); round(median(ETIs$median), 2)` (mean = `r load("../results/posterior_ETIs.RData"); round(mean(ETIs$median), 2)`, SD = `r load("../results/posterior_ETIs.RData"); round(sd(ETIs$median), 2)`). This implies that the time-varying score differences of the games in the season changes monotonicity approximately 10 times during a game on average but with a large variation between matches. For comparison, the final match between LA Lakers and Miami Heat shown in Figure \ref{fig1b} has an median posterior ETI of $`r load("../results/summary_final_playoff.RData"); round(median(ETI), 2)`$.
 
 \begin{figure}[htbp]
-\includegraphics{../figures/fig2.pdf}
+\includegraphics{../figures/fig3.pdf}
 \caption{Histogram and Gaussian mixture model estimate of the distribution of the 1143 median posterior ETIs from the NBA 2019--2020 season (left panel) and the median posterior ETIs as a function of calendar time from October 22, 2019 to October 11, 2020 (right panel).}
 \label{fig2}
 \end{figure}
@@ -234,7 +234,7 @@ To evaluate the overall distribution of the ETIs we fitted our model to each of 
 We wished to examine if there was a calendar time effect on game excitement as the season progressed in order to investigate if we would find that games became more exciting as the teams fought to stay in the competition to enter the final playoffs or if we could detect fatigue over the season. The right panel of Figure \ref{fig2} shows the median posterior ETIs as a function of calendar time at which the matches were played. Besides illustrating the gap from the COVID-19 hiatus, the figure shows that the excitement indices are relatively evenly distributed throughout the season.
 
 \begin{figure}[htbp]
-\includegraphics{../figures/fig3.pdf}
+\includegraphics{../figures/fig4.pdf}
 \caption{Observed score differences with posteriors of the latent processes (left panels), posterior trends (middle panels) and posterior Trend Direction Indices (right panels) for five games from the NBA season 2019--2020 with median posterior Excitement Trend Indices corresponding to the 0\%, 25\%, 50\%, 75\%, and 100\% percentiles of the distribution of all games in the season. Gray regions depict 50\% and 95\% point-wise credible intervals and 95\% posterior prediction intervals.}
 \label{fig3}
 \end{figure}
@@ -297,34 +297,13 @@ kable(tab[, -which(colnames(tab) == "class_num")],
 
 Figure \ref{fig:linplot} shows the estimated linear association between the seasonal standard deviations and average of the median posterior ETIs for each team. The association follows a straight line fairly close, suggesting that the coefficient of variation of seasonal excitement is fairly constant across the teams. This also suggests that teams with large seasonal average excitement are also more likely to be part of really spectacular matches. Teams consistently contributing with highly exciting matches during the season should therefore be represented in the bottom right part of the plot. Assessing which teams that where generally most exiting to watch during the season is thus a bias-variance trade-off decision. While the New Orleans Pelicans were most exciting on average, the Washington Wizards where second-most exciting on average but also had a notably lower seasonal standard deviation. This means that although the latter team was less exciting on average during the season, their level of excitement was more stable throughout. On the other hand, the San Antonio Spurs had the third largest average excitement but simultaneously also a much larger standard deviation making the excitement of their individual matches much less reliable throughout the season.
 
-```{r echo=FALSE, message=FALSE, fig.cap="\\label{fig:linplot}Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. The line represents the best linear regression line through the origin. The plot indicates a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores."}
 
-library("ggplot2")
-library("ggrepel")
-library("lemon")
+\begin{figure}[htbp]
+\includegraphics{../figures/fig5.pdf}
+\caption{Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. The line represents the best linear regression line through the origin. The plot indicates a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores.}
+\label{fig:linplot}
+\end{figure}
 
-ggplot(data=tab,
-       aes(x=Average, y=SD, label=rownames(tab))) + 
-    stat_smooth(method="lm", size=1, se=FALSE, col="black") +
-    geom_point(aes(col=factor(class_num), shape=factor(class_num)), size=2.5) + 
-    geom_text_repel(size=3) + 
-    xlab(expression("Seasonal average" ~ widehat(ETI)[m])) +
-    ylab(expression("Seasonal SD of" ~ widehat(ETI)[m])) + 
-    scale_x_continuous(breaks =seq(9.25, 11.75, length.out=6)) + 
-    scale_y_continuous(breaks=seq(3, 5.4, length.out=7)) +    
-    scale_shape_manual(values=c(15, 16, 17, 18)) +
-    scale_color_manual(values=c("#CC0000", "darkgreen", "#0000CC", "#000000")) + 
-#    xlim(9, 12) + 
-#    ylim(3.5, 5.5) + 
-    theme_classic() + 
-    theme(legend.position="none",
-          axis.ticks.length = unit(.25, "cm"), 
-          axis.line = element_line(),
-          axis.text.x = element_text(colour="black"),
-          axis.text.y = element_text(colour="black")) + 
-    lemon::coord_flex_cart(bottom=capped_horizontal(), 
-                     left=capped_vertical(capped="both"))
-```
 
 
 # Discussion {#sec:discussion}
@@ -350,5 +329,3 @@ In conclusion, we have provided an analytical framework for analyzing the trend 
 # Bibliography {-}
 
 <div id="refs"></div>
-
-

@@ -8,7 +8,7 @@ band <- function(t, l, u, col) {
   polygon(c(t, rev(t)), c(l, rev(u)), col=col, border = NA)
 }
 
-pdf("../figures/fig3.pdf", width = 8, height = 13)
+pdf("../figures/fig4.pdf", width = 8, height = 13)
 
 ########################################
 # Min plot
