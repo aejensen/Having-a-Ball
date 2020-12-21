@@ -14,7 +14,7 @@ mixtureDensity <- function(x) {
   lambda[4]*dnorm(x, mu[4], sqrt(sigma2[4]))
 }
 
-pdf("../figures/fig2.pdf", width = 8, height = 3)
+pdf("../figures/fig3.pdf", width = 8, height = 3)
 
 par(mfrow=c(1,2), bty="n", mar = c(2.7, 2.7, 1, 0), mgp=c(1.6,0.4,0), 
     bty="n", cex.axis=0.9, cex.lab=1, cex.main=1)

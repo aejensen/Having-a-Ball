@@ -7,7 +7,7 @@ band <- function(t, l, u, col) {
   polygon(c(t, rev(t)), c(l, rev(u)), col=col, border = NA)
 }
 
-pdf("../figures/fig1.pdf", width = 8, height = 4.5)
+pdf("../figures/fig2.pdf", width = 8, height = 4.5)
 
 par(mfrow=c(2,2), bty="n", mar = c(2.8, 2.7, 1.2, 0), mgp = c(1.6,0.4,0), 
     bty = "n", cex.axis = 1, cex.lab = 1, cex.main = 1.3)
@@ -58,7 +58,7 @@ dev.off()
 
 
 ## Also make a raw plot
-pdf("../figures/fig1-raw.pdf", width = 6, height = 3)
+pdf("../figures/fig1.pdf", width = 6, height = 3)
 par(bty="n", mar = c(3, 3, 1, 0), mgp = c(2, 1, 0))
 plot(data$time, data$scorediff, pch = 19, xlab = "Game time [minutes]", ylab = "Score difference", 
      type = "n", ylim = c(0, 40), xlim = c(0,48), xaxt = "n")
