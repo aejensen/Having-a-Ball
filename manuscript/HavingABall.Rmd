@@ -185,7 +185,7 @@ In our application we used a constant prior mean and the squared exponential cov
 \begin{align*}
   \mu_{\bm{\beta}_m}(t) = \beta_m, \quad C_{\bm{\theta}_m}(s, t) = \alpha^2_m\exp\left(-\frac{(s-t)^2}{2\rho^2_m}\right)
 \end{align*}
-and thus $\BTheta_m = (\beta_m,\alpha_m, \rho_m, \sigma_m) \in \mathbb{R} \times \mathbb{R}_{>0}^3$. These assumptions ensure well-defined and infinitely differetiable sample paths of $d_m$. For the hyper-parameters $\BTheta_m$ we used independent, heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates of the form
+and thus $\BTheta_m = (\beta_m,\alpha_m, \rho_m, \sigma_m) \in \mathbb{R} \times \mathbb{R}_{>0}^3$. These assumptions ensure well-defined and infinitely differentiable sample paths of $d_m$. For the hyper-parameters $\BTheta_m$ we used independent, heavy-tailed distribution with a moderate variance centered at the marginal maximum likelihood estimates of the form
 \begin{align*}
 H(\BTheta_m \mid \bm{\Psi}_m) = H(\beta_m \mid \Psi_{\beta_m})H(\alpha_m \mid \Psi_{\alpha_m})H(\rho_m \mid \Psi_{\rho_m})H(\sigma_m \mid \Psi_{\sigma_m})
 \end{align*}
@@ -207,7 +207,7 @@ We have implemented our model in the probabilistic programming language Stan [@c
 
 To illustrate the applicability of our proposed methodology we apply it to data from all regular games from the 2019--2020 NBA basketball season. The data was obtained from @BBreference and is provided in @HavingABallGitHub. A lot of points are scored during a basketball match so it is easy to see the development of the score difference in a single match. 
 
-The 2019--2020 NBA season was suspended mid-March due to Covid-19 but it was resumed again in July 2020. There were a total of 1059 regular season matches. The subsequent playoffs comprised 84 matches including the final for a grand total of 1143 matches. For ease of comparison we are only considering the first 48 regular minutes of each match --- any part of a match that goes into overtime will be disregarded, and we hence let $\mathcal{I}_m = [0; 48]$ minutes.
+The 2019--2020 NBA season was suspended mid-March due to COVID-19 but it was resumed again in July 2020. There were a total of 1059 regular season matches. The subsequent playoffs comprised 84 matches including the final for a grand total of 1143 matches. For ease of comparison we are only considering the first 48 regular minutes of each match --- any part of a match that goes into overtime will be disregarded, and we hence let $\mathcal{I}_m = [0; 48]$ minutes.
 
 We wish to use the trend analysis proposed for three purposes: 1) to show how the TDI can be used to infer real-time and post-game evaluation of the trends in a match. 2) To evaluate the ETI for all 1143 matches in the 2019--2020 season to provide background and reference information about the matches, and 3) to summarize ETI at the team level in order to identify groups of teams more/less likely to give an exciting game. 
 
@@ -231,43 +231,7 @@ To evaluate the overall distribution of the ETIs we fitted our model to each of 
 \label{fig2}
 \end{figure}
 
-We wished to examine if there was a calendar time effect on game excitement as the season progressed in order to investigate if we would find that games became more exciting as the teams fought to stay in the competition to enter the final playoffs or if we could detect fatigue over the season. The right panel of Figure \ref{fig2} shows the median posterior ETIs as a function of calendar time at which the matches were played. Besides illustrating the gap from the Covid-19 hiatus, the figure shows that the excitement indices are relatively evenly distributed throughout the season.
-
-When matches are ranked from lowest to highest median posterior ETI, we can extract the individual analyses for matches representing the full span of the ETI range. Figure \ref{fig3} shows the analysis results of our proposed method for the matches with minimum, 1st, 2nd, 3rd quantile, and maximum median posterior ETI. It is clear from the observed running score differences, posterior trends, and the TDIs that these five matches represent substantially different game experiences. The first row of Figure \ref{fig3} for Dallas Mavericks vs the Golden State Warriors show a very one-sided match leading to the minimum ETI during the season. The third row of Figure  \ref{fig3} for the LA Clippers vs Charlotte Hornets match indicates that while the Hornets did lead throughout most of first quarter, the Clippers reversed the game towards the end of first quarter and kept the lead through most of 2nd quarter. After that the Hornets started to keep the lead and the Clippers never managed to make a proper comeback and the game trend was rather flat in the last two quarters of the game since the two teams more or less kept the pace with each other except for the effort shown midway in quarter four. In contrast, the match between New Orleans Pelicans vs Utah Jazz (5th row in Figure \ref{fig3}) showed trends that varied direction frequently and where the TDI showed alternating periods of scoring bursts making it a very exciting and unpredictable game. The online Supplementary Material lists summary statistics of the estimated ETIs for all 1143 matches.
-
-Summarizing the median posterior ETIs at the team level across all matches during the season lead to comparable values for all 30 teams. Table \ref{tab:teamsummary} shows the summary statistics for all 30 teams ordered by their season average excitement. The New Orleans Pelicans had the highest median posterior ETI averaged over the season with an average median posterior ETI of 11.67 (SD = 4.91, IQR = $[3.10; 23.54]$), while the Charlotte Hornets had the lowest average median posterior ETI with a value of 9.26 (SD = 3.74, IQR = $[1.96; 15.95]$). The small fluctuation of the averages suggests that the teams are comparable in terms of excitement when averaging across all their games during the season, and that the major source of variation in excitement during the season (as seen in Figure \ref{fig2}) is governed by the specific matches.
-
-Although the team averages in Table \ref{tab:teamsummary} show limited variability it is of interest to estimate a number of subgroups among the teams that exhibited similar degree of excitement on average during the season -- effectively clustering the teams. This would enable fans, promoters, and sponsors to infer which teams were more likely to partake in an exciting game.
-The problem is mathematically equivalent to looking at the relationship between the median posterior ETIs as the outcome in a linear regression model where the explanatory categorical variable ranges over the set of all partitions of the 30 teams, and as the objective we seek the smallest number of partitions that best explains the observed outcome by comparing all possible splits of the ranked teams for a given number of partitions. This will then define subgroups of teams.
-
-As the optimization criterion for the subgroup identification we used the root mean squared error of prediction based on leave-one-out cross-validation, denoted $\textrm{RMSEP}_\text{LOO-CV}^{C = c}$ where $c$ is the number of subgroups. Our sequential optimization procedure showed that the optimization criterion stabilized at four subgroups: $\textrm{RMSEP}_\text{LOO-CV}^{C=2} = `r load("../results/teams_grouped_by_ETI.RData"); signif(part_2$optim$bestval, 4)`$, $\textrm{RMSEP}_\text{LOO-CV}^{C=3} = `r load("../results/teams_grouped_by_ETI.RData"); signif(part_3$optim$bestval, 4)`$, $\textrm{RMSEP}_\text{LOO-CV}^{C=4} = `r load("../results/teams_grouped_by_ETI.RData"); signif(part_4$optim$bestval, 4)`$, and subsequently for $C = 5,\ldots,8$ it remained at the same value. The labels of these groups are shown in the rightmost column in Table  \ref{tab:teamsummary}. The result is thus an identification of three change-points in the ranking of the teams according to median posterior ETI averaged across the season. The most noticeable result is that Charlotte Hornets constitute a singleton since that team has substantial lower ETI than the team with the second lowest ETI. To maximize the probability of seeing an exciting game it would thus have be wise to avoid matches in which the Hornets were playing.
-
-Figure \ref{fig:linplot} shows the estimated linear association between the seasonal standard deviations and average of the median posterior ETIs for each team. The association follows a straight line fairly close, suggesting that the coefficient of variation of seasonal excitement is fairly constant across the teams. This also suggests that teams with large seasonal average excitement are also more likely to be part of really spectacular matches. Teams consistently contributing with highly exciting matches during the season should therefore be represented in the bottom right part of the plot. Assessing which teams that where generally most exiting to watch during the season is thus a bias-variance trade-off decision. While the New Orleans Pelicans were most exciting on average, the Washington Wizards where second-most exciting on average but also had a notably lower seasonal standard deviation. This means that although the latter team was less exciting on average during the season, their level of excitement was more stable throughout. On the other hand, the San Antonio Spurs had the third largest average excitement but simultaneously also a much larger standard deviation making the excitement of their individual matches much less reliable throughout the season.
-
-
-# Discussion {#sec:discussion}
-
-We have introduced the Trend Direction Index as a measure to estimate and evaluate the trends in running score difference in sports. The Trend Direction Index is based on a latent Gaussian process model and enables us to make Bayesian in-game and post-game evaluations about the underlying trends in scoring patterns and to attach easily interpretable probability statements to the results. 
-In addition we have presented the Excitement Trend Index as the expected number of monotonicity changes in the underlying trend and we showed how it can be used to gauge how exciting a match will be: if one team is consistently outperforming the other then the match quickly becomes one-sided and less exciting. Both indices have intuitive interpretations that are easily conveyed to non-statisticians, coaches, players, and commentators. 
-
-We have showed how the proposed method can be used to analyze single matches in order to determine strategies to identify periods throughout the game where the momentum of the game changes.  The model utilizing the latent trend enables a highly detailed modeling approach where game development can be followed from minute to minute. This will facilitate and improve post-game coaching and influence future game tactics. 
-
-Our analysis of all matches in the 2019--2020 NBA season showed that different values of the ETI captured games with vastly different features and showed that it could be used as a tool to discriminate the teams. In this case, the latent Gaussian process benefits greatly from the large numbers of scorings that are typical in basketball, since that means that there will be a large and frequent number of observations within each match that the model can utilize. In contrast, sports with few scorings such as soccer may prove a more difficult task simply because there is very few changes in the running score throughout a match.
-
-There are a couple of future research ideas that could extend our current approach of using the latent Gaussian trend to infer measures for game excitement. One idea is to define a weighted version of the Excitement Trend Index, $\mathrm{wETI}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team as measured by the absolute value of the posterior mean $\mu_{d_m}$. This motivates a modification of the definition of the ETI in Equation (\ref{eq:ETIdef}) to the following weighted form
-\begin{align*}
-  \mathrm{wETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)w(t, |\mu_{d_m}(t)|)\mathrm{d}t
-\end{align*}
-where $w\colon\, \mathcal{I}_m \times \mathbb{R}_{\geq 0} \mapsto \mathbb{R}_{\geq 0}$ is a weight function that is increasing in its first variable and decreasing in its second variable. Such weight functions could be constructed as a product of two kernel functions defined on their individual domains and with bandwidths based on studies of psychological perception. 
-
-Another approach for quantifying excitement would be to define it at the team-level instead of at the match level. In that case one could define team-specific Trend Excitement Indices nested with a match by looking at both the up- and down-crossing of $df_m$ at zero. This would result in two excitement indices for each match, $(\mathrm{ETI}_{am}, \mathrm{ETI}_{bm})$ for teams $a$ and $b$ which would reflect how exciting each team were in match $m$ with respect to chancing the sign of the score differences in their favor. 
-
-In conclusion, we have provided an analytical framework for analyzing the trend in the running score difference in sports matches. The latent Gaussian process model requires very few assumptions which makes the modeling approach very flexible and applicable to a multitude of sports.
-
-
-# Bibliography {-}
-
-<div id="refs"></div>
+We wished to examine if there was a calendar time effect on game excitement as the season progressed in order to investigate if we would find that games became more exciting as the teams fought to stay in the competition to enter the final playoffs or if we could detect fatigue over the season. The right panel of Figure \ref{fig2} shows the median posterior ETIs as a function of calendar time at which the matches were played. Besides illustrating the gap from the COVID-19 hiatus, the figure shows that the excitement indices are relatively evenly distributed throughout the season.
 
 \begin{figure}[htbp]
 \includegraphics{../figures/fig3.pdf}
@@ -275,7 +239,16 @@ In conclusion, we have provided an analytical framework for analyzing the trend 
 \label{fig3}
 \end{figure}
 
-\newpage 
+When matches are ranked from lowest to highest median posterior ETI, we can extract the individual analyses for matches representing the full span of the ETI range. Figure \ref{fig3} shows the analysis results of our proposed method for the matches with minimum, 1st, 2nd, 3rd quantile, and maximum median posterior ETI. It is clear from the observed running score differences, posterior trends, and the TDIs that these five matches represent substantially different game experiences. 
+
+The first row of Figure \ref{fig3} for Dallas Mavericks vs the Golden State Warriors show a very one-sided match leading to the minimum ETI during the season. The third row of Figure  \ref{fig3} for the LA Clippers vs Charlotte Hornets match indicates that while the Hornets did lead throughout most of first quarter, the Clippers reversed the game towards the end of first quarter and kept the lead through most of 2nd quarter. After that the Hornets started to keep the lead and the Clippers never managed to make a proper comeback and the game trend was rather flat in the last two quarters of the game since the two teams more or less kept the pace with each other except for the effort shown midway in quarter four. In contrast, the match between New Orleans Pelicans vs Utah Jazz (5th row in Figure \ref{fig3}) showed trends that varied direction frequently and where the TDI showed alternating periods of scoring bursts making it a very exciting and unpredictable game. The online Supplementary Material lists summary statistics of the estimated ETIs for all 1143 matches.
+
+Summarizing the median posterior ETIs at the team level across all matches during the season lead to comparable values for all 30 teams. Table \ref{tab:teamsummary} shows the summary statistics for all 30 teams ordered by their season average excitement. The New Orleans Pelicans had the highest median posterior ETI averaged over the season with an average median posterior ETI of 11.67 (SD = 4.91, IQR = $[3.10; 23.54]$), while the Charlotte Hornets had the lowest average median posterior ETI with a value of 9.26 (SD = 3.74, IQR = $[1.96; 15.95]$). The small fluctuation of the averages suggests that the teams are comparable in terms of excitement when averaging across all their games during the season, and that the major source of variation in excitement during the season (as seen in Figure \ref{fig2}) is governed by the specific matches.
+
+Although the team averages in Table \ref{tab:teamsummary} show limited variability it is of interest to estimate a number of subgroups among the teams that exhibited similar degree of excitement on average during the season -- effectively clustering the teams. This would enable fans, promoters, and sponsors to infer which teams were more likely to partake in an exciting game.
+The problem is mathematically equivalent to looking at the relationship between the median posterior ETIs as the outcome in a linear regression model where the explanatory categorical variable ranges over the set of all partitions of the 30 teams, and as the objective we seek the smallest number of partitions that best explains the observed outcome by comparing all possible splits of the ranked teams for a given number of partitions. This will then define subgroups of teams.
+
+As the optimization criterion for the subgroup identification we used the root mean squared error of prediction based on leave-one-out cross-validation, denoted $\textrm{RMSEP}_\text{LOO-CV}^{C = c}$ where $c$ is the number of subgroups. Our sequential optimization procedure showed that the optimization criterion stabilized at four subgroups: $\textrm{RMSEP}_\text{LOO-CV}^{C=2} = `r load("../results/teams_grouped_by_ETI.RData"); signif(part_2$optim$bestval, 4)`$, $\textrm{RMSEP}_\text{LOO-CV}^{C=3} = `r load("../results/teams_grouped_by_ETI.RData"); signif(part_3$optim$bestval, 4)`$, $\textrm{RMSEP}_\text{LOO-CV}^{C=4} = `r load("../results/teams_grouped_by_ETI.RData"); signif(part_4$optim$bestval, 4)`$, and subsequently for $C = 5,\ldots,8$ it remained at the same value. The labels of these groups are shown in the rightmost column in Table  \ref{tab:teamsummary}. The result is thus an identification of three change-points in the ranking of the teams according to median posterior ETI averaged across the season. The most noticeable result is that Charlotte Hornets constitute a singleton since that team has substantial lower ETI than the team with the second lowest ETI. To maximize the probability of seeing an exciting game it would thus have be wise to avoid matches in which the Hornets were playing.
 
 ```{r, echo=FALSE}
 library(kableExtra)
@@ -319,23 +292,16 @@ kable(tab[, -which(colnames(tab) == "class_num")],
       format = "latex", digits = 2, booktabs = TRUE,
       linesep = c("", "", "", ""), 
       align = c("r", "r|", "r", "r", "r|", "r"),
-			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season and ordered by the season average. The group column shows the clustering induced by the sequential optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(21, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
+			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season and ordered by the season average. The group column shows the clustering induced by our optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(21, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
 ```
+
+Figure \ref{fig:linplot} shows the estimated linear association between the seasonal standard deviations and average of the median posterior ETIs for each team. The association follows a straight line fairly close, suggesting that the coefficient of variation of seasonal excitement is fairly constant across the teams. This also suggests that teams with large seasonal average excitement are also more likely to be part of really spectacular matches. Teams consistently contributing with highly exciting matches during the season should therefore be represented in the bottom right part of the plot. Assessing which teams that where generally most exiting to watch during the season is thus a bias-variance trade-off decision. While the New Orleans Pelicans were most exciting on average, the Washington Wizards where second-most exciting on average but also had a notably lower seasonal standard deviation. This means that although the latter team was less exciting on average during the season, their level of excitement was more stable throughout. On the other hand, the San Antonio Spurs had the third largest average excitement but simultaneously also a much larger standard deviation making the excitement of their individual matches much less reliable throughout the season.
 
 ```{r echo=FALSE, message=FALSE, fig.cap="\\label{fig:linplot}Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. The line represents the best linear regression line through the origin. The plot indicates a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores."}
 
 library("ggplot2")
 library("ggrepel")
 library("lemon")
-
-tab2 <- data.frame(
-    Average=rnorm(40, mean=12, sd=3),
-    SD =rnorm(40, mean=12, sd=3),
-    names = LETTERS[1:40],
-    class_num = sample(1:4, size=40, replace=TRUE)
-    )
-
-
 
 ggplot(data=tab,
        aes(x=Average, y=SD, label=rownames(tab))) + 
@@ -358,20 +324,31 @@ ggplot(data=tab,
           axis.text.y = element_text(colour="black")) + 
     lemon::coord_flex_cart(bottom=capped_horizontal(), 
                      left=capped_vertical(capped="both"))
-
-
-
-#plot(tab$Average, tab$SD, 
-#     col=tab$class_num + 1, 
-#     cex=1, 
-#     pch=c(15,19,17,18)[tab$class_num + 1],
-#     xlab=expression("Seasonal average" ~ widehat(ETI[m])), 
-#     ylab=expression("Seasonal SD of" ~ widehat(ETI[m])),
-#     xlim=c(9.2, 11.8), ylim=c(3.5,5.5), xaxt="n")
-#axis(1, seq(9.2, 11.8, length.out=5))
-#m <- lm(SD ~ Average, data = tab)
-#curve(predict(m, data.frame(Average = x)), 9.2, 11.8, add=TRUE, lty=1, col="gray")
-#legend("topleft", rep(c("Class ?"), 4), bty="n", col=1:4, pch=c(15,19,17,18), pt.cex=1.5)
-#text(tab$Average, tab$SD, rownames(tab), cex=0.6, pos=3)
 ```
+
+
+# Discussion {#sec:discussion}
+
+We have introduced the Trend Direction Index as a measure to estimate and evaluate the trends in running score difference in sports. The Trend Direction Index is based on a latent Gaussian process model and enables us to make Bayesian in-game and post-game evaluations about the underlying trends in scoring patterns and to attach easily interpretable probability statements to the results. 
+In addition we have presented the Excitement Trend Index as the expected number of monotonicity changes in the underlying trend and we showed how it can be used to gauge how exciting a match will be: if one team is consistently outperforming the other then the match quickly becomes one-sided and less exciting. Both indices have intuitive interpretations that are easily conveyed to non-statisticians, coaches, players, and commentators. 
+
+We have showed how the proposed method can be used to analyze single matches in order to determine strategies to identify periods throughout the game where the momentum of the game changes.  The model utilizing the latent trend enables a highly detailed modeling approach where game development can be followed from minute to minute. This will facilitate and improve post-game coaching and influence future game tactics. 
+
+Our analysis of all matches in the 2019--2020 NBA season showed that different values of the ETI captured games with vastly different features and showed that it could be used as a tool to discriminate the teams. In this case, the latent Gaussian process benefits greatly from the large numbers of scorings that are typical in basketball, since that means that there will be a large and frequent number of observations within each match that the model can utilize. In contrast, sports with few scorings such as soccer may prove a more difficult task simply because there is very few changes in the running score throughout a match.
+
+There are a couple of future research ideas that could extend our current approach of using the latent Gaussian trend to infer measures for game excitement. One idea is to define a weighted version of the Excitement Trend Index, $\mathrm{wETI}_m$, so that changes in monotonicity of the score differences are i) weighted higher towards the end of the game and ii) weighted lower if one team is already far away of the other team as measured by the absolute value of the posterior mean $\mu_{d_m}$. This motivates a modification of the definition of the ETI in Equation (\ref{eq:ETIdef}) to the following weighted form
+\begin{align*}
+  \mathrm{wETI}_m\mid \BTheta_m = \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)w(t, |\mu_{d_m}(t)|)\mathrm{d}t
+\end{align*}
+where $w\colon\, \mathcal{I}_m \times \mathbb{R}_{\geq 0} \mapsto \mathbb{R}_{\geq 0}$ is a weight function that is increasing in its first variable and decreasing in its second variable. Such weight functions could be constructed as a product of two kernel functions defined on their individual domains and with bandwidths based on studies of psychological perception. 
+
+Another approach for quantifying excitement would be to define it at the team-level instead of at the match level. In that case one could define team-specific Trend Excitement Indices nested with a match by looking at both the up- and down-crossing of $df_m$ at zero. This would result in two excitement indices for each match, $(\mathrm{ETI}_{am}, \mathrm{ETI}_{bm})$ for teams $a$ and $b$ which would reflect how exciting each team were in match $m$ with respect to chancing the sign of the score differences in their favor. 
+
+In conclusion, we have provided an analytical framework for analyzing the trend in the running score difference in sports matches. The latent Gaussian process model requires very few assumptions which makes the modeling approach very flexible and applicable to a multitude of sports.
+
+
+# Bibliography {-}
+
+<div id="refs"></div>
+
 
