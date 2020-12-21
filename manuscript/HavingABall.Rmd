@@ -1,7 +1,7 @@
 ---
 title: "Having a Ball: evaluating scoring streaks and game excitement using in-match trend estimation"
 author: | 
-  | `r x <- sample(1:2) ; paste0((c("Andreas Kryger Jensen", "Claus Thorn Ekstrøm")[x]), collapse=" and ")`
+  | `r x <- c(2, 1) ; paste0((c("Andreas Kryger Jensen", "Claus Thorn Ekstrøm")[x]), collapse=" and ")`
   | `r paste0(c("(0000-0002-8233-9176)", "(0000-0003-1191-373X)")[x], collapse=", ")`
   | Biostatistics, Department of Public Health, University of Copenhagen
   | `r paste0(c("aeje@sund.ku.dk", "ekstrom@sund.ku.dk")[x], collapse=", ")`
@@ -28,7 +28,7 @@ header-includes:
   - \usepackage{xcolor}
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
   - \usepackage{fontawesome5}
-  - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=1}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
+  - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=0}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
   - \authorrunning{`r paste0((c("AK Jensen", "CT Ekstrøm")[x]), collapse=" and ")`}
   - \titlerunning{Having a Ball}
   - \institute{Biostatistics, Department of Public Health\\University of Copenhagen\\ Øster Farimagsgade 5\\ 1014 København K\\ DENMARK}
@@ -295,9 +295,9 @@ kable(tab[, -which(colnames(tab) == "class_num")],
 			caption = "Team specific median posterior Excitement Trend Indices summarized across all their matches in the 2019--2020 NBA season and ordered by the season average. The group column shows the clustering induced by our optimization procedure.\\label{tab:teamsummary}") %>% row_spec(11, hline_after = TRUE) %>% row_spec(21, hline_after = TRUE) %>% row_spec(29, hline_after = TRUE)
 ```
 
-Figure \ref{fig:linplot} shows the estimated linear association between the seasonal standard deviations and average of the median posterior ETIs for each team. The association follows a straight line fairly close, suggesting that the coefficient of variation of seasonal excitement is fairly constant across the teams. This also suggests that teams with large seasonal average excitement are also more likely to be part of really spectacular matches. Teams consistently contributing with highly exciting matches during the season should therefore be represented in the bottom right part of the plot. Assessing which teams that where generally most exiting to watch during the season is thus a bias-variance trade-off decision. While the New Orleans Pelicans were most exciting on average, the Washington Wizards where second-most exciting on average but also had a notably lower seasonal standard deviation. This means that although the latter team was less exciting on average during the season, their level of excitement was more stable throughout. On the other hand, the San Antonio Spurs had the third largest average excitement but simultaneously also a much larger standard deviation making the excitement of their individual matches much less reliable throughout the season.
+Figure \ref{fig:linplot} shows the estimated linear association between the seasonal standard deviations and average of the median posterior ETIs for each team. The teams follow a straight line through the origin fairly well, suggesting that the coefficient of variation is fairly constant across the teams. This also suggests that teams with large seasonal average excitement are also more likely to be part of really spectacular matches. Teams consistently contributing with highly exciting matches during the season should therefore be represented in the bottom right part of the plot. Assessing which teams that where generally most exiting to watch during the season is thus a bias-variance trade-off decision. While the New Orleans Pelicans were most exciting on average, the Washington Wizards where second-most exciting on average but also had a notably lower seasonal standard deviation. This means that although the latter team was less exciting on average during the season, their level of excitement was more stable throughout. On the other hand, the San Antonio Spurs had the third largest average excitement but simultaneously also a much larger standard deviation making the excitement of their individual matches much less reliable throughout the season.
 
-```{r echo=FALSE, message=FALSE, fig.cap="\\label{fig:linplot}Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. The line represents the best linear regression line through the origin. The plot indicates a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores."}
+```{r echo=FALSE, message=FALSE, fig.cap="\\label{fig:linplot}Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. Shapes/colors indicate ETI groups. The line represents the best linear regression line through the origin. The plot suggests a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores."}
 
 library("ggplot2")
 library("ggrepel")
@@ -305,7 +305,7 @@ library("lemon")
 
 ggplot(data=tab,
        aes(x=Average, y=SD, label=rownames(tab))) + 
-    stat_smooth(method="lm", size=1, se=FALSE, col="black") +
+    stat_smooth(method="lm", formula = y ~ x + 0, size=1, se=FALSE, col="darkgray") +
     geom_point(aes(col=factor(class_num), shape=factor(class_num)), size=2.5) + 
     geom_text_repel(size=3) + 
     xlab(expression("Seasonal average" ~ widehat(ETI)[m])) +

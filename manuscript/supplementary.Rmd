@@ -34,7 +34,7 @@ header-includes:
   - \newcommand{\revision}[1]{\textcolor{red}{#1}}
   - \usepackage{fontawesome5}
   - \usepackage{todonotes}
-  - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=1}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
+  - \newcommand{\BTheta}{\ifthenelse{\value{bbsym4theta}=0}{\text{\faBasketballBall}}{\mathbf{\Theta}}}
 output:
   pdf_document: 
     keep_tex: no
