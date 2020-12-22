@@ -297,34 +297,11 @@ kable(tab[, -which(colnames(tab) == "class_num")],
 
 Figure \ref{fig:linplot} shows the estimated linear association between the seasonal standard deviations and average of the median posterior ETIs for each team. The teams follow a straight line through the origin fairly well, suggesting that the coefficient of variation is fairly constant across the teams. This also suggests that teams with large seasonal average excitement are also more likely to be part of really spectacular matches. Teams consistently contributing with highly exciting matches during the season should therefore be represented in the bottom right part of the plot. Assessing which teams that where generally most exiting to watch during the season is thus a bias-variance trade-off decision. While the New Orleans Pelicans were most exciting on average, the Washington Wizards where second-most exciting on average but also had a notably lower seasonal standard deviation. This means that although the latter team was less exciting on average during the season, their level of excitement was more stable throughout. On the other hand, the San Antonio Spurs had the third largest average excitement but simultaneously also a much larger standard deviation making the excitement of their individual matches much less reliable throughout the season.
 
-```{r echo=FALSE, message=FALSE, fig.cap="\\label{fig:linplot}Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. Shapes/colors indicate ETI groups. The line represents the best linear regression line through the origin. The plot suggests a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores."}
-
-library("ggplot2")
-library("ggrepel")
-library("lemon")
-
-ggplot(data=tab,
-       aes(x=Average, y=SD, label=rownames(tab))) + 
-    stat_smooth(method="lm", formula = y ~ x + 0, size=1, se=FALSE, col="darkgray") +
-    geom_point(aes(col=factor(class_num), shape=factor(class_num)), size=2.5) + 
-    geom_text_repel(size=3) + 
-    xlab(expression("Seasonal average" ~ widehat(ETI)[m])) +
-    ylab(expression("Seasonal SD of" ~ widehat(ETI)[m])) + 
-    scale_x_continuous(breaks =seq(9.25, 11.75, length.out=6)) + 
-    scale_y_continuous(breaks=seq(3, 5.4, length.out=7)) +    
-    scale_shape_manual(values=c(15, 16, 17, 18)) +
-    scale_color_manual(values=c("#CC0000", "darkgreen", "#0000CC", "#000000")) + 
-#    xlim(9, 12) + 
-#    ylim(3.5, 5.5) + 
-    theme_classic() + 
-    theme(legend.position="none",
-          axis.ticks.length = unit(.25, "cm"), 
-          axis.line = element_line(),
-          axis.text.x = element_text(colour="black"),
-          axis.text.y = element_text(colour="black")) + 
-    lemon::coord_flex_cart(bottom=capped_horizontal(), 
-                     left=capped_vertical(capped="both"))
-```
+\begin{figure}[htbp]
+\includegraphics{../figures/fig5.pdf}
+\caption{Seasonal SD of the estimated ETIs plotted against the average estimated ETI for each team. Shapes/colors indicate ETI groups. The line represents the best linear regression line through the origin. The plot suggests a linear relationship between the SDs and averages indicating a fairly constant coefficient of variation. Teams with higher excitement trend index are more likely to have higher variation in their excitement scores.}
+\label{fig:linplot}
+\end{figure}
 
 
 # Discussion {#sec:discussion}

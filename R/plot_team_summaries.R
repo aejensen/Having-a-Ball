@@ -41,10 +41,14 @@ library("ggrepel")
 library("lemon")
 
 
-pdf("../figures/fig5.pdf", width = 8, height = 6)
+pdf("../figures/fig5.pdf", width = 8, height = 5)
+library("ggplot2")
+library("ggrepel")
+library("lemon")
+
 ggplot(data=tab,
-       aes(x=Average, y=SD, label=rownames(tab))) + 
-    stat_smooth(method="lm", size=1, se=FALSE, col="black") +
+    aes(x=Average, y=SD, label=rownames(tab))) + 
+    stat_smooth(method="lm", formula = y ~ x + 0, size=1, se=FALSE, col="darkgray") +
     geom_point(aes(col=factor(class_num), shape=factor(class_num)), size=2.5) + 
     geom_text_repel(size=3) + 
     xlab(expression("Seasonal average" ~ widehat(ETI)[m])) +
@@ -61,4 +65,5 @@ ggplot(data=tab,
           axis.text.y = element_text(colour="black")) + 
     lemon::coord_flex_cart(bottom=capped_horizontal(), 
                      left=capped_vertical(capped="both"))
+
 dev.off()
