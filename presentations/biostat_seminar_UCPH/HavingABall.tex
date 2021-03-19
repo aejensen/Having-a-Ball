@@ -44,9 +44,25 @@
 %\maketitle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduction (CE)}
+\section{Introduction}
 
-\begin{frame}{Introduction}
+\begin{frame}[fragile]{How it all started}
+\begin{Verbatim}[fontsize=\footnotesize]
+Dear sports-analytics-enthusiastic colleagues,
+
+Today I want to make you aware of yet another call for a Special 
+Issue on Statistics in Sports in the AStA Advances in Statistical 
+Analysis journal (A Journal of the German Statistical Society) 
+which Dominik Liebl and I are currently hosting as guest editors:
+
+https://www.springer.com/journal/10182/updates/17805238
+
+We are looking forward to receiving high quality submission 
+from at least some of you until 31 October 2020. :-)
+
+All the best, take care and stay safe,
+Dominik & Andreas	
+\end{Verbatim}
 \end{frame}
 
 \begin{frame}{Motivating example}
@@ -64,8 +80,9 @@ How exciting was this match?
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Latent dynamics GP Regression (AKJ)}
+\section{Latent dynamics GP Regression}
 \begin{frame}{Gaussian Process regression with latent dynamics}
+The generative model of GP regression with data $\mathcal{D}_m = \left(D_m(t_{mi}), t_{mi})\right)_{i=1}^{n_m}$ is given hierarchically as
 \begin{align*}
 \begin{split}
   \BTheta_m \mid \bm{\Psi}_m, \mathbf{t}_m &\sim H(\BTheta_m \mid \bm{\Psi}_m)\\
@@ -74,23 +91,29 @@ How exciting was this match?
 \end{split}
 \end{align*}
 
+\pause
+By linearity of differentiation and the properties of the Gaussian distribution we may augment the latent space as
 {
 \scriptsize
 \begin{align*}
   \begin{bmatrix}d_m(s)\\ d^{\prime}_m(t)\\ d^{\prime\prime}_m(u)\end{bmatrix} \mid \BTheta_m &\sim \mathcal{GP}\left(\begin{bmatrix}\mu_{\bm{\beta}_m}(s)\\ \mu^{\prime}_{\bm{\beta}_m}(t)\\ \mu^{\prime\prime}_{\bm{\beta}_m}(u)\end{bmatrix}, \begin{bmatrix}C_{\bm{\theta}_m}(s, s^\prime) & \partial_2 C_{\bm{\theta}_m}(s, t) & \partial_2^2 C_{\bm{\theta}_m}(s, u)\\ \partial_1 C_{\bm{\theta}_m}(t, s) & \partial_1 \partial_2 C_{\bm{\theta}_m}(t, t^\prime) & \partial_1 \partial_2^2 C_{\bm{\theta}_m}(t, u)\\ \partial_1^2 C_{\bm{\theta}_m}(u, s) & \partial_1^2\partial_2 C_{\bm{\theta}_m}(u, t) & \partial_1^2 \partial_2^2 C_{\bm{\theta}_m}(u, u^\prime)\end{bmatrix}\right)
 \end{align*}
 }
+(if the derivatives exist - no Ornstein-Uhlenbeck for you, Sir!)
 \end{frame}
 
 
 \begin{frame}{Gaussian Process regression with latent dynamics}
-The posterior distribution of the latent processes conditional on the hyper-parameters is the multivariate Gaussian process
+Inference about the latent processes is given by the posterior 
 {
 \scriptsize
 \begin{align*}
 \begin{bmatrix}d_m(s)\\ d_m^\prime(t)\\ d_m^{\prime\prime}(u)\end{bmatrix} \mid \mathcal{D}_m, \BTheta_m \sim \mathcal{GP}\left(\begin{bmatrix}\mu_{d_m}(s)\\ \mu_{d_m^\prime}(t)\\ \mu_{d_m^{\prime\prime}}(u)\end{bmatrix}, \begin{bmatrix} \Sigma_{d_m}(s, s^\prime) & \Sigma_{d_m d_m^\prime}(s,t) & \Sigma_{d_m d_m^{\prime\prime}}(s,u)\\ \Sigma_{d_m^\prime d_m}(t,s) & \Sigma_{d_m^\prime}(t,t^\prime) & \Sigma_{d_m^\prime d_m^{\prime\prime}}(t,u)\\ \Sigma_{d_m^{\prime\prime} d_m}(u,s) & \Sigma_{d_m^{\prime\prime} d_m^\prime}(u,t) & \Sigma_{d_m^{\prime\prime}}(u,u^\prime)\end{bmatrix}\right)
 \end{align*}	
 }
+
+\vspace{0.5cm}
+
 \pause
 Where the components evaluated at any $\mathbf{t}^\ast$ are given by
 {
@@ -185,7 +208,7 @@ Our model is implemented in Stan and for each match we ran 4 chains for 50,000 i
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The 2019--2020 NBA season (CE)}
+\section{The 2019--2020 NBA season}
 
 \begin{frame}{The 2019--2020 NBA season}
 We applied our method for all 1143 matches from the 2019--2020 NBA basketball season.
@@ -194,6 +217,7 @@ We disregarded overtime.
 \end{frame}
 
 \begin{frame}{Final match between LA Lakers and Miami Heat}
+Analysis of the motivating example.
 \includegraphics[scale=0.5]{fig2.pdf}
 \end{frame}
 
