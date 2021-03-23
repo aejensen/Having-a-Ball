@@ -248,6 +248,27 @@ Analysis of the motivating example.
 
 
 \begin{frame}{An algorithm for collapsing a factor into sub-groups}
+
+  If I were to go see an exciting match --- who should I watch?
+
+  \pause
+
+  Cluster teams based on their median posterior ETI. 
+
+  Compute the $\text{RMSEP}_\text{LOO-CV}^{C=c}$ where $c$ is the number
+  of subgroups considering all possible partitions of the 30 teams.
+  Essentially a bunch of one-way ANOVAs
+
+
+  $\text{RMSEP}_\text{LOO-CV}^{C=2} = 4.493$
+
+  $\text{RMSEP}_\text{LOO-CV}^{C=3} = 4.49$
+
+  $\text{RMSEP}_\text{LOO-CV}^{C=4} = 4.489$
+
+  $\text{RMSEP}_\text{LOO-CV}^{C=5+} = 4.489$
+
+  
 \end{frame}
 
 
