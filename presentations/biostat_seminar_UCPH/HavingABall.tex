@@ -134,33 +134,38 @@ Where the components evaluated at any $\mathbf{t}^\ast$ are given by
 
 
 \begin{frame}{Trend Direction Index (TDI)}
+Through the posterior derivative we define the Trend Direction Index as
 \begin{align*}
 \begin{split}
   \textrm{TDI}_m(t \mid \BTheta_m) &= P\left(d_m^\prime(t) > 0 \mid \mathcal{D}_m, \BTheta_m\right)\\
      &= \frac{1}{2} + \frac{1}{2}\Erf\left(\frac{\mu_{d_m^\prime}(t)}{2^{1/2}\Sigma_{d_m^\prime}(t, t)^{1/2}}\right)
 \end{split}
-\end{align*}	
+\end{align*}
+The probability that the score difference is increasing at time $t$. Switching reference team leads to $1 - \textrm{TDI}_m(t \mid \BTheta_m)$.
 \end{frame}
 
 \begin{frame}{Excitement Trend Index}
+We further derfine The Excitement Trend Index as an application of Rice's formula (1936)
 \begin{align*}
 \begin{split}
   \text{ETI}_m \mid \BTheta_m &= \E\left[\#\left\{t \in \mathcal{I}_m : d^\prime_m(t) = 0\right\} \mid \mathcal{D}_m, \BTheta_m\right]\\
   &= \int_{\mathcal{I}_m} \int_{-\infty}^\infty \left|v\right| f_{d^\prime_m(t), d^{\prime\prime}_m(t)}(0, v \mid \mathcal{D}_m, \BTheta_m)\textrm{d}v\textrm{d}t \\
   &= \int_{\mathcal{I}_m} d\mathrm{ETI}_m(t \mid \BTheta_m)\mathrm{d}t
 \end{split}
-\end{align*}	
+\end{align*}
+The expected number of times that the score difference changes monotonicity. Invariate to switching reference team.
 \end{frame}
 
 
 \begin{frame}{Excitement Trend Index}
-?
+The local Excitement Trend Index has the following explicit expression:
 {
 \small
 \begin{align*}
 d\mathrm{ETI}_m(t \mid \BTheta_m) = \lambda_m(t)\phi\left(\frac{\mu_{d_m^\prime}(t)}{\Sigma_{d_m^\prime}(t,t)^{1/2}}\right)\left(2\phi\left(\zeta_m(t)\right) + \zeta_m(t)\Erf\left(\frac{\zeta_m(t)}{2^{1/2}}\right)\right)
 \end{align*}
 }
+with
 
 {
 \small
